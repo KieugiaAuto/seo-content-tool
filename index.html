@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo nội dung SEO cho Kiều Gia Auto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #preview {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tạo nội dung SEO cho Kiều Gia Auto</h1>
+    <div class="form-group">
+      <label for="ten">Tên phụ tùng:</label>
+      <input type="text" id="ten" placeholder="Ví dụ: Càng A Suzuki Swift 2013-2018">
+    </div>
+    <div class="form-group">
+      <label for="ma">Mã sản phẩm:</label>
+      <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
+    </div>
+    <div class="form-group">
+      <label for="thuonghieu">Thương hiệu:</label>
+      <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
+    </div>
+    <div class="form-group">
+      <label for="xuatxu">Xuất xứ:</label>
+      <input type="text" id="xuatxu" placeholder="Ví dụ: Nhật Bản">
+    </div>
+    <div class="form-group">
+      <label for="website">Chọn website:</label>
+      <select id="website">
+        <option value="phutunggiare">Phụ tùng giá rẻ</option>
+        <option value="kieugiaauto">Kiều Gia Auto</option>
+        <option value="banphutung">Bán phụ tùng</option>
+        <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
+        <option value="shopee">Shopee</option>
+      </select>
+    </div>
+    <button onclick="taoNoiDung()">Tạo nội dung</button>
+    <button onclick="saoChepNoiDung()">📋 Sao chép nội dung</button>
+    <div id="preview"></div>
+  </div>
+
+  <script src="moTaTheoLoai.js"></script>
+  <script>
+    // Hàm loại bỏ dấu tiếng Việt để xử lý từ khóa
+    function removeVietnameseTones(str) {
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D');
+    }
+
+    // Hàm tạo mô tả SEO tự động dựa trên tên phụ tùng
+    function sinhMoTaTuDong(ten) {
+      const regex = /(.*?)(ac|acura|aeolus|alfa_romeo|alpine|aston_martin|audi|bac|bahman|baic|bentley|bmw|bollinger|brilliance|bugatti|buick|byd|cadillac|callaway|carver|chery|chevrolet|chrysler|citroen|cupra|daihatsu|dodge|ds|ferrari|fiat|fisker|ford|geely|genesis|gmc|haval|hino|honda|hummer|hyundai|infiniti|isuzu|jaguar|jeep|kia|lamborghini|land_rover|lexus|lincoln|lotus|lucid|maserati|maybach|mazda|mclaren|mercedes_benz|mg|mini|mitsubishi|nissan|opel|pagani|peugeot|porsche|ram|renault|rivian|rolls_royce|saic|seat|skoda|smart|ssangyong|subaru|suzuki|tesla|toyota|vinfast|volkswagen|volvo)[\s-]+([a-zA-Z0-9.\s]+?)(\d{4})?(?:\D+(\d{4}))?$/i;
+      const match = ten.match(regex);
+      if (!match) return '';
+
+      const tenPhuTung = match[1].trim();
+      const hang = match[2].replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      const dong = match[3].trim();
+      const nam1 = match[4] || '';
+      const nam2 = match[5] || '';
+      const dateText = nam1 ? (nam2 ? ` từ ${nam1} đến ${nam2}` : ` đời ${nam1}`) : '';
+      const website = document.getElementById('website').value;
+
+      let gioiThieu = '';
+      const tenPhuTungNoTones = removeVietnameseTones(tenPhuTung.toLowerCase());
+
+      // Ưu tiên kiểm tra từ khóa dài trước để khớp chính xác
+      const tuKhoaList = Object.keys(moTaTheoLoai).sort((a, b) => b.length - a.length);
+      for (const tuKhoa of tuKhoaList) {
+        const tuKhoaNoTones = removeVietnameseTones(tuKhoa.toLowerCase());
+        if (tenPhuTungNoTones.includes(tuKhoaNoTones)) {
+          const dsMoTa = moTaTheoLoai[tuKhoa];
+          gioiThieu = dsMoTa[Math.floor(Math.random() * dsMoTa.length)];
+          break;
+        }
+      }
+
+      // Mô tả mặc định nếu không tìm thấy từ khóa
+      if (!gioiThieu) {
+        gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
+      }
+
+      const moTaMau = {
+        kieugiaauto: [
+          `${gioiThieu} Sản phẩm phù hợp với ${hang} ${dong}${dateText}, dễ lắp đặt, được bảo hành đầy đủ.`,
+          `${gioiThieu} Được thiết kế dành riêng cho ${hang} ${dong}${dateText}, đảm bảo chính hãng với giá cạnh tranh.`
+        ],
+        phutungotokieugia: [
+          `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, được nhiều gara tin dùng.`,
+          `${gioiThieu} Hỗ trợ kỹ thuật tận tâm, phù hợp hoàn hảo cho ${hang} ${dong}${dateText}.`
+        ],
+        banphutung: [
+          `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, luôn có sẵn và giao hàng toàn quốc.`,
+          `${gioiThieu} Góp phần bảo vệ và nâng cao hiệu suất cho ${hang} ${dong}${dateText}.`
+        ],
+        phutunggiare: [
+          `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, giá tiết kiệm, bảo hành đầy đủ.`,
+          `${gioiThieu} Lựa chọn chính hãng, tiết kiệm chi phí cho ${hang} ${dong}${dateText}.`
+        ],
+        shopee: [
+          `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, giá ưu đãi trên Shopee.`,
+          `${gioiThieu} Sản phẩm chất lượng cao cho ${hang} ${dong}${dateText}, giao hàng nhanh chóng.`
+        ]
+      };
+
+      const mau = moTaMau[website];
+      if (!mau || !gioiThieu) return '';
+      let moTa = `<p>${mau[Math.floor(Math.random() * mau.length)]}</p>`;
+
+      // Thêm liên kết cho hãng xe ở các website kieugiaauto và phutungotokieugia
+      if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
+        const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
+        const regex = new RegExp(`\\b${hang}\\b(?![^<]*>)`, 'i');
+        moTa = moTa.replace(regex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(' ', '-')}" target="_blank">${hang}</a>`);
+      }
+
+      return moTa;
+    }
+
+    // Hàm tạo danh sách xe phù hợp cho website Shopee
+    function sinhDanhSachXe(ten, thuonghieu, isShopee = false) {
+      if (!isShopee) {
+        return '';
+      }
+
+      if (!ten || !thuonghieu) {
+        return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
+      }
+      ten = ten.toLowerCase();
+
+      // Danh sách hãng và dòng xe
+      const hangXeMap = {
+        ac: ["Ace", "Cobra"],
+        acura: ["ILX", "MDX", "NSX", "RDX", "TLX"],
+        aeolus: ["A30", "A60", "AX7"],
+        alfa_romeo: ["Giulia", "Stelvio", "Tonale"],
+        alpine: ["A110"],
+        aston_martin: ["DB11", "DBS", "Vantage", "Valhalla"],
+        audi: ["A3", "A4", "A6", "Q3", "Q5", "Q7", "e-tron"],
+        bac: ["Mono"],
+        bahman: ["Faw", "Capra"],
+        baic: ["X55", "BJ40", "Senova", "M50"],
+        bentley: ["Bentayga", "Continental GT", "Flying Spur"],
+        bmw: ["3 Series", "5 Series", "7 Series", "X1", "X3", "X5", "i4", "iX"],
+        bollinger: ["B1", "B2"],
+        brilliance: ["V5", "H530"],
+        bugatti: ["Chiron", "Divo"],
+        buick: ["Enclave", "Encore", "Envision"],
+        byd: ["F0", "F3", "Dolphin", "Atto 3", "Seal", "Han"],
+        cadillac: ["Escalade", "CTS", "XT5", "CT5", "Lyriq"],
+        callaway: ["Corvette C7", "Camaro"],
+        carver: ["One"],
+        chery: ["QQ", "Arrizo 3", "Arrizo 5", "Arrizo 6", "Tiggo 2", "Tiggo 3", "Tiggo 4", "Tiggo 5", "Tiggo 7", "Tiggo 8", "Omoda 5"],
+        chevrolet: ["Spark", "Aveo", "Cruze", "Lacetti", "Optra", "Captiva", "Orlando", "Colorado", "Trailblazer", "Camaro", "Corvette", "Equinox", "Traverse", "Silverado", "Tahoe", "Suburban"],
+        chrysler: ["300", "Pacifica", "Voyager"],
+        citroen: ["C3", "C4", "C5 Aircross", "Berlingo"],
+        cupra: ["Formentor", "Leon", "Born"],
+        daihatsu: ["Terios", "Mira"],
+        dodge: ["Challenger", "Charger", "Durango", "Ram"],
+        ds: ["DS3", "DS4", "DS7 Crossback"],
+        ferrari: ["488", "812 Superfast", "Portofino", "Roma", "SF90"],
+        fiat: ["500", "Panda", "Tipo"],
+        fisker: ["Ocean"],
+        ford: ["Bronco", "Escape", "Explorer", "F-150", "Mustang", "Ranger"],
+        geely: ["Coolray", "Emgrand", "Azkarra", "Tugella"],
+        genesis: ["G70", "G80", "GV70", "GV80"],
+        gmc: ["Acadia", "Sierra", "Yukon", "Terrain"],
+        haval: ["H6", "H9", "Jolion"],
+        hino: ["300", "500", "700", "Dutro", "XZU", "FG", "FL", "FM", "GH", "SH"],
+        honda: ["Brio", "City", "Civic", "Accord", "CR-V", "HR-V", "BR-V", "Pilot", "Odyssey", "Jazz"],
+        hummer: ["H2", "H3", "EV"],
+        hyundai: ["Grand i10", "Accent", "Elantra", "Sonata", "Azera", "i20", "i30", "Creta", "Kona", "Tucson", "Santa Fe", "Palisade", "Stargazer", "Custin", "Staria", "Solati", "County", "Mighty", "Porter H150", "Universe", "Ioniq 5", "Ioniq 6", "Kona Electric"],
+        infiniti: ["Q30", "Q50", "Q60", "QX30", "QX50", "QX55", "QX60", "QX70", "QX80"],
+        isuzu: ["D-Max", "MU-X", "N-Series", "F-Series", "Q-Series", "EXZ", "FRR", "FVR", "Giga"],
+        jaguar: ["XE", "XF", "XJ", "F-Type", "E-Pace", "F-Pace", "I-Pace"],
+        jeep: ["Cherokee", "Compass", "Grand Cherokee", "Wrangler"],
+        kia: ["Morning", "Soluto", "Rio", "Cerato", "K3", "K5", "Optima", "Carens", "Rondo", "Seltos", "Sportage", "Sorento", "Carnival", "Sedona", "Soul", "Spectra"],
+        lamborghini: ["Aventador", "Huracan", "Urus"],
+        land_rover: ["Defender", "Discovery", "Discovery Sport", "Range Rover", "Range Rover Sport", "Range Rover Velar", "Range Rover Evoque"],
+        lexus: ["ES", "IS", "GS", "LS", "NX", "RX", "GX", "LX", "UX", "RC", "LC"],
+        lincoln: ["Aviator", "Corsair", "Navigator"],
+        lotus: ["Emira", "Evora", "Exige"],
+        lucid: ["Air"],
+        maserati: ["Ghibli", "Levante", "Quattroporte"],
+        maybach: ["GLS 600", "S-Class"],
+        mazda: ["2", "3", "6", "CX-3", "CX-30", "CX-5", "CX-8", "CX-9", "MX-5", "BT-50"],
+        mclaren: ["570S", "720S", "Artura"],
+        mercedes_benz: ["A-Class", "B-Class", "C-Class", "E-Class", "S-Class", "CLA", "CLS", "GLA", "GLB", "GLC", "GLE", "GLS", "G-Class", "V-Class", "Maybach"],
+        mg: ["ZS", "HS", "MG5", "MG4 EV"],
+        mini: ["Cooper", "Countryman", "Clubman"],
+        mitsubishi: ["Attrage", "Mirage", "Lancer", "Xpander", "Xpander Cross", "Outlander", "Outlander Sport", "Pajero", "Pajero Sport", "Triton", "Zinger"],
+        nissan: ["Almera", "Sunny", "Teana", "Navara", "Terra", "X-Trail", "Juke", "Murano", "Patrol", "Livina"],
+        opel: ["Astra", "Corsa", "Mokka"],
+        pagani: ["Huayra", "Utopia"],
+        peugeot: ["2008", "3008", "5008", "408"],
+        porsche: ["911", "Cayenne", "Macan", "Panamera", "Taycan"],
+        ram: ["1500", "2500", "3500"],
+        renault: ["Captur", "Duster", "Megane", "Talisman"],
+        rivian: ["R1S", "R1T"],
+        rolls_royce: ["Cullinan", "Ghost", "Phantom"],
+        saic: ["Maxus", "Roewe"],
+        seat: ["Arona", "Ibiza", "Leon"],
+        skoda: ["Kodiaq", "Octavia", "Superb"],
+        smart: ["Fortwo", "Forfour"],
+        ssangyong: ["Korando", "Rexton", "Tivoli"],
+        subaru: ["Ascent", "Forester", "Outback", "WRX"],
+        suzuki: ["Ciaz", "Swift", "Ertiga", "XL7", "Vitara", "Carry", "Super Carry Truck", "APV", "Jimny"],
+        tesla: ["Model 3", "Model S", "Model X", "Model Y"],
+        toyota: ["Vios", "Yaris", "Wigo", "Corolla", "Corolla Altis", "Corolla Cross", "Camry", "Avanza", "Veloz", "Innova", "Innova Cross", "Rush", "Fortuner", "Hilux", "Land Cruiser", "Raize", "RAV4"],
+        vinfast: ["Fadil", "Lux A2.0", "Lux SA2.0", "VF e34", "VF8", "VF9"],
+        volkswagen: ["Golf", "Passat", "Polo", "Tiguan", "Touareg"],
+        volvo: ["S60", "S90", "XC40", "XC60", "XC90"],
+        daewoo: ["Matiz", "Lacetti", "Gentra", "Nubira", "Lanos", "Magnus", "Tosca"]
+      };
+
+      // Regex để tách hãng xe và dòng xe (nếu có), hỗ trợ trường hợp không có dòng xe cụ thể
+      const regexWithYears = /(ac|acura|aeolus|alfa_romeo|alpine|aston_martin|audi|bac|bahman|baic|bentley|bmw|bollinger|brilliance|bugatti|buick|byd|cadillac|callaway|carver|chery|chevrolet|chrysler|citroen|cupra|daihatsu|dodge|ds|ferrari|fiat|fisker|ford|geely|genesis|gmc|haval|hino|honda|hummer|hyundai|infiniti|isuzu|jaguar|jeep|kia|lamborghini|land_rover|lexus|lincoln|lotus|lucid|maserati|maybach|mazda|mclaren|mercedes_benz|mg|mini|mitsubishi|nissan|opel|pagani|peugeot|porsche|ram|renault|rivian|rolls_royce|saic|seat|skoda|smart|ssangyong|subaru|suzuki|tesla|toyota|vinfast|volkswagen|volvo|daewoo)(?:[\s-]+([a-zA-Z0-9\s]+?))?(?:[\s-]*(\d{4})(?:[\s-]*(\d{4}))?)?$/i;
+      const match = ten.match(regexWithYears);
+      if (match) {
+        const hang = match[1].replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        const dong = match[2] ? match[2].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : '';
+        const nam1 = match[3] || '';
+        const nam2 = match[4] || '';
+
+        if (nam1 && nam2) {
+          const list = [];
+          for (let y = parseInt(nam1); y <= parseInt(nam2); y++) {
+            list.push(`${hang} ${dong} ${y}`);
+          }
+          return `<h3>Phù hợp với các dòng xe:</h3><p>${list.join(', ')}</p>`;
+        } else if (nam1) {
+          return `<h3>Phù hợp với các dòng xe:</h3><p>${hang} ${dong} ${nam1}</p>`;
+        } else {
+          // Nếu không có dòng xe cụ thể, trả về hãng xe
+          return `<h3>Phù hợp với các dòng xe:</h3><p>${dong ? `${hang} ${dong}` : hang}</p>`;
+        }
+      }
+
+      // Trường hợp không khớp regex, tìm hãng trong hangXeMap
+      const hangOnly = Object.keys(hangXeMap).find(h => ten.includes(h));
+      if (hangOnly) {
+        const dongXeList = hangXeMap[hangOnly].slice().sort((a, b) => b.length - a.length);
+        const dongXe = dongXeList.find(dong => {
+          const pattern = dong.toLowerCase().replace(/\s+/g, '\\s+');
+          const regex = new RegExp(pattern, 'i');
+          return regex.test(ten);
+        });
+
+        const hangUc = hangOnly.replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+        if (dongXe) {
+          const matchedDong = ten.match(new RegExp(dongXe.toLowerCase().replace(/\s+/g, '\\s*'), 'i'));
+          const finalDong = matchedDong
+            ? matchedDong[0].split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+            : dongXe;
+          return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc} ${finalDong}</p>`;
+        }
+
+        // Nếu không có dòng xe cụ thể, trả về hãng xe
+        return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc}</p>`;
+      }
+
+      return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
+    }
+
+    // Hàm tạo nội dung SEO hoàn chỉnh
+    function taoNoiDung() {
+      const ten = document.getElementById('ten').value.trim();
+      const ma = document.getElementById('ma').value.trim();
+      const thuonghieu = document.getElementById('thuonghieu').value.trim();
+      const xuatxu = document.getElementById('xuatxu').value.trim();
+      const website = document.getElementById('website').value;
+
+      if (!ten || !ma || !thuonghieu || !xuatxu) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      const moTaTuDong = sinhMoTaTuDong(ten);
+      const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee');
+
+      // Danh sách hãng xe để tạo liên kết
+      const hangXeList = [
+        'Toyota', 'Kia', 'Mazda', 'Ford', 'Honda', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'Chevrolet',
+        'Isuzu', 'Daewoo', 'Lexus', 'BMW', 'Mercedes-Benz', 'Audi', 'VinFast', 'Hino', 'Thaco', 'Fiat',
+        'Jac', 'Kenbo', 'Veam', 'Dongben', 'SYM', 'Haima', 'Chery', 'Renault', 'Daihatsu', 'Bentley',
+        'Range Rover', 'Vinasuki'
+      ];
+
+      let hangXeLinks = {};
+      switch (website) {
+        case 'banphutung':
+          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://banphutungoto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+          break;
+        case 'phutunggiare':
+          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutunggiare.vn/phu-tung-${hang.toLowerCase().replace(' ', '-')}`]));
+          break;
+        case 'phutungotokieugia':
+          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutungotokieugia.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+          break;
+        case 'kieugiaauto':
+          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://kieugiaauto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+          break;
+        default:
+          hangXeLinks = {};
+      }
+
+      const brandsToLink = [
+        'Audi', 'Nissan', 'Kia', 'Daewoo', 'Mazda', 'Ford', 'Toyota', 'Lexus', 'Isuzu', 'Chevrolet',
+        'Hyundai', 'Honda', 'Mitsubishi', 'Suzuki', 'Renault', 'Daihatsu', 'Chery', 'BMW', 'Vinasuki',
+        'Mercedes-Benz', 'Thaco', 'Fiat', 'Range Rover', 'Bentley'
+      ];
+
+      let content = '';
+      if (website === 'kieugiaauto') {
+        content = `<h2><strong>${ten}</strong></h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+<h2>✔️ Mua "${ten}" chính hãng ở đâu?</h2>
+<p>Hãy đến với <a href="https://kieugiaauto.vn" target="_blank">Kiều Gia Auto</a>, đơn vị hàng đầu cung cấp phụ tùng ô tô chính hãng tại Ngõ 84 Kim Ngưu, Quận Hai Bà Trưng, Hà Nội.</p>
+<h3>✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
+<ul>
+  <li>Cung cấp "${ten}" với chất lượng vượt trội, giá cả cạnh tranh.</li>
+  <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo độ bền và an toàn.</li>
+  <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
+  <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
+</ul>
+<h4>✔️ Cam kết của Kiều Gia Auto:</h4>
+<ul>
+  <li>Dịch vụ chuyên nghiệp, mang đến trải nghiệm tốt nhất cho khách hàng.</li>
+  <li>Hình ảnh sản phẩm "${ten}" đúng 100% với thực tế.</li>
+  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
+  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
+  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
+  <li>Thương hiệu uy tín, đáng tin cậy.</li>
+</ul>
+<h5>✔️ Chính sách bảo hành:</h5>
+<ul>
+  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
+  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+</ul>
+<p>✔️ Lưu ý:<br>
++ Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</p>
+<p>Liên hệ ngay để được tư vấn chi tiết:<br>
+Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
+      } else if (website === 'phutungotokieugia') {
+        content = `<h2>✔️ ${ten}</h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+<h2>✔️ Mua "${ten}" chính hãng ở đâu?</h2>
+<p>Hãy đến với <a href="https://phutungotokieugia.vn" target="_blank">Kiều Gia Auto</a>, đơn vị uy tín hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
+<h3>✔️ Cam kết của Kiều Gia Auto:</h3>
+<ul>
+  <li>Phụ tùng có nguồn gốc rõ ràng, đảm bảo hiệu suất vận hành tối ưu.</li>
+  <li>Nhập khẩu chính hãng với giá cạnh tranh, phân phối toàn quốc.</li>
+  <li>Đội ngũ kỹ thuật viên giàu kinh nghiệm, tư vấn nhiệt tình, chuyên nghiệp.</li>
+  <li>Cam kết cung cấp sản phẩm đúng chủng loại, chất lượng cao.</li>
+  <li>Hình ảnh "${ten}" đúng 100% với thực tế.</li>
+  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
+  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
+  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
+</ul>
+<h3>✔️ Chính sách bảo hành:</h3>
+<ul>
+  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
+  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+</ul>
+<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
+<p>Liên hệ ngay để được tư vấn chi tiết:<br>
+Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
+      } else if (website === 'banphutung') {
+        const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
+        const brandList = brandsToLink.map(brand => 
+          brand === randomBrand 
+            ? `<a href="${hangXeLinks[brand]}" target="_blank">${brand}</a>` 
+            : brand
+        ).join(', ');
+
+        content = `<h2><strong>${ten}</strong></h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+<h3><strong>Mua "${ten}" chính hãng ở đâu?</strong></h3>
+<p>Hãy đến với <a href="https://banphutungoto.vn" target="_blank">Kiều Gia Auto</a>, đơn vị hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
+<ul>
+  <li>Cung cấp "${ten}" với chất lượng vượt trội, giá cả cạnh tranh.</li>
+  <li>Cam kết phụ tùng chính hãng, tương thích với nhiều dòng xe phổ biến như ${brandList}.</li>
+  <li>Hỗ trợ phụ tùng cho xe nhập khẩu và xe tải nhỏ như Hino, Thaco, Fiat, Jac, Kenbo, Veam, Dongben, SYM, Haima.</li>
+</ul>
+<h4>Chính sách đổi trả:</h4>
+<ul>
+  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
+  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+  <li>Giao hàng nhanh chóng, an toàn trên toàn quốc.</li>
+</ul>
+<h4>Liên hệ:</h4>
+<p>Mọi thắc mắc, vui lòng liên hệ:<br>
+Hotline: <strong>0914.153.555 - 0898.153.555 - 0378.05.6666</strong></p>
+<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
+<p><strong>Sản phẩm liên quan:</strong></p>`;
+      } else if (website === 'phutunggiare') {
+        const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
+        const brandList = brandsToLink.map(brand => 
+          brand === randomBrand 
+            ? `<a href="${hangXeLinks[brand]}" target="_blank">${brand}</a>` 
+            : brand
+        ).join(', ');
+
+        content = `<h2><strong>${ten}</strong></h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+<h3>Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
+<ul>
+  <li>Cung cấp phụ tùng "${ten}" chất lượng vượt trội, giá cả cạnh tranh.</li>
+  <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo độ bền và an toàn.</li>
+  <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
+  <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
+</ul>
+<h3>Mua "${ten}" chính hãng ở đâu?</h3>
+<p>Hãy đến với <a href="https://phutunggiare.vn" target="_blank">Kiều Gia Auto</a>, đơn vị uy tín hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
+<h3>Chính sách bảo hành:</h3>
+<ul>
+  <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
+  <li>Sản phẩm được đổi trả trong vòng 7 ngày kể từ ngày xuất hàng, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+</ul>
+<h3>Lưu ý:</h3>
+<p>Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</p>
+<h3>Cam kết của Kiều Gia Auto:</h3>
+<ul>
+  <li>Cung cấp phụ tùng chất lượng cao, đúng chủng loại cho các dòng xe ${brandList}.</li>
+  <li>Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.</li>
+  <li>Thương hiệu uy tín, đáng tin cậy.</li>
+</ul>
+<h3>Đảm bảo từ Kiều Gia Auto:</h3>
+<ul>
+  <li>Hình ảnh phụ tùng "${ten}" đúng 100% với thực tế.</li>
+  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
+  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
+  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
+</ul>
+<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
+<p>Liên hệ ngay để được tư vấn chi tiết:<br>
+Hotline: <strong>0914.153.555 - 0924.153.555 - 0898.153.555 - 0378.05.6666</strong></p>`;
+      } else if (website === 'shopee') {
+        content = `<h2><strong>${ten}</strong></h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+${danhSachXe}
+<h3>✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
+<ul>
+  <li>Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.</li>
+  <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.</li>
+  <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
+  <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
+</ul>
+<h3>✔️ Chính sách bảo hành:</h3>
+<ul>
+  <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
+  <li>Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+</ul>
+<h3>✔️ Lưu ý:</h3>
+<ul>
+  <li>Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</li>
+  <li>Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!</li>
+</ul>
+<h3>✔️ Cam kết của Kiều Gia Auto:</h3>
+<ul>
+  <li>Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.</li>
+  <li>Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.</li>
+  <li>Thương hiệu uy tín, đáng tin cậy.</li>
+</ul>
+<h3>✔️ Đảm bảo từ Kiều Gia Auto:</h3>
+<ul>
+  <li>Hình ảnh “${ten}” đúng 100% với thực tế.</li>
+  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
+  <li>Hỗ trợ đổi trả theo chính sách quy NAM định.</li>
+  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
+</ul>
+<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
+      }
+
+      content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
+      document.getElementById('preview').innerHTML = content;
+    }
+
+    // Hàm sao chép nội dung HTML từ preview
+    function saoChepNoiDung() {
+      const content = document.getElementById('preview');
+      if (!content.innerHTML.trim()) {
+        alert("Chưa có nội dung để sao chép!");
+        return;
+      }
+
+      navigator.clipboard.writeText(content.innerHTML).then(() => {
+        alert("Đã sao chép nội dung thành công!");
+      }).catch(err => {
+        alert("Không thể sao chép nội dung: " + err);
+      });
+    }
+  </script>
+</body>
+</html>
