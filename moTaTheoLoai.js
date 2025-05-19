@@ -2391,4 +2391,16 @@ var moTaTheoLoai = {
   "Một số xe đời mới còn tích hợp cảm biến báo áp suất dầu ngay gần nắp, nên khi thay phải chú ý không làm ảnh hưởng đến mạch điện và cảm biến.",
   "Bảo dưỡng định kỳ nên kiểm tra nắp đổ dầu để đảm bảo không nứt vỡ, lỏng ren, tránh gây hư hại âm thầm cho toàn bộ hệ thống động cơ."
 ],
+  "bo thang sau": [
+  "Bố thắng sau là bộ phận ma sát trong hệ thống phanh sau, giúp giảm tốc và dừng xe khi người lái đạp phanh, thường hoạt động cùng tang trống hoặc đĩa phanh.",
+  "Bố thắng sau làm từ vật liệu chịu nhiệt cao như gốm, bán kim loại hoặc hữu cơ, có khả năng ma sát lớn nhưng vẫn đảm bảo độ bền và không ăn mòn tang trống hay đĩa.",
+  "Dấu hiệu mòn bố thắng sau gồm: phanh kêu rít, mất ăn, cảm giác phanh không đều hoặc xe bị rê bánh khi đỗ dốc dù đã kéo phanh tay.",
+  "Khi bố thắng sau mòn quá mức, không chỉ làm giảm hiệu quả phanh mà còn gây trầy xước đĩa hoặc tang trống, tăng chi phí sửa chữa toàn hệ thống.",
+  "Nguyên nhân khiến bố thắng sau nhanh mòn có thể do lái xe thường xuyên phanh gấp, phanh khi chở tải nặng hoặc phanh tay bị kẹt không nhả hoàn toàn.",
+  "Bố thắng sau có hai dạng phổ biến: loại má phanh tang trống (trống phanh) và loại má phanh đĩa – tùy vào thiết kế hệ thống phanh của từng dòng xe.",
+  "Việc thay bố thắng sau nên đi kèm kiểm tra xilanh phanh, dầu phanh, tăng bua và tình trạng mâm phanh để đảm bảo hệ thống hoạt động ổn định.",
+  "Khi thay bố thắng sau, cần rà bố đúng kỹ thuật để đảm bảo bề mặt tiếp xúc đều, tránh hiện tượng bó phanh hoặc mòn lệch.",
+  "Chọn bố thắng sau chính hãng hoặc chất lượng cao giúp tăng tuổi thọ, giảm tiếng ồn và đảm bảo hiệu quả phanh trong mọi điều kiện vận hành.",
+  "Bảo dưỡng định kỳ và kiểm tra độ mòn của bố thắng sau giúp xe luôn phanh an toàn, tránh tai nạn và kéo dài tuổi thọ các chi tiết liên quan."
+],
 }
