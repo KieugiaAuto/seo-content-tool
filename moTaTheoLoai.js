@@ -734,12 +734,12 @@ var moTaTheoLoai = {
 "Bơm nước thường bị hỏng sau 60.000 – 100.000 km tùy loại, đặc biệt nếu dùng nước mát không đúng chuẩn hoặc để két nước bị cặn lâu ngày làm mòn cánh bơm.",
 "Khi thay bơm nước, cần thay luôn ron bơm và vệ sinh hệ thống làm mát để tránh rò nước sau khi lắp lại và đảm bảo dòng chảy thông suốt, không tắc nghẽn ở van hằng nhiệt hay cổ ống nước.",
 "Nếu xe báo lỗi nhiệt độ nhưng quạt két vẫn hoạt động bình thường, rất có thể nguyên nhân là từ bơm nước không đẩy đủ lưu lượng hoặc bị kẹt trục quay bên trong.",
-"Là bộ phận sống còn trong hệ thống làm mát, bơm nước hư có thể khiến động cơ quá nhiệt, vênh mặt máy hoặc cháy gioăng quy lát – gây hỏng nặng nếu không xử lý kịp thời."
+"Là bộ phận sống còn trong hệ thống làm mát, bơm nước hư có thể khiến động cơ quá nhiệt, vênh mặt máy hoặc cháy gioăng quy lát gây hỏng nặng nếu không xử lý kịp thời."
 ],
 "cao su chan hop so": [
 "Cao su chân hộp số là bộ phận đỡ giữa hộp số và khung xe, giúp hấp thụ rung động và giữ cho hộp số luôn cố định khi xe di chuyển, và khi bị hư sẽ khiến xe rung mạnh, kêu lạch cạch khi vào số hoặc có cảm giác va đập nhẹ dưới gầm.",
 "Là lớp đệm cao su kết hợp lõi kim loại, cao su chân hộp số làm nhiệm vụ cách ly dao động từ hộp số truyền xuống khung xe, và nếu bị nứt, lún hoặc gãy sẽ làm hệ truyền động lệch tâm và rung lắc rõ rệt khi sang số.",
-"Khi cao su chân hộp số bị mòn, người lái sẽ cảm thấy xe giật mạnh khi chuyển từ số P về D, từ D sang R, hoặc khi tăng – giảm ga đột ngột do hộp số không còn được giữ chặt đúng vị trí.",
+"Khi cao su chân hộp số bị mòn, người lái sẽ cảm thấy xe giật mạnh khi chuyển từ số P về D, từ D sang R, hoặc khi tăng giảm ga đột ngột do hộp số không còn được giữ chặt đúng vị trí.",
 "Cao su này hoạt động cùng với cao su chân máy để ổn định toàn bộ hệ truyền động, và khi một trong hai hỏng sẽ làm mất cân bằng lực dẫn động, gây rung và kêu từ khoang máy hoặc gầm.",
 "Một cao su chân hộp số tốt sẽ giúp hộp số vận hành êm, xe chuyển số mượt và không tạo tiếng động bất thường, trong khi loại hư sẽ gây tiếng động cụp cụp mỗi khi dừng, đề-pa hoặc sang số.",
 "Nếu khi vào số thấy xe giật nhẹ, phát ra tiếng cộc hoặc bị chùng lực truyền, rất có thể cao su chân hộp số đã chai, đứt liên kết hoặc bị ép lệch do va chạm gầm trước đó.",
@@ -752,34 +752,34 @@ var moTaTheoLoai = {
 "Ống nước làm mát là hệ thống các ống cao su hoặc nhựa cứng dẫn dung dịch làm mát từ két nước đến động cơ và ngược lại, giúp tuần hoàn nước để duy trì nhiệt độ ổn định cho máy, và khi bị rò rỉ, nứt hoặc bẹp sẽ khiến xe mất nước làm mát, nhanh nóng máy hoặc báo lỗi nhiệt độ.",
 "Là chi tiết kết nối giữa các bộ phận như két nước, van hằng nhiệt, lốc máy và bầu sưởi, ống nước làm mát đảm bảo dòng chảy đều trong hệ thống làm mát, và nếu bị tắc, nứt hoặc tuột cổ dê sẽ gây rò rỉ nước và nguy cơ cháy máy.",
 "Khi ống nước bị phồng, rách hoặc xì đầu ống, người lái sẽ thấy nước làm mát chảy nhỏ giọt hoặc phun thành tia, gây tụt nhanh mực nước trong bình phụ và làm đèn cảnh báo nhiệt độ bật sáng.",
-"Ống nước cao su sau thời gian dài sử dụng có thể bị chai, mềm, rỉ nước ở mối nối hoặc bị cấn – dẫn đến sụt áp dòng nước làm mát và gây nóng máy bất thường dù quạt và két vẫn hoạt động.",
+"Ống nước cao su sau thời gian dài sử dụng có thể bị chai, mềm, rỉ nước ở mối nối hoặc bị cấn dẫn đến sụt áp dòng nước làm mát và gây nóng máy bất thường dù quạt và két vẫn hoạt động.",
 "Một hệ thống ống nước làm mát tốt sẽ giữ được áp suất và lưu lượng ổn định trong suốt hành trình, trong khi ống cũ, mục sẽ bị xẹp khi nóng hoặc rò áp làm sôi nước ngay cả khi máy mới chạy.",
-"Nếu khi xe chạy lâu thấy mùi nước ngọt, có hơi nước bốc lên từ khoang máy hoặc có vết ố trắng quanh đầu ống, rất có thể ống nước làm mát đã hở hoặc sắp bục – cần kiểm tra gấp.",
-"Ống nước nên được kiểm tra định kỳ mỗi 40.000 – 60.000 km hoặc sau 3 – 5 năm sử dụng, đặc biệt với xe hay chạy đường dài hoặc khu vực nắng nóng khiến cao su nhanh lão hóa.",
+"Nếu khi xe chạy lâu thấy mùi nước ngọt, có hơi nước bốc lên từ khoang máy hoặc có vết ố trắng quanh đầu ống, rất có thể ống nước làm mát đã hở hoặc sắp bục cần kiểm tra gấp.",
+"Ống nước nên được kiểm tra định kỳ mỗi 40.000 – 60.000 km hoặc sau 3 5 năm sử dụng, đặc biệt với xe hay chạy đường dài hoặc khu vực nắng nóng khiến cao su nhanh lão hóa.",
 "Việc thay đúng loại ống nước làm mát theo mã xe, đúng kích thước và chịu nhiệt sẽ giúp duy trì hiệu suất làm mát ổn định, tránh rò nước bất ngờ hoặc bục ống gây cháy máy.",
 "Ống nước lỗi cũng có thể làm lọt khí vào hệ thống làm mát, gây phồng két, giảm hiệu quả sưởi hoặc tạo bong bóng khí khiến van hằng nhiệt đóng sai thời điểm.",
 "Là bộ phận nhỏ và rẻ tiền nhưng đóng vai trò quan trọng trong hệ thống giải nhiệt, ống nước làm mát hỏng có thể gây ra hư hỏng nghiêm trọng như vênh mặt máy hoặc xì gioăng quy lát nếu không xử lý kịp thời."
 ],
 "cam bien truc khuyu": [
 "Cảm biến trục khuỷu là thiết bị dùng để đo chính xác vị trí và tốc độ quay của trục khuỷu động cơ, giúp ECU xác định thời điểm đánh lửa và phun nhiên liệu tối ưu, và khi bị lỗi sẽ khiến xe đề không nổ, chết máy giữa chừng hoặc báo lỗi động cơ.",
-"Là cảm biến từ hoặc Hall gắn ở gần bánh đà hoặc puli trục khuỷu, cảm biến này cung cấp tín hiệu xung về tốc độ quay trục cơ cho ECU xử lý, và nếu hư sẽ làm mất tín hiệu đánh lửa – khiến động cơ không hoạt động.",
-"Khi cảm biến trục cơ bị lỗi, xe có thể khởi động không đều, máy rung bất thường, hoặc chết máy đột ngột khi đang chạy – đặc biệt khi nhiệt độ máy lên cao hoặc xe chạy lâu.",
+"Là cảm biến từ hoặc Hall gắn ở gần bánh đà hoặc puli trục khuỷu, cảm biến này cung cấp tín hiệu xung về tốc độ quay trục cơ cho ECU xử lý, và nếu hư sẽ làm mất tín hiệu đánh lửa khiến động cơ không hoạt động.",
+"Khi cảm biến trục cơ bị lỗi, xe có thể khởi động không đều, máy rung bất thường, hoặc chết máy đột ngột khi đang chạy đặc biệt khi nhiệt độ máy lên cao hoặc xe chạy lâu.",
 "Cảm biến này hoạt động liên tục từ khi khởi động đến khi tắt máy, nếu bị nhiễu tín hiệu, đứt dây, rỉ sét đầu cảm biến hoặc mòn bánh răng tín hiệu sẽ khiến xe báo đèn Check Engine kèm mã lỗi P0335 hoặc tương tự.",
 "Một cảm biến trục khuỷu hoạt động chuẩn xác sẽ giúp động cơ chạy êm, đánh lửa đúng thời điểm và tiết kiệm nhiên liệu, còn cảm biến lỗi sẽ gây sai lệch pha, đánh lửa sai thời điểm hoặc phun xăng không chính xác.",
-"Nếu xe đề không nổ dù điện vẫn lên, bugi mới, ắc quy mạnh thì cảm biến trục cơ là một trong những nguyên nhân đầu tiên cần kiểm tra – nhất là ở xe đã chạy trên 100.000 km.",
+"Nếu xe đề không nổ dù điện vẫn lên, bugi mới, ắc quy mạnh thì cảm biến trục cơ là một trong những nguyên nhân đầu tiên cần kiểm tra nhất là ở xe đã chạy trên 100.000 km.",
 "Cảm biến trục khuỷu thường bị lỗi do dầu bám, nước vào hoặc chấn động mạnh từ động cơ, và nên được kiểm tra kỹ khi có hiện tượng khó khởi động hoặc xe bị tắt máy bất ngờ.",
 "Thay cảm biến trục khuỷu đúng mã, đúng vị trí gắn và canh khe hở đúng chuẩn sẽ giúp động cơ phục hồi khả năng đề nổ nhanh, vận hành ổn định và tránh sai lệch tín hiệu.",
 "Cảm biến này rất nhạy với nhiễu từ, nên nếu có hiện tượng xe chập chờn, mất ga hoặc rung mạnh theo nhịp tua máy, cần kiểm tra cả dây tín hiệu và đầu cảm biến xem có hư hao vật lý không.",
 "Là một trong những cảm biến quan trọng nhất trong hệ thống điều khiển động cơ, cảm biến trục khuỷu hư sẽ làm xe không thể vận hành ổn định, ảnh hưởng nghiêm trọng đến an toàn và hiệu suất sử dụng nhiên liệu."
 ],
 "cam bien truc cam": [
-"Cảm biến vị trí cam là thiết bị dùng để xác định vị trí chính xác và tốc độ quay của trục cam trong động cơ, giúp ECU điều chỉnh thời điểm đóng – mở xupap và phun xăng tối ưu, và khi hỏng sẽ khiến xe nổ không đều, giật khi tăng tốc hoặc không khởi động được.",
+"Cảm biến vị trí cam là thiết bị dùng để xác định vị trí chính xác và tốc độ quay của trục cam trong động cơ, giúp ECU điều chỉnh thời điểm đóng mở xupap và phun xăng tối ưu, và khi hỏng sẽ khiến xe nổ không đều, giật khi tăng tốc hoặc không khởi động được.",
 "Là cảm biến từ trường hoặc Hall gắn gần bánh răng trục cam, cảm biến này cung cấp tín hiệu để ECU so sánh với tín hiệu trục khuỷu, và khi bị lỗi sẽ làm sai lệch thời điểm đánh lửa và phối khí khiến máy nổ không tròn.",
 "Khi cảm biến vị trí cam bị lỗi, xe thường có biểu hiện như đề khó nổ, đèn Check Engine sáng kèm mã lỗi P0340, P0341 và động cơ có thể chết máy đột ngột khi vận hành ở vòng tua thấp.",
 "Cảm biến trục cam giúp ECU xác định xylanh nào đang ở kỳ nổ, từ đó phun xăng chính xác theo chế độ sequential injection, và khi tín hiệu bị nhiễu hoặc sai lệch, động cơ sẽ chạy không ổn định, tốn nhiên liệu và rung giật.",
 "Một cảm biến cam hoạt động đúng sẽ giúp xe đề nổ nhanh, tăng tốc mượt và tiết kiệm nhiên liệu, trong khi cảm biến lỗi sẽ gây chậm đề, vòng tua dao động và khả năng tăng ga kém.",
 "Nếu xe bị khó khởi động khi nguội, hoặc có tiếng kêu lóc cóc nhẹ từ khoang máy lúc mới nổ, rất có thể cảm biến vị trí cam đã yếu hoặc tín hiệu trả về không chính xác.",
-"Cảm biến vị trí cam thường bị lỗi do nhiệt độ cao trong đầu máy, dầu động cơ bẩn hoặc bám cặn lâu ngày – gây mòn đầu cảm biến, hỏng tín hiệu và ảnh hưởng đến hiệu suất động cơ.",
+"Cảm biến vị trí cam thường bị lỗi do nhiệt độ cao trong đầu máy, dầu động cơ bẩn hoặc bám cặn lâu ngày gây mòn đầu cảm biến, hỏng tín hiệu và ảnh hưởng đến hiệu suất động cơ.",
 "Thay cảm biến vị trí cam đúng loại, đúng vị trí và vệ sinh sạch điểm gắn sẽ giúp phục hồi tín hiệu chính xác, khôi phục khả năng vận hành mượt và tránh lỗi phun sai thời điểm.",
 "Nếu xe tăng ga chậm, nổ máy rung như bị bỏ máy hoặc có hiện tượng hụt hơi nhẹ ở vòng tua thấp, cảm biến trục cam là một trong những bộ phận nên kiểm tra đầu tiên.",
 "Là cảm biến quan trọng trong hệ thống điều khiển thời điểm phối khí, cảm biến trục cam nếu bị hư sẽ làm giảm công suất máy, tăng tiêu hao nhiên liệu và gây hư hại xupap nếu không khắc phục kịp thời."
@@ -793,7 +793,7 @@ var moTaTheoLoai = {
 "Nếu phát hiện mỡ văng đầy vành trong bánh xe, hoặc có vết dầu nhớt quanh khớp láp, rất có thể chụp bụi đã rách và cần thay sớm trước khi khớp bên trong bị hỏng hoàn toàn.",
 "Cao su chụp bụi nên được kiểm tra định kỳ mỗi lần bảo dưỡng gầm, đặc biệt sau khi đi đường xấu, ngập nước hoặc khi có dấu hiệu xe rung bất thường ở tốc độ thấp.",
 "Thay chụp bụi đúng loại, đúng đường kính và siết đúng cổ dê sẽ giúp khớp láp, rotuyn hoặc giảm xóc giữ được mỡ lâu dài, tránh rung, kêu và tăng tuổi thọ các chi tiết truyền động.",
-"Chụp bụi rách để lâu không chỉ gây hư khớp mà còn có thể làm gãy trục láp, tuột khớp trong khi xe đang chạy – cực kỳ nguy hiểm nếu không xử lý sớm.",
+"Chụp bụi rách để lâu không chỉ gây hư khớp mà còn có thể làm gãy trục láp, tuột khớp trong khi xe đang chạy cực kỳ nguy hiểm nếu không xử lý sớm.",
 "Là chi tiết rẻ tiền nhưng đóng vai trò bảo vệ quan trọng, cao su chụp bụi hư sẽ làm cả khớp láp hoặc rotuyn hư theo, gây rung lắc, mất lái hoặc phải thay nguyên cụm tốn kém."
 ],
 "ong cao su vao ket nuoc": [
@@ -2347,7 +2347,7 @@ var moTaTheoLoai = {
   "Cây láp là trục truyền động có nhiệm vụ truyền mô-men xoắn từ hộp số hoặc vi sai đến bánh xe, giúp xe di chuyển được theo ý người lái.",
   "Trong các xe dẫn động cầu trước, cây láp thường có hai đầu có khớp nối đồng tốc (CV joint) giúp truyền lực khi bánh xe đánh lái hoặc nhún.",
   "Ở xe cầu sau hoặc xe 4WD, cây láp còn gọi là trục các đăng, thường là dạng ống thép nối từ hộp số đến vi sai cầu sau, truyền động khi xe chạy thẳng.",
-  "Cây láp có cấu tạo gồm trục chính, các khớp láp trong – ngoài, măng sông và cao su chắn bụi, giúp vận hành êm ái và linh hoạt theo chuyển động bánh xe.",
+  "Cây láp có cấu tạo gồm trục chính, các khớp láp trong ngoài, măng sông và cao su chắn bụi, giúp vận hành êm ái và linh hoạt theo chuyển động bánh xe.",
   "Khi cây láp bị cong, rơ bạc, mòn khớp hoặc rách cao su che bụi, xe sẽ phát ra tiếng kêu lọc cọc, rung lắc mạnh khi tăng tốc hoặc đánh lái.",
   "Dấu hiệu cây láp hư thường xuất hiện khi xe rung mạnh lúc chạy nhanh, có tiếng gõ ở gầm hoặc mất truyền động dù động cơ vẫn hoạt động bình thường.",
   "Cây láp hỏng nếu không sửa sớm có thể gây đứt láp, làm xe mất truyền động giữa đường và tiềm ẩn nguy hiểm khi đang di chuyển tốc độ cao.",
@@ -2363,7 +2363,7 @@ var moTaTheoLoai = {
   "Một số dấu hiệu hỏng lốc lạnh gồm: điều hòa không mát dù còn gas, lốc đóng ngắt liên tục, hoặc có tiếng rít, tiếng gõ khi bật điều hòa.",
   "Lốc lạnh có nhiều loại như: piston, trục vít, xoắn ốc… Tùy đời xe và công suất làm lạnh mà loại lốc sẽ khác nhau về kết cấu và kiểu chân bắt.",
   "Việc thay lốc lạnh cần đồng thời kiểm tra phin lọc ga, van tiết lưu, quạt giàn nóng và hút chân không kỹ trước khi nạp gas mới.",
-  "Lốc lạnh bị kẹt có thể làm đứt dây curoa tổng, gây mất cả sạc, điều hòa và trợ lực lái – do đó cần phát hiện sớm để tránh ảnh hưởng các hệ thống khác.",
+  "Lốc lạnh bị kẹt có thể làm đứt dây curoa tổng, gây mất cả sạc, điều hòa và trợ lực lái do đó cần phát hiện sớm để tránh ảnh hưởng các hệ thống khác.",
   "Thay lốc lạnh nên dùng đúng mã theo xe, đúng công suất và đảm bảo có dầu lạnh bên trong theo đúng chủng loại để tránh cháy lốc sau khi lắp.",
   "Lốc lạnh điều hòa tuy không trực tiếp làm mát nhưng là “trái tim” của hệ thống lạnh. Giữ lốc hoạt động tốt là điều kiện tiên quyết để điều hòa mát sâu và bền bỉ."
 ],
@@ -2376,7 +2376,7 @@ var moTaTheoLoai = {
   "Khi thay ống nước trên cần đảm bảo đúng kích thước, chịu nhiệt tốt và thay luôn kẹp siết nếu thấy có dấu hiệu gỉ sét hoặc lỏng lẻo.",
   "Ống nước trên thường kết hợp với ống nước dưới để tạo thành hệ thống lưu thông nước làm mát khép kín giữa động cơ và két tản nhiệt.",
   "Nếu ống nước trên bị tắc hoặc gập gãy, nước làm mát sẽ không lưu thông tốt, khiến động cơ bị quá nhiệt dù quạt và két vẫn hoạt động.",
-  "Một số xe đời mới sử dụng ống nước trên dạng mềm có cảm biến nhiệt độ đi kèm – khi thay cần kiểm tra kỹ giắc cắm và chức năng cảm biến.",
+  "Một số xe đời mới sử dụng ống nước trên dạng mềm có cảm biến nhiệt độ đi kèm khi thay cần kiểm tra kỹ giắc cắm và chức năng cảm biến.",
   "Bảo dưỡng định kỳ hệ thống làm mát và kiểm tra ống nước trên giúp phòng tránh các sự cố nghiêm trọng như cháy máy hoặc cong vênh đầu quy lát."
 ],
   "nap do dau may": [
@@ -2397,7 +2397,7 @@ var moTaTheoLoai = {
   "Dấu hiệu mòn bố thắng sau gồm: phanh kêu rít, mất ăn, cảm giác phanh không đều hoặc xe bị rê bánh khi đỗ dốc dù đã kéo phanh tay.",
   "Khi bố thắng sau mòn quá mức, không chỉ làm giảm hiệu quả phanh mà còn gây trầy xước đĩa hoặc tang trống, tăng chi phí sửa chữa toàn hệ thống.",
   "Nguyên nhân khiến bố thắng sau nhanh mòn có thể do lái xe thường xuyên phanh gấp, phanh khi chở tải nặng hoặc phanh tay bị kẹt không nhả hoàn toàn.",
-  "Bố thắng sau có hai dạng phổ biến: loại má phanh tang trống (trống phanh) và loại má phanh đĩa – tùy vào thiết kế hệ thống phanh của từng dòng xe.",
+  "Bố thắng sau có hai dạng phổ biến: loại má phanh tang trống (trống phanh) và loại má phanh đĩa tùy vào thiết kế hệ thống phanh của từng dòng xe.",
   "Việc thay bố thắng sau nên đi kèm kiểm tra xilanh phanh, dầu phanh, tăng bua và tình trạng mâm phanh để đảm bảo hệ thống hoạt động ổn định.",
   "Khi thay bố thắng sau, cần rà bố đúng kỹ thuật để đảm bảo bề mặt tiếp xúc đều, tránh hiện tượng bó phanh hoặc mòn lệch.",
   "Chọn bố thắng sau chính hãng hoặc chất lượng cao giúp tăng tuổi thọ, giảm tiếng ồn và đảm bảo hiệu quả phanh trong mọi điều kiện vận hành.",
