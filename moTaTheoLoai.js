@@ -2355,4 +2355,40 @@ var moTaTheoLoai = {
   "Cây láp thường được bảo trì bằng cách kiểm tra định kỳ cao su che bụi, tra mỡ khớp láp và kiểm tra độ rơ lắc để tránh mài mòn sớm.",
   "Cây láp là chi tiết không thể thiếu trong hệ thống truyền động, đóng vai trò then chốt trong việc dẫn lực từ hộp số đến bánh xe để xe vận hành ổn định, mạnh mẽ và an toàn."
 ],
+  "loc lanh dieu hoa": [
+  "Lốc lạnh điều hòa là bộ phận quan trọng nhất trong hệ thống điều hòa ô tô, có nhiệm vụ nén gas lạnh từ thể khí sang thể lỏng để tạo chu trình làm lạnh.",
+  "Lốc lạnh hoạt động nhờ dây curoa dẫn động từ động cơ. Khi bật điều hòa, mặt hít và cuộn từ kích hoạt để puly kéo trục lốc quay và nén gas lạnh tuần hoàn.",
+  "Nếu lốc lạnh bị hỏng, điều hòa sẽ không mát, có tiếng kêu lạ hoặc đèn điều hòa nhấp nháy do hệ thống ngắt tải vì áp suất không đạt.",
+  "Lốc lạnh thường hư hỏng do thiếu gas, bẩn phin lọc, dầu lạnh cạn hoặc làm việc quá tải. Hỏng lốc sẽ gây nóng máy, chảy dầu và giảm hiệu suất làm mát rõ rệt.",
+  "Một số dấu hiệu hỏng lốc lạnh gồm: điều hòa không mát dù còn gas, lốc đóng ngắt liên tục, hoặc có tiếng rít, tiếng gõ khi bật điều hòa.",
+  "Lốc lạnh có nhiều loại như: piston, trục vít, xoắn ốc… Tùy đời xe và công suất làm lạnh mà loại lốc sẽ khác nhau về kết cấu và kiểu chân bắt.",
+  "Việc thay lốc lạnh cần đồng thời kiểm tra phin lọc ga, van tiết lưu, quạt giàn nóng và hút chân không kỹ trước khi nạp gas mới.",
+  "Lốc lạnh bị kẹt có thể làm đứt dây curoa tổng, gây mất cả sạc, điều hòa và trợ lực lái – do đó cần phát hiện sớm để tránh ảnh hưởng các hệ thống khác.",
+  "Thay lốc lạnh nên dùng đúng mã theo xe, đúng công suất và đảm bảo có dầu lạnh bên trong theo đúng chủng loại để tránh cháy lốc sau khi lắp.",
+  "Lốc lạnh điều hòa tuy không trực tiếp làm mát nhưng là “trái tim” của hệ thống lạnh. Giữ lốc hoạt động tốt là điều kiện tiên quyết để điều hòa mát sâu và bền bỉ."
+],
+  "ong nuoc tren": [
+  "Ống nước trên là đường ống dẫn nước làm mát từ động cơ đến két nước phía trên, đóng vai trò quan trọng trong việc duy trì nhiệt độ ổn định cho máy.",
+  "Ống nước trên thường được làm từ cao su chịu nhiệt hoặc silicone, có khả năng đàn hồi và chịu áp suất cao trong môi trường nhiệt độ lớn.",
+  "Dấu hiệu hỏng ống nước trên bao gồm: rò rỉ nước làm mát, phình to bất thường, nứt vỡ hoặc bị xì nước tại các điểm nối.",
+  "Ống nước trên hư có thể gây tụt nước làm mát, dẫn đến nóng máy, vỡ gioăng mặt máy và hư hại các chi tiết động cơ khác nếu không xử lý kịp.",
+  "Nguyên nhân phổ biến làm hỏng ống nước là lão hóa cao su, kẹp siết lỏng, nhiệt độ quá cao hoặc nước làm mát có nhiều cặn bẩn.",
+  "Khi thay ống nước trên cần đảm bảo đúng kích thước, chịu nhiệt tốt và thay luôn kẹp siết nếu thấy có dấu hiệu gỉ sét hoặc lỏng lẻo.",
+  "Ống nước trên thường kết hợp với ống nước dưới để tạo thành hệ thống lưu thông nước làm mát khép kín giữa động cơ và két tản nhiệt.",
+  "Nếu ống nước trên bị tắc hoặc gập gãy, nước làm mát sẽ không lưu thông tốt, khiến động cơ bị quá nhiệt dù quạt và két vẫn hoạt động.",
+  "Một số xe đời mới sử dụng ống nước trên dạng mềm có cảm biến nhiệt độ đi kèm – khi thay cần kiểm tra kỹ giắc cắm và chức năng cảm biến.",
+  "Bảo dưỡng định kỳ hệ thống làm mát và kiểm tra ống nước trên giúp phòng tránh các sự cố nghiêm trọng như cháy máy hoặc cong vênh đầu quy lát."
+],
+  "nap do dau may": [
+  "Nắp đổ dầu máy là bộ phận đậy kín miệng châm dầu động cơ, giúp ngăn bụi bẩn và hơi ẩm xâm nhập vào bên trong hệ thống bôi trơn.",
+  "Nắp thường làm bằng nhựa hoặc kim loại có gioăng cao su để đảm bảo độ kín, ngăn rò rỉ dầu khi động cơ vận hành ở áp suất cao.",
+  "Nếu nắp đổ dầu bị hỏng hoặc lỏng, có thể gây rò rỉ dầu động cơ, dẫn đến thiếu dầu, bẩn khoang máy và tăng nguy cơ cháy do dầu bắn vào các bộ phận nóng.",
+  "Một số dấu hiệu hỏng nắp đổ dầu máy gồm: dầu rò ở miệng nắp, nắp lỏng tay khi vặn, hoặc xuất hiện hơi nước và cặn bẩn quanh nắp.",
+  "Việc mất nắp đổ dầu hoặc dùng nắp không đúng chuẩn có thể khiến bụi, nước lọt vào dầu bôi trơn, gây mài mòn và hư hại động cơ nghiêm trọng.",
+  "Nắp đổ dầu máy thường có khắc biểu tượng dầu hoặc chữ 'OIL', và thiết kế ren xoáy hoặc khóa lẫy tùy từng dòng xe.",
+  "Khi thay nắp đổ dầu, cần kiểm tra kỹ gioăng cao su đi kèm và đảm bảo đóng kín tuyệt đối để tránh hiện tượng rò áp suất bên trong máy.",
+  "Nắp đổ dầu máy tuy nhỏ nhưng là chi tiết quan trọng giúp duy trì độ sạch của dầu và áp suất hệ thống bôi trơn ổn định.",
+  "Một số xe đời mới còn tích hợp cảm biến báo áp suất dầu ngay gần nắp, nên khi thay phải chú ý không làm ảnh hưởng đến mạch điện và cảm biến.",
+  "Bảo dưỡng định kỳ nên kiểm tra nắp đổ dầu để đảm bảo không nứt vỡ, lỏng ren, tránh gây hư hại âm thầm cho toàn bộ hệ thống động cơ."
+],
 }
