@@ -45,17 +45,31 @@
       padding: 10px 20px;
       border-radius: 4px;
       cursor: pointer;
-      margin-right: 10px;
     }
     button:hover {
       background-color: #218838;
     }
+    /* Container cho hai nút */
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
     #preview {
-      margin-top: 20px;
       padding: 15px;
       border: 1px solid #ddd;
       border-radius: 4px;
       background-color: #f9f9f9;
+    }
+    /* Responsive: trên màn hình nhỏ, các nút có thể xuống dòng */
+    @media (max-width: 600px) {
+      .button-container {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -88,8 +102,10 @@
         <option value="shopee">Shopee</option>
       </select>
     </div>
-    <button onclick="taoNoiDung()">Tạo nội dung</button>
-    <button onclick="saoChepNoiDung()">📋 Sao chép nội dung</button>
+    <div class="button-container">
+      <button onclick="taoNoiDung()">Tạo nội dung</button>
+      <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung</button>
+    </div>
     <div id="preview"></div>
   </div>
 
@@ -369,6 +385,7 @@
       ];
 
       let content = '';
+      let copyContent = '';
       if (website === 'kieugiaauto') {
         content = `<h2><strong>${ten}</strong></h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
@@ -402,6 +419,7 @@ ${moTaTuDong}
 + Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</p>
 <p>Liên hệ ngay để được tư vấn chi tiết:<br>
 Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
+        copyContent = content; // Sao chép HTML
       } else if (website === 'phutungotokieugia') {
         content = `<h2>✔️ ${ten}</h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
@@ -429,6 +447,7 @@ ${moTaTuDong}
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
 <p>Liên hệ ngay để được tư vấn chi tiết:<br>
 Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
+        copyContent = content; // Sao chép HTML
       } else if (website === 'banphutung') {
         const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
         const brandList = brandsToLink.map(brand => 
@@ -460,6 +479,7 @@ ${moTaTuDong}
 Hotline: <strong>0914.153.555 - 0898.153.555 - 0378.05.6666</strong></p>
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
 <p><strong>Sản phẩm liên quan:</strong></p>`;
+        copyContent = content; // Sao chép HTML
       } else if (website === 'phutunggiare') {
         const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
         const brandList = brandsToLink.map(brand => 
@@ -505,6 +525,7 @@ ${moTaTuDong}
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
 <p>Liên hệ ngay để được tư vấn chi tiết:<br>
 Hotline: <strong>0914.153.555 - 0924.153.555 - 0898.153.555 - 0378.05.6666</strong></p>`;
+        copyContent = content; // Sao chép HTML
       } else if (website === 'shopee') {
         content = `<h2><strong>${ten}</strong></h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
@@ -543,25 +564,62 @@ ${danhSachXe}
   <li>Giao hàng nhanh chóng trên toàn quốc.</li>
 </ul>
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
+        // Tạo plain text cho Shopee
+        copyContent = `${ten}\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${moTaTuDong.replace(/<[^>]+>/g, '')}\n\n${danhSachXe.replace(/<[^>]+>/g, '')}\n\nKiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất\n- Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.\n- Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.\n- Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.\n- Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.\n\nChính sách bảo hành:\n- Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.\n- Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.\n\nLưu ý:\n- Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.\n- Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!\n\nCam kết của Kiều Gia Auto:\n- Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.\n- Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.\n- Thương hiệu uy tín, đáng tin cậy.\n\nĐảm bảo từ Kiều Gia Auto:\n- Hình ảnh “${ten}” đúng 100% với thực tế.\n- Chất lượng sản phẩm đảm bảo tuyệt đối.\n- Hỗ trợ đổi trả theo chính sách quy định.\n- Giao hàng nhanh chóng trên toàn quốc.\n\nChân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!`;
       }
 
       content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
       document.getElementById('preview').innerHTML = content;
+
+      // Lưu nội dung sao chép vào dataset
+      const copyButton = document.getElementById('copyButton');
+      copyButton.dataset.content = copyContent;
+      copyButton.style.display = 'block'; // Hiển thị nút sao chép
     }
 
-    // Hàm sao chép nội dung HTML từ preview
+    // Hàm sao chép nội dung
     function saoChepNoiDung() {
-      const content = document.getElementById('preview');
-      if (!content.innerHTML.trim()) {
-        alert("Chưa có nội dung để sao chép!");
+      const copyButton = document.getElementById('copyButton');
+      const content = copyButton.dataset.content;
+
+      if (!content) {
+        alert('Chưa có nội dung để sao chép! Vui lòng tạo nội dung trước.');
         return;
       }
 
-      navigator.clipboard.writeText(content.innerHTML).then(() => {
-        alert("Đã sao chép nội dung thành công!");
-      }).catch(err => {
-        alert("Không thể sao chép nội dung: " + err);
-      });
+      // Phương án chính: Sử dụng navigator.clipboard
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(content).then(() => {
+          alert('Đã sao chép nội dung thành công!');
+        }).catch(err => {
+          console.error('Lỗi sao chép clipboard:', err);
+          fallbackCopy(content);
+        });
+      } else {
+        // Phương án dự phòng
+        fallbackCopy(content);
+      }
+    }
+
+    // Phương án dự phòng để sao chép
+    function fallbackCopy(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand('copy');
+        alert('Đã sao chép nội dung thành công!');
+      } catch (err) {
+        console.error('Lỗi sao chép dự phòng:', err);
+        alert('Không thể sao chép nội dung! Vui lòng thử lại hoặc sao chép thủ công.');
+      } finally {
+        document.body.removeChild(textArea);
+      }
     }
   </script>
 </body>
