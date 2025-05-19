@@ -83,7 +83,7 @@
       <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
     </div>
     <div class="form-group">
-      <label for="thuonghieu">Thương hiệu:</label>
+      Hodgson Thượng hiệu:</label>
       <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
     </div>
     <div class="form-group">
@@ -133,18 +133,52 @@
       const website = document.getElementById('website').value;
 
       let gioiThieu = '';
-      const tenPhuTungNoTones = removeVietnameseTones(tenPhuTung.toLowerCase());
 
-      const tuKhoaList = Object.keys(moTaTheoLoai).sort((a, b) => b.length - a.length);
-      for (const tuKhoa of tuKhoaList) {
-        const tuKhoaNoTones = removeVietnameseTones(tuKhoa.toLowerCase());
-        if (tenPhuTungNoTones.includes(tuKhoaNoTones)) {
-          const dsMoTa = moTaTheoLoai[tuKhoa];
-          gioiThieu = dsMoTa[Math.floor(Math.random() * dsMoTa.length)];
-          break;
-        }
+      // Tách tenPhuTung thành các phần và tạo danh sách biến thể
+      const tenPhuTungParts = tenPhuTung.split(' ');
+      const tenPhuTungVariants = [];
+      for (let i = tenPhuTungParts.length; i >= 2; i--) { // Bắt đầu từ độ dài lớn nhất, tối thiểu 2 từ
+        tenPhuTungVariants.push(tenPhuTungParts.slice(0, i).join(' ').trim());
       }
 
+      // Tạo danh sách từ khóa theo thứ tự ưu tiên
+      const keywords = [];
+      // 1. Toàn bộ tên phụ tùng
+      const fullKey = `${tenPhuTung} ${hang} ${dong}${nam1 ? ` ${nam1}` : ''}${nam2 ? ` ${nam2}` : ''}`.trim();
+      keywords.push(fullKey);
+      // 2. Phần phụ tùng + hãng + dòng + năm đầu (nếu có)
+      if (nam1) {
+        keywords.push(`${tenPhuTung} ${hang} ${dong} ${nam1}`.trim());
+      }
+      // 3. Phần phụ tùng + hãng + dòng
+      keywords.push(`${tenPhuTung} ${hang} ${dong}`.trim());
+      // 4. Phần phụ tùng + hãng
+      keywords.push(`${tenPhuTung} ${hang}`.trim());
+      // 5. Chỉ phần phụ tùng
+      keywords.push(tenPhuTung);
+      // 6. Các biến thể của tenPhuTung (bỏ dần từ cuối)
+      keywords.push(...tenPhuTungVariants);
+
+      // Chuẩn hóa và so khớp từng từ khóa
+      try {
+        const tuKhoaList = Object.keys(moTaTheoLoai).sort((a, b) => b.length - a.length);
+        for (const keyword of keywords) {
+          const keywordNoTones = removeVietnameseTones(keyword).toLowerCase().replace(/\s+/g, ' ').trim();
+          for (const tuKhoa of tuKhoaList) {
+            const tuKhoaNoTones = removeVietnameseTones(tuKhoa).toLowerCase().replace(/\s+/g, ' ').trim();
+            if (keywordNoTones === tuKhoaNoTones) {
+              const dsMoTa = moTaTheoLoai[tuKhoa];
+              gioiThieu = dsMoTa[Math.floor(Math.random() * dsMoTa.length)];
+              break;
+            }
+          }
+          if (gioiThieu) break; // Thoát vòng lặp nếu đã tìm thấy mô tả
+        }
+      } catch (err) {
+        console.error('Lỗi khi truy cập moTaTheoLoai:', err);
+      }
+
+      // Nếu không tìm thấy từ khóa, dùng mô tả mặc định
       if (!gioiThieu) {
         gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
       }
@@ -271,7 +305,7 @@
         smart: ["Fortwo", "Forfour"],
         ssangyong: ["Korando", "Rexton", "Tivoli"],
         subaru: ["Ascent", "Forester", "Outback", "WRX"],
-        suzuki: ["Ciaz", "Swift", "Ertiga", "XL7", "Vitara", "Carry", "Super Carry Truck", "APV", "Jimny" ,"500kg", "7chỗ"],
+        suzuki: ["Ciaz", "Swift", "Ertiga", "XL7", "Vitara", "Carry", "Super Carry Truck", "APV", "Jimny", "500kg", "7chỗ"],
         tesla: ["Model 3", "Model S", "Model X", "Model Y"],
         toyota: ["Vios", "Yaris", "Wigo", "Corolla", "Corolla Altis", "Corolla Cross", "Camry", "Avanza", "Veloz", "Innova", "Innova Cross", "Rush", "Fortuner", "Hilux", "Land Cruiser", "Raize", "RAV4", "Zace"],
         vinfast: ["Fadil", "Lux A2.0", "Lux SA2.0", "VF e34", "VF8", "VF9"],
@@ -532,7 +566,7 @@ ${danhSachXe}
 <h3>✔️ Chính sách bảo hành:</h3>
 <ul>
   <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
-  <li>Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn upwards bao bì.</li>
+  <li>Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
 </ul>
 <h3>✔️ Lưu ý:</h3>
 <ul>
@@ -553,7 +587,16 @@ ${danhSachXe}
   <li>Giao hàng nhanh chóng trên toàn quốc.</li>
 </ul>
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
-        copyContent = `${ten}\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${moTaTuDong.replace(/<[^>]+>/g, '')}\n\n${danhSachXe.replace(/<[^>]+>/g, '')}\n\nKiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất\n- Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.\n- Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.\n- Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.\n- Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.\n\nChính sách bảo hành:\n- Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.\n- Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.\n\nLưu ý:\n- Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.\n- Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!\n\nCam kết của Kiều Gia Auto:\n- Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.\n- Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.\n- Thương hiệu uy tín, đáng tin cậy.\n\nĐảm bảo từ Kiều Gia Auto:\n- Hình ảnh “${ten}” đúng 100% với thực tế.\n- Chất lượng sản phẩm đảm bảo tuyệt đối.\n- Hỗ trợ đổi trả theo chính sách quy định.\n- Giao hàng nhanh chóng trên toàn quốc.\n\nChân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!`;
+        
+        // Chuyển nội dung HTML sang plain text, nhưng giữ định dạng in đậm
+        let plainMoTaTuDong = moTaTuDong
+          .replace(/<strong>(.*?)<\/strong>/g, '**$1**') // Chuyển <strong> thành **text**
+          .replace(/<[^>]+>/g, ''); // Loại bỏ các thẻ HTML khác
+        let plainDanhSachXe = danhSachXe
+          .replace(/<strong>(.*?)<\/strong>/g, '**$1**')
+          .replace(/<[^>]+>/g, '');
+
+        copyContent = `**${ten}**\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${plainMoTaTuDong}\n\n${plainDanhSachXe}\n\n**Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất**\n- Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.\n- Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.\n- Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.\n- Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.\n\n**Chính sách bảo hành:**\n- Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.\n- Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.\n\n**Lưu ý:**\n- Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.\n- Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!\n\n**Cam kết của Kiều Gia Auto:**\n- Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.\n- Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.\n- Thương hiệu uy tín, đáng tin cậy.\n\n**Đảm bảo từ Kiều Gia Auto:**\n- Hình ảnh “${ten}” đúng 100% với thực tế.\n- Chất lượng sản phẩm đảm bảo tuyệt đối.\n- Hỗ trợ đổi trả theo chính sách quy định.\n- Giao hàng nhanh chóng trên toàn quốc.\n\nChân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!`;
       }
 
       content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
@@ -598,10 +641,10 @@ ${danhSachXe}
 
         // Loại bỏ khoảng trắng và dòng trống thừa
         content = content.trim();
-        content = content.replace(/\n\s*\n/g, '\n'); // Xóa các dòng trống liên tiếp
-        content = content.replace(/\s+$/gm, ''); // Xóa khoảng trắng cuối mỗi dòng
+        content = content.replace(/\n\s*\n/g, '\n');
+        content = content.replace(/\s+$/gm, '');
       } else if (website === 'shopee') {
-        // Xử lý nội dung plain text cho Shopee
+        // Nội dung đã được xử lý để giữ định dạng in đậm ở dạng **text**
         content = content.trim();
         content = content.replace(/\n\s*\n/g, '\n');
         content = content.replace(/\s+$/gm, '');
