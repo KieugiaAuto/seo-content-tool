@@ -2319,17 +2319,17 @@ var moTaTheoLoai = {
 "Nếu thấy khu vực tay mở cửa trầy xước nhiều, xỉn màu hoặc mất thẩm mỹ, việc lắp ốp viền là giải pháp đơn giản, hiệu quả và tiết kiệm chi phí làm lại sơn.",
 "Ốp viền tay mở cửa tuy nhỏ nhưng là phụ kiện quan trọng góp phần giữ ngoại thất xe luôn mới, sạch đẹp và tăng giá trị tổng thể cho xe trong mắt người nhìn."
 ],
-  "op vien cua lop": [
-"Ốp viền cua lốp là chi tiết nhựa được lắp xung quanh hốc bánh xe, giúp che chắn phần mép chắn bùn và tăng tính thẩm mỹ cho thân xe.",
-"Ốp viền cua lốp có tác dụng bảo vệ phần sơn xung quanh hốc bánh khỏi trầy xước do đá văng, bùn đất hoặc va chạm nhẹ khi xe chạy địa hình.",
-"Được làm từ nhựa ABS, nhựa dẻo hoặc nhựa sơn phủ vân carbon, ốp viền cua lốp có khả năng chịu lực tốt và không bị lão hóa nhanh dưới nắng mưa.",
-"Trên nhiều dòng xe SUV, bán tải hoặc xe nâng gầm, ốp viền cua lốp là phụ kiện không thể thiếu, vừa mang tính trang trí, vừa bảo vệ hiệu quả.",
-"Ốp viền thường được dán bằng keo 3M hoặc bắt vít vào hốc bánh, đảm bảo chắc chắn khi xe vận hành tốc độ cao hoặc đi đường xấu.",
-"Dấu hiệu nên thay ốp viền cua lốp: bị nứt, gãy, bạc màu, rơi mất hoặc bung keo khiến viền cua lốp lỏng lẻo, ảnh hưởng đến thẩm mỹ xe.",
-"Ốp viền cua lốp còn giúp thân xe trông rộng hơn, thể thao hơn đặc biệt khi kết hợp với bộ mâm lớn, lốp gai hoặc bodykit đồng màu.",
-"Một số loại ốp viền có thiết kế ôm sát theo đường cua bánh, tích hợp thêm vè che mưa nhỏ hoặc dải LED tùy chọn tạo điểm nhấn nổi bật ban đêm.",
-"Việc lắp ốp viền cua lốp đơn giản, không ảnh hưởng đến kết cấu gốc thân xe, không cần đục khoan nếu dùng loại dán chuyên dụng, thích hợp để độ nhẹ.",
-"Ốp viền cua lốp tuy chỉ là phụ kiện ngoại thất nhỏ, nhưng giúp tăng tuổi thọ sơn khu vực hốc bánh, giữ xe luôn sạch đẹp và phong cách mạnh mẽ hơn."
+  "vien op cua lop": [
+  "Viền ốp cua lốp là phụ kiện ngoại thất được lắp ôm quanh hốc bánh xe, giúp bảo vệ mép chắn bùn và tăng tính thẩm mỹ cho phần thân xe.",
+  "Được làm từ nhựa ABS, cao su dẻo hoặc kim loại nhẹ, viền ốp cua lốp có tác dụng che chắn sơn xe khỏi đá văng, bùn đất và va chạm nhẹ khi xe di chuyển.",
+  "Viền ốp cua lốp thường đi kèm với các dòng xe SUV, bán tải, giúp thân xe trông thể thao hơn, đồng thời tăng độ rộng cảm quan của hốc bánh.",
+  "Một số loại viền ốp có thiết kế vặn ốc hoặc dán keo 3M, phù hợp cho cả việc độ nhẹ hoặc thay thế ốp zin đã cũ, nứt, phai màu theo thời gian.",
+  "Viền ốp giúp tăng khả năng chống trầy khi xe đi vào đường xấu hoặc leo vỉa hè, đặc biệt với các dòng xe gầm thấp hoặc thường xuyên di chuyển nội đô.",
+  "Ngoài chức năng bảo vệ, viền ốp cua lốp còn giúp làm nổi bật bộ mâm lốp, tạo điểm nhấn tương phản với màu thân xe nếu chọn loại ốp carbon hoặc sơn đen.",
+  "Lắp viền ốp cua lốp đúng kỹ thuật sẽ giúp giảm bụi bẩn bám vào hốc bánh, hạn chế rỉ sét phần mép chắn bùn và giữ ngoại hình xe luôn sạch sẽ.",
+  "Viền ốp có thể được thay rời từng bên, dễ dàng bảo dưỡng, thay thế khi bị bong keo, lệch ngàm hoặc bị vỡ do va quẹt nhẹ.",
+  "Nếu thấy viền ốp cua lốp bị lỏng, nứt hoặc mất ốc giữ, nên thay mới để tránh rung lắc khi xe chạy và duy trì thẩm mỹ cho toàn bộ thân xe.",
+  "Viền ốp cua lốp tuy là chi tiết nhỏ nhưng đóng vai trò quan trọng trong việc bảo vệ sơn xe, hoàn thiện dáng xe và giữ giá trị xe lâu dài theo thời gian."
 ],
   "op tru canh cua": [
 "Ốp trụ cánh cửa là chi tiết nhựa hoặc kim loại được lắp tại vị trí trụ giữa (B-pillar) giữa hai cánh cửa xe, giúp bảo vệ sơn và tăng tính thẩm mỹ cho hông xe.",
@@ -2343,4 +2343,4 @@ var moTaTheoLoai = {
 "Ốp trụ cánh cửa phù hợp với hầu hết các dòng xe sedan, SUV, bán tải, thường đi kèm với bộ ốp tay nắm cửa, viền kính, viền chân kính để đồng bộ ngoại thất.",
 "Dù là chi tiết nhỏ, nhưng ốp trụ cánh cửa góp phần định hình phong cách và sự liền lạc của thân xe. Chọn đúng chất liệu và màu sắc sẽ giúp xe nổi bật hơn rõ rệt."
  ],
-};
+}
