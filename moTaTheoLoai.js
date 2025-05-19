@@ -2343,4 +2343,16 @@ var moTaTheoLoai = {
 "Ốp trụ cánh cửa phù hợp với hầu hết các dòng xe sedan, SUV, bán tải, thường đi kèm với bộ ốp tay nắm cửa, viền kính, viền chân kính để đồng bộ ngoại thất.",
 "Dù là chi tiết nhỏ, nhưng ốp trụ cánh cửa góp phần định hình phong cách và sự liền lạc của thân xe. Chọn đúng chất liệu và màu sắc sẽ giúp xe nổi bật hơn rõ rệt."
  ],
+  "cay lap": [
+  "Cây láp là trục truyền động có nhiệm vụ truyền mô-men xoắn từ hộp số hoặc vi sai đến bánh xe, giúp xe di chuyển được theo ý người lái.",
+  "Trong các xe dẫn động cầu trước, cây láp thường có hai đầu có khớp nối đồng tốc (CV joint) giúp truyền lực khi bánh xe đánh lái hoặc nhún.",
+  "Ở xe cầu sau hoặc xe 4WD, cây láp còn gọi là trục các đăng, thường là dạng ống thép nối từ hộp số đến vi sai cầu sau, truyền động khi xe chạy thẳng.",
+  "Cây láp có cấu tạo gồm trục chính, các khớp láp trong – ngoài, măng sông và cao su chắn bụi, giúp vận hành êm ái và linh hoạt theo chuyển động bánh xe.",
+  "Khi cây láp bị cong, rơ bạc, mòn khớp hoặc rách cao su che bụi, xe sẽ phát ra tiếng kêu lọc cọc, rung lắc mạnh khi tăng tốc hoặc đánh lái.",
+  "Dấu hiệu cây láp hư thường xuất hiện khi xe rung mạnh lúc chạy nhanh, có tiếng gõ ở gầm hoặc mất truyền động dù động cơ vẫn hoạt động bình thường.",
+  "Cây láp hỏng nếu không sửa sớm có thể gây đứt láp, làm xe mất truyền động giữa đường và tiềm ẩn nguy hiểm khi đang di chuyển tốc độ cao.",
+  "Việc thay cây láp cần đảm bảo đúng chiều dài, đúng khớp láp trong/ngoài và đúng loại theo hệ dẫn động của từng dòng xe để không gây mòn bất thường.",
+  "Cây láp thường được bảo trì bằng cách kiểm tra định kỳ cao su che bụi, tra mỡ khớp láp và kiểm tra độ rơ lắc để tránh mài mòn sớm.",
+  "Cây láp là chi tiết không thể thiếu trong hệ thống truyền động, đóng vai trò then chốt trong việc dẫn lực từ hộp số đến bánh xe để xe vận hành ổn định, mạnh mẽ và an toàn."
+],
 }
