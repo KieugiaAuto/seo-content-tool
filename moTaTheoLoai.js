@@ -2403,4 +2403,76 @@ var moTaTheoLoai = {
   "Chọn bố thắng sau chính hãng hoặc chất lượng cao giúp tăng tuổi thọ, giảm tiếng ồn và đảm bảo hiệu quả phanh trong mọi điều kiện vận hành.",
   "Bảo dưỡng định kỳ và kiểm tra độ mòn của bố thắng sau giúp xe luôn phanh an toàn, tránh tai nạn và kéo dài tuổi thọ các chi tiết liên quan."
 ],
+  "can gat mua": [
+  "Cần gạt mưa là bộ phận giúp làm sạch nước, bụi bẩn trên kính chắn gió, đảm bảo tầm nhìn cho người lái trong điều kiện thời tiết xấu như mưa, sương hoặc tuyết.",
+  "Cần gạt mưa gồm lưỡi cao su mềm ép sát mặt kính, khung đỡ kim loại hoặc nhựa và cơ cấu truyền động từ mô tơ gạt thông qua cần nối.",
+  "Dấu hiệu hỏng cần gạt mưa gồm: gạt không sạch, để lại vệt nước, gây tiếng kêu rít, hoặc lưỡi cao su bị rách, nứt, mất độ đàn hồi.",
+  "Cần gạt mưa bị mòn có thể làm giảm tầm nhìn khi lái xe trời mưa, gây nguy hiểm và tăng khả năng xảy ra tai nạn do không quan sát rõ phía trước.",
+  "Nguyên nhân khiến cần gạt nhanh hỏng thường do để xe ngoài trời nắng lâu ngày, dùng gạt khi kính khô, hoặc bụi bẩn bám nhiều trên kính.",
+  "Trên thị trường có nhiều loại cần gạt mưa như: loại khung sắt truyền thống, loại không khung (silicone), và loại gạt mưa bốn mùa – tùy xe và điều kiện sử dụng.",
+  "Khi thay cần gạt mưa, nên chọn đúng kích thước theo xe, đúng kiểu gài lưỡi (U-hook, Pin, Side lock…) và ưu tiên lưỡi gạt mềm, ôm sát kính.",
+  "Một số xe đời mới tích hợp cảm biến mưa, cần gạt mưa tự động – khi thay cần cẩn trọng để không ảnh hưởng đến chức năng tự kích hoạt.",
+  "Cần kiểm tra định kỳ và thay cần gạt mưa mỗi 6–12 tháng để đảm bảo hiệu quả làm sạch và bảo vệ kính chắn gió không bị trầy xước.",
+  "Cần gạt mưa nhỏ nhưng là chi tiết an toàn quan trọng, nhất là khi di chuyển trời mưa – bảo dưỡng đúng lúc sẽ giúp lái xe an toàn và dễ chịu hơn."
+],
+  "ong bo e co gio dong co": [
+  "Ống bô e cổ gió động cơ là ống dẫn khí từ môi trường ngoài vào hộp lọc gió, giúp đưa luồng khí sạch vào buồng đốt để động cơ hoạt động hiệu quả.",
+  "Ống thường làm từ nhựa chịu nhiệt hoặc cao su có gân tăng cường, giúp chống gập, chống nứt vỡ và đảm bảo luồng khí ổn định khi động cơ vận hành.",
+  "Nếu ống bô e bị rách, nứt hoặc bung khỏi cổ hút sẽ làm lọt bụi bẩn vào buồng đốt, gây hao xăng, giảm công suất và mài mòn chi tiết máy nhanh chóng.",
+  "Dấu hiệu hư hỏng ống bô e cổ gió gồm: tiếng hút gió lạ, động cơ yếu, rung giật khi ga lớn hoặc báo lỗi cảm biến khí nạp (MAF/MAP).",
+  "Nguyên nhân phổ biến là lão hóa vật liệu, chuột cắn, kẹp giữ lỏng hoặc bị tác động cơ học khi sửa chữa gần khu vực cổ hút.",
+  "Ống bô e có nhiều dạng tùy xe: loại ngắn liền với lọc gió, loại dài có bầu cộng hưởng âm để giảm tiếng ồn và tối ưu công suất.",
+  "Khi thay ống bô e, cần vệ sinh luôn hộp lọc gió và kiểm tra tình trạng lọc gió, van EGR, cảm biến khí nạp để đảm bảo toàn bộ hệ thống hút khí hoạt động ổn định.",
+  "Ống cổ gió phải được lắp đúng chiều, đúng vị trí gờ khóa và siết chặt bằng cổ dê để tránh rò rỉ khí hoặc lệch dòng khí nạp.",
+  "Việc sử dụng ống bô e kém chất lượng có thể ảnh hưởng trực tiếp đến hiệu suất đốt cháy và tuổi thọ của động cơ.",
+  "Bảo dưỡng định kỳ nên kiểm tra ống bô e cổ gió để đảm bảo hệ thống khí nạp sạch, kín và luôn đạt hiệu suất tối ưu cho động cơ."
+],
+  "cong tac pha cot": [
+  "Công tắc pha cốt là bộ phận điều khiển chuyển đổi giữa đèn chiếu gần (cốt) và đèn chiếu xa (pha) trên ô tô, giúp người lái điều chỉnh ánh sáng phù hợp với điều kiện giao thông.",
+  "Công tắc pha cốt thường tích hợp trên cần gạt bên trái vô lăng, cho phép bật tắt đèn và chuyển chế độ chiếu bằng cách gạt hoặc nhấn nút đơn giản.",
+  "Dấu hiệu công tắc pha cốt hỏng gồm: không chuyển được giữa pha – cốt, đèn nhấp nháy, mất đèn hoặc đèn chỉ sáng ở một chế độ.",
+  "Nguyên nhân hỏng thường do tiếp điểm bên trong bị mòn, cháy chập, lỏng dây hoặc do nước – bụi xâm nhập làm oxy hóa chân tiếp xúc.",
+  "Công tắc pha cốt có nhiều loại tùy dòng xe: loại cơ truyền thống, loại cảm ứng điện tử hoặc tích hợp với hệ thống tự động điều chỉnh ánh sáng.",
+  "Khi thay công tắc pha cốt, cần chọn đúng loại theo đời xe, đảm bảo tương thích với hệ thống điện và đèn pha đang sử dụng.",
+  "Một số xe đời mới có tích hợp chức năng pha tự động (Auto High Beam) trong công tắc – khi thay cần kiểm tra có hỗ trợ cảm biến ánh sáng hay không.",
+  "Việc công tắc hỏng có thể gây mất an toàn khi lái xe ban đêm, đặc biệt khi không thể chuyển nhanh giữa đèn chiếu gần và xa khi vượt xe hoặc đi đường tối.",
+  "Thay công tắc pha cốt cần kỹ thuật tháo lắp bảng taplo hoặc vô lăng – tránh tác động làm ảnh hưởng đến hệ thống túi khí hoặc các công tắc lân cận.",
+  "Bảo dưỡng định kỳ nên kiểm tra công tắc đèn pha – cốt để đảm bảo hoạt động mượt, không bị kẹt, giúp lái xe an toàn và chủ động trong mọi tình huống ánh sáng."
+],
+  "can truoc": [
+  "Cản trước là bộ phận nằm phía đầu xe, có chức năng bảo vệ phần đầu động cơ và hấp thụ lực va chạm nhẹ để giảm thiểu hư hại khi xảy ra tai nạn.",
+  "Cản trước thường được làm bằng nhựa ABS hoặc PP gia cường, thiết kế dạng rỗng bên trong để phân tán lực và dễ dàng uốn biến khi có va đập.",
+  "Ngoài chức năng bảo vệ, cản trước còn có vai trò thẩm mỹ, giúp định hình phong cách thiết kế đầu xe và che các chi tiết khung gầm bên trong.",
+  "Dấu hiệu hỏng cản trước gồm: nứt vỡ, trầy xước, cong vênh, gãy ngàm hoặc lỏng lẻo do va chạm, cọ quẹt hoặc lão hóa vật liệu theo thời gian.",
+  "Một số dòng xe tích hợp cảm biến va chạm, radar hoặc đèn sương mù ngay trên cản trước – khi thay thế cần đảm bảo đúng vị trí và không ảnh hưởng đến chức năng này.",
+  "Cản trước có nhiều phiên bản tùy theo đời xe, kiểu dáng và thị trường: loại zin theo xe, loại độ thể thao hoặc thay thế aftermarket.",
+  "Khi thay cản trước, cần kiểm tra các ngàm gài, giá đỡ, tai bắt, các chi tiết liên kết với chắn bùn và ốp hốc bánh để đảm bảo lắp khít và không rung lắc.",
+  "Sơn lại cản trước cần dùng sơn dẻo chuyên dụng để đảm bảo độ bám và tránh bong tróc khi cản bị uốn nhẹ hoặc chịu tác động môi trường.",
+  "Nếu cản trước bị hư hỏng nặng, nên thay mới thay vì vá váy để đảm bảo khả năng bảo vệ và tránh bị vỡ bung khi có va chạm tiếp theo.",
+  "Bảo dưỡng định kỳ nên kiểm tra độ chắc chắn của cản trước, đặc biệt nếu xe từng va chạm, để đảm bảo an toàn và thẩm mỹ cho phần đầu xe."
+],
+  "khung xuong dan nong ket nuoc": [
+  "Khung xương dàn nóng két nước là bộ phận kết cấu chịu lực nằm phía trước xe, có nhiệm vụ giữ cố định két nước, dàn nóng điều hòa và quạt làm mát.",
+  "Bộ khung này thường được làm bằng nhựa chịu nhiệt hoặc hợp kim nhẹ, thiết kế chính xác theo cấu trúc đầu xe để đỡ toàn bộ hệ thống làm mát và điều hòa.",
+  "Khi khung xương bị cong vênh, nứt gãy hoặc lỏng lẻo sẽ khiến két nước, dàn nóng bị lệch, gây rung lắc, rò rỉ hoặc giảm hiệu quả tản nhiệt.",
+  "Dấu hiệu hư hỏng khung xương gồm: két nước không cân, quạt va vào dàn nóng, chân bắt gãy, hoặc két rung khi nổ máy và đi qua ổ gà.",
+  "Khung xương dàn nóng két nước thường bị hỏng do va chạm phần đầu xe, tai nạn hoặc lão hóa vật liệu sau thời gian dài sử dụng.",
+  "Việc thay khung xương cần đảm bảo đúng loại theo xe, đúng vị trí lỗ bắt bu lông để không ảnh hưởng đến vị trí các cảm biến và hệ thống làm mát.",
+  "Một số xe có tích hợp giá đỡ đèn pha, horn (còi), và thậm chí là thanh giằng trên khung xương – khi thay phải lắp đúng từng chi tiết phụ đi kèm.",
+  "Khung xương phải đảm bảo độ cứng, không cong xoắn để tránh làm gãy tai két nước, vỡ dàn nóng hoặc làm kẹt quạt giàn nóng trong quá trình vận hành.",
+  "Sơn phủ khung xương nên chống gỉ sét và chịu được nhiệt độ cao – nhất là với khung kim loại tiếp xúc gần động cơ và dàn nóng.",
+  "Bảo dưỡng định kỳ nên kiểm tra khung xương để kịp thời phát hiện nứt gãy, bung tai bắt hoặc biến dạng do va đập, đảm bảo hiệu quả làm mát và tuổi thọ hệ thống điều hòa."
+],
+  "chan bun long de": [
+  "Chắn bùn lòng dè là tấm che nằm phía trong hốc bánh xe, có nhiệm vụ ngăn đất đá, bùn nước bắn vào khoang máy và các chi tiết treo khi xe di chuyển.",
+  "Chắn bùn thường được làm từ nhựa dẻo, nhựa cứng hoặc cao su tổng hợp, có độ đàn hồi cao để chống va đập và chịu được điều kiện môi trường khắc nghiệt.",
+  "Lòng dè bị hỏng sẽ khiến bùn đất bắn trực tiếp vào giảm xóc, phanh, đường ống và hệ thống điện trong hốc bánh, gây han gỉ và giảm tuổi thọ linh kiện.",
+  "Dấu hiệu hư hỏng chắn bùn gồm: gãy vỡ, cong vênh, bung chốt nhựa, phát ra tiếng va đập khi xe chạy nhanh hoặc qua đường xấu.",
+  "Nguyên nhân thường do va chạm ổ gà, đá văng, sửa chữa thiếu cẩn thận hoặc sau thời gian dài vật liệu nhựa bị lão hóa, giòn nứt.",
+  "Chắn bùn lòng dè có thiết kế riêng biệt theo từng hốc bánh và từng đời xe – bao gồm loại cho bánh trước, bánh sau, bên trái hoặc phải.",
+  "Thay chắn bùn cần kiểm tra kỹ các chốt nhựa, ngàm giữ, bulông và các liên kết với cản – vè để đảm bảo chắn bùn không rung lắc và khít thân xe.",
+  "Một số xe còn tích hợp miếng cách âm hoặc tấm chắn nhiệt bên trong lòng dè – cần lắp lại đúng vị trí khi thay thế để tránh tiếng ồn và nóng khoang máy.",
+  "Việc sử dụng chắn bùn lòng dè chính hãng hoặc đúng kích thước giúp xe vận hành êm ái, sạch sẽ và bảo vệ tốt cho hệ thống gầm.",
+  "Kiểm tra định kỳ và vệ sinh chắn bùn lòng dè giúp phát hiện kịp thời vết nứt gãy và đảm bảo gầm xe luôn sạch sẽ, ít bám bẩn và bền hơn theo thời gian."
+],
 }
