@@ -2667,4 +2667,52 @@ var moTaTheoLoai = {
   "Sử dụng ốp đèn gầm kém chất lượng dễ bị bạc màu, giòn nứt hoặc không khớp hoàn toàn với đèn, ảnh hưởng thẩm mỹ và độ chắc chắn.",
   "Kiểm tra và vệ sinh ốp đèn gầm định kỳ giúp giữ phần đầu xe luôn mới, đồng thời bảo vệ tốt cụm đèn gầm khỏi tác động từ môi trường bên ngoài."
 ],
+  "den phan quang can sau": [
+  "Đèn phản quang cản sau là chi tiết gắn trên ba đờ sốc sau, có nhiệm vụ phản chiếu ánh sáng từ xe phía sau giúp tăng khả năng nhận diện phương tiện trong điều kiện thiếu sáng.",
+  "Đèn phản quang không phát sáng bằng điện mà sử dụng bề mặt phản chiếu đặc biệt để hắt lại ánh sáng đèn pha từ xe khác, hỗ trợ an toàn khi dừng đỗ ban đêm.",
+  "Dấu hiệu hư hỏng gồm: mặt phản quang mờ đục, nứt vỡ, rơi mất hoặc ố vàng khiến khả năng phản chiếu giảm đáng kể, làm mất tính an toàn và thẩm mỹ.",
+  "Nguyên nhân thường do va quẹt phía sau, cọ sát khi lên xuống vỉa hè hoặc rửa xe áp lực cao khiến nước lọt vào làm mờ bề mặt phản quang.",
+  "Tùy dòng xe, đèn phản quang cản sau có thể là loại đơn giản chỉ phản chiếu, hoặc loại tích hợp thêm đèn LED chạy ban đêm hoặc báo phanh tăng thêm hiệu ứng.",
+  "Khi thay đèn phản quang, cần chọn đúng bên (trái/phải), đúng phiên bản thân xe để đảm bảo vừa khít với hốc gắn trên cản và không phải chế cháo.",
+  "Việc thiếu đèn phản quang làm xe khó được nhận diện từ xa, đặc biệt khi dừng đỗ trong đêm, tăng nguy cơ va chạm từ phía sau.",
+  "Đèn phản quang chính hãng thường có mặt kính trong suốt hoặc màu đỏ, được ép chặt với lớp phản chiếu phía sau để đảm bảo độ bền lâu dài.",
+  "Sử dụng loại phản quang kém chất lượng dễ bị tróc lớp phản xạ, xuống màu hoặc không đạt tiêu chuẩn phản quang trong điều kiện ánh sáng yếu.",
+  "Bảo dưỡng nên lau sạch bề mặt đèn phản quang cản sau định kỳ và kiểm tra độ chắc chắn của chốt gài để giữ an toàn và thẩm mỹ cho phần đuôi xe."
+],
+  "gioang gian co": [
+  "Gioăng giàn cò là gioăng cao su nằm giữa nắp giàn cò và mặt máy, có nhiệm vụ làm kín khoang chứa cò mổ, ngăn dầu động cơ rò rỉ ra ngoài.",
+  "Gioăng giàn cò thường làm từ cao su chịu nhiệt hoặc silicone chuyên dụng, có độ đàn hồi cao để chống rò dầu trong môi trường nhiệt độ khắc nghiệt.",
+  "Dấu hiệu hỏng gioăng giàn cò gồm: rò rỉ dầu quanh nắp máy, đóng cặn đen gần bugi, có mùi khét dầu hoặc khói nhẹ từ khoang máy khi xe nóng.",
+  "Nguyên nhân hỏng chủ yếu là do gioăng lão hóa theo thời gian, chịu nhiệt lâu ngày bị chai cứng, mất đàn hồi hoặc bị ép quá lực khi tháo lắp nắp cò.",
+  "Nếu không thay kịp, dầu rò xuống có thể gây bẩn bugi, chảy vào ống xả gây khói, thậm chí cháy nổ nếu dầu tiếp xúc với các chi tiết nóng.",
+  "Việc thay gioăng giàn cò cần vệ sinh sạch bề mặt tiếp xúc, dùng keo chuyên dụng đúng kỹ thuật và siết bu lông đều tay theo đúng lực quy định.",
+  "Một số dòng xe còn có gioăng phụ tại vị trí bugi – khi thay nên kiểm tra và thay đồng bộ để tránh rò rỉ cục bộ từng vị trí.",
+  "Dùng gioăng chất lượng kém có thể khiến dầu rỉ lại chỉ sau vài nghìn km, gây phiền phức và phải tháo lắp lại nhiều lần.",
+  "Gioăng giàn cò tốt sẽ giúp khoang máy sạch sẽ, động cơ hoạt động ổn định, không bị hao dầu và tăng tuổi thọ các chi tiết liên quan.",
+  "Bảo dưỡng định kỳ nên kiểm tra vết dầu quanh nắp máy và thay gioăng giàn cò mỗi 50.000–80.000 km hoặc khi có dấu hiệu rò rỉ dầu nhẹ."
+],
+  "bo thang truoc": [
+  "Bố thắng trước là má phanh gắn vào heo dầu bánh trước, có nhiệm vụ tạo ma sát với đĩa phanh để làm chậm và dừng xe khi người lái đạp phanh.",
+  "Bố thắng trước thường làm từ hợp chất bán kim loại, gốm hoặc hữu cơ chịu nhiệt cao, đảm bảo hiệu quả phanh mạnh và bền bỉ trong mọi điều kiện vận hành.",
+  "Dấu hiệu bố thắng trước mòn gồm: tiếng rít khi phanh, phanh kém ăn, quãng đường phanh dài hơn, hoặc đèn báo mòn bố sáng trên taplo (ở một số xe).",
+  "Nếu không thay kịp thời, bố thắng mòn sẽ gây mòn đĩa phanh, cháy má, mất phanh cục bộ hoặc gây nguy cơ mất kiểm soát khi đang vận hành.",
+  "Bố thắng trước thường mòn nhanh hơn bố sau do chịu tải chính khi phanh, đặc biệt ở xe dẫn động cầu trước hoặc khi chở nặng.",
+  "Thay bố thắng trước cần kiểm tra đồng thời đĩa phanh, heo dầu, piston phanh và đảm bảo bố được lắp đúng mặt, đúng chiều, không cấn lệch.",
+  "Bố thắng chất lượng tốt giúp phanh êm, không rít, không bụi bẩn nhiều và kéo dài tuổi thọ đĩa phanh, tăng độ an toàn khi phanh gấp.",
+  "Một số xe có cảm biến mòn bố gắn trên bố thắng – khi thay cần lắp lại cảm biến hoặc reset báo lỗi trên xe để đảm bảo hệ thống hoạt động chính xác.",
+  "Không nên sử dụng bố thắng kém chất lượng vì dễ gây tiếng kêu, mất ma sát khi gặp nước và làm giảm hiệu suất phanh nguy hiểm.",
+  "Bảo dưỡng định kỳ nên kiểm tra độ dày bố thắng trước mỗi 10.000–20.000 km và thay thế kịp thời để đảm bảo an toàn khi di chuyển ở tốc độ cao."
+],
+  "chan dau may": [
+  "Chân đầu máy là bộ phận cao su kỹ thuật gắn giữa động cơ và khung xe, có nhiệm vụ đỡ và cố định động cơ, đồng thời giảm rung chấn truyền vào cabin khi xe vận hành.",
+  "Chân đầu máy thường được cấu tạo từ lõi kim loại bọc cao su chịu lực, có khả năng hấp thụ rung động và thay đổi nhẹ theo độ nghiêng máy khi tải thay đổi.",
+  "Dấu hiệu hỏng chân đầu máy gồm: xe rung mạnh khi nổ máy, rung tay lái hoặc cần số khi chạy chậm, máy lắc nhiều khi vào số hoặc tăng ga.",
+  "Nguyên nhân hỏng chủ yếu do cao su lão hóa, nứt gãy sau thời gian dài sử dụng, dầu máy chảy vào làm chai cứng hoặc va chạm mạnh gây gãy chân máy.",
+  "Khi chân máy bị hỏng, động cơ sẽ không còn cố định vững chắc, dễ dẫn đến hư hại các chi tiết liên kết như cổ pô, đường ống nước, dây điện hoặc trục láp.",
+  "Tùy dòng xe, chân đầu máy có thể là loại thường, loại đổ dầu hoặc loại thủy lực có điều khiển điện tử – cần chọn đúng mã và loại khi thay thế.",
+  "Việc thay chân đầu máy cần siết đúng lực, đúng thứ tự và kê đỡ động cơ bằng kích chuyên dụng để tránh cong lệch hoặc hỏng các chi tiết lân cận.",
+  "Sử dụng chân máy kém chất lượng hoặc sai loại có thể gây rung lắc nặng hơn, làm xe khó chịu khi chạy và ảnh hưởng đến toàn bộ hệ thống truyền động.",
+  "Chân đầu máy tốt giúp máy nổ êm, không rung giật, tăng độ bền cho các chi tiết liên quan và giữ cảm giác lái ổn định, chắc chắn.",
+  "Bảo dưỡng định kỳ nên kiểm tra chân đầu máy sau mỗi 50.000–80.000 km hoặc khi có dấu hiệu rung mạnh bất thường để thay thế kịp thời, đảm bảo an toàn vận hành."
+],
 }
