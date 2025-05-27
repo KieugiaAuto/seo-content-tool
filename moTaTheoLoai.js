@@ -2715,4 +2715,40 @@ var moTaTheoLoai = {
   "Chân đầu máy tốt giúp máy nổ êm, không rung giật, tăng độ bền cho các chi tiết liên quan và giữ cảm giác lái ổn định, chắc chắn.",
   "Bảo dưỡng định kỳ nên kiểm tra chân đầu máy sau mỗi 50.000–80.000 km hoặc khi có dấu hiệu rung mạnh bất thường để thay thế kịp thời, đảm bảo an toàn vận hành."
 ],
+  "bi tang cam": [
+  "Bi tăng cam là bộ phận dẫn hướng và giữ căng dây curoa cam, giúp truyền động chính xác giữa trục khuỷu và trục cam để đảm bảo động cơ vận hành đúng chu kỳ.",
+  "Bi tăng cam thường là vòng bi có bạc đạn bên trong, thiết kế chịu nhiệt và chịu lực cao, hoạt động liên tục cùng dây cam trong mọi điều kiện vận hành.",
+  "Dấu hiệu hư bi tăng cam gồm: tiếng rít hoặc hú từ đầu máy, dây cam chùng, động cơ nổ không đều, hụt ga hoặc có nguy cơ trượt cam, gãy xu-páp.",
+  "Nguyên nhân hư thường là do bạc đạn trong bi mòn, khô mỡ, nước lọt vào hoặc do dây curoa cam quá căng – quá lỏng gây lệch bi.",
+  "Nếu bi tăng cam hỏng mà không thay kịp, có thể làm lệch pha cam, đứt dây curoa cam, gây va chạm xu-páp – piston và phá hỏng toàn bộ động cơ.",
+  "Tùy động cơ, bi tăng cam có thể là loại cơ bản, loại tự động có lò xo điều chỉnh độ căng, hoặc loại thủy lực điều khiển bằng áp suất dầu.",
+  "Khi thay bi tăng cam, nên thay đồng bộ với dây curoa cam, bi tỳ cam, bơm nước (nếu cùng dàn cam) để đảm bảo đồng bộ và tăng tuổi thọ hệ thống truyền động.",
+  "Bi tăng cam chất lượng cao sẽ vận hành êm, không gây tiếng ồn và đảm bảo chu trình cam–trục khuỷu hoạt động chính xác, tiết kiệm nhiên liệu.",
+  "Việc thay sai loại bi tăng cam hoặc lắp sai vị trí có thể dẫn đến lệch cam, hỏng máy và gây hao xăng – yếu máy rõ rệt.",
+  "Bảo dưỡng định kỳ nên kiểm tra tình trạng dây cam, bi tăng cam sau mỗi 60.000–100.000 km hoặc theo khuyến cáo của hãng để thay kịp thời, tránh hỏng nặng."
+],
+  "op buong cam": [
+  "Ốp bưởng cam là nắp đậy bên ngoài cụm cam và dây curoa cam, có nhiệm vụ bảo vệ hệ thống cam khỏi bụi bẩn, nước, dầu mỡ và va đập từ bên ngoài.",
+  "Ốp bưởng cam thường được làm từ nhựa cứng chịu nhiệt hoặc hợp kim nhôm nhẹ, thiết kế chính xác để bao kín dây cam và các bánh răng dẫn động.",
+  "Dấu hiệu hư hỏng ốp bưởng cam gồm: nứt, gãy tai bắt, mất ngàm, vênh mép gây lọt bụi hoặc dầu rò quanh khu vực cam và dây curoa.",
+  "Nguyên nhân thường do va chạm khi thao tác sửa chữa, lão hóa vật liệu nhựa, hoặc siết quá lực khiến tai ốp bị vỡ khi lắp đặt.",
+  "Ốp bưởng cam bị hở hoặc mất sẽ làm bụi bẩn và nước lọt vào dây cam, gây trượt dây, mòn bánh răng hoặc đứt dây curoa – ảnh hưởng nghiêm trọng đến động cơ.",
+  "Tùy dòng xe, ốp bưởng cam có thể chia thành 2–3 phần: nắp trên, giữa và dưới – khi thay cần đúng mã và đúng vị trí từng chi tiết.",
+  "Khi thay ốp bưởng cam, nên vệ sinh sạch mặt tiếp xúc, kiểm tra ron hoặc gioăng đi kèm (nếu có) và siết chặt vừa đủ theo đúng vị trí lỗ bắt.",
+  "Một số dòng xe có cảm biến định vị trục cam hoặc cảm biến vị trí trục khuỷu gắn trên ốp bưởng cam – cần cẩn thận khi tháo lắp để không ảnh hưởng đến tín hiệu điện.",
+  "Sử dụng ốp bưởng cam chất lượng kém dễ gây vênh, không kín, dẫn đến hỏng cả dây cam, bi tăng cam và các chi tiết truyền động đi kèm.",
+  "Kiểm tra và thay thế ốp bưởng cam khi có dấu hiệu nứt, hở hoặc mất ốc cố định sẽ giúp bảo vệ toàn bộ hệ thống cam và duy trì độ bền của động cơ."
+],
+  "day curoa bom nuoc": [
+  "Dây curoa bơm nước là dây truyền động từ trục khuỷu đến bơm nước làm mát động cơ, giúp nước tuần hoàn qua két nước để duy trì nhiệt độ làm việc ổn định.",
+  "Dây curoa bơm nước thường làm bằng cao su tổng hợp có lõi chịu lực, thiết kế có rãnh giúp bám puly tốt và chống trượt khi động cơ hoạt động ở vòng tua cao.",
+  "Dấu hiệu hư hỏng gồm: dây nứt, mòn rãnh, phát ra tiếng rít khi nổ máy, động cơ quá nhiệt hoặc nước không tuần hoàn dù két, quạt vẫn hoạt động bình thường.",
+  "Nếu dây curoa bơm nước bị đứt, nước làm mát sẽ ngừng lưu thông khiến động cơ nhanh chóng bị quá nhiệt, có thể dẫn đến cháy gioăng mặt máy hoặc cong vênh đầu quy lát.",
+  "Nguyên nhân thường gặp là do dây cũ, khô cứng, căng quá mức, lệch puly hoặc bị dầu, nước bám vào khiến dây nhanh trượt và hao mòn.",
+  "Một số xe sử dụng chung dây curoa bơm nước với máy phát, trợ lực lái và lốc lạnh (dây curoa tổng), trong khi các xe khác dùng dây riêng cho bơm nước.",
+  "Khi thay dây curoa bơm nước, cần kiểm tra luôn tình trạng puly, tăng đơ và chỉnh độ căng đúng kỹ thuật để tránh trượt hoặc làm mòn vòng bi bơm nước.",
+  "Dây curoa bơm nước chất lượng cao sẽ giúp bơm hoạt động ổn định, động cơ làm mát hiệu quả và kéo dài tuổi thọ các chi tiết liên quan như quạt, két nước, cảm biến nhiệt.",
+  "Sử dụng dây kém chất lượng hoặc thay sai kích thước dễ gây lệch vòng quay, rung lắc và làm tăng nguy cơ đứt dây khi xe vận hành tốc độ cao.",
+  "Bảo dưỡng định kỳ nên kiểm tra dây curoa bơm nước mỗi 20.000–30.000 km, thay mới sau 40.000–60.000 km hoặc khi có dấu hiệu rạn nứt, tiếng hú bất thường."
+],
 }
