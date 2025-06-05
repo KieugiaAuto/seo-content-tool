@@ -2822,7 +2822,7 @@ var moTaTheoLoai = {
   "Một số dòng xe có tích hợp cảm biến ABS trong cụm bi moay ơ – cần lắp đúng chiều và kiểm tra đầu giắc sau khi thay để tránh báo lỗi hệ thống.",
   "Sử dụng bi kém chất lượng có thể gây ra tiếng ồn lớn, nhanh mòn hoặc bó cứng, ảnh hưởng trực tiếp đến hệ thống phanh và treo sau.",
   "Bảo dưỡng định kỳ nên kiểm tra tiếng ồn, độ rơ và bề mặt moay ơ sau mỗi 30.000–50.000 km để thay thế kịp thời, đảm bảo an toàn và êm ái khi vận hành."
-]
+],
   "bac dan banh sau": [
   "Bạc đạn bánh sau là vòng bi giúp bánh xe sau quay trơn tru quanh moay ơ, giảm ma sát và chịu tải trọng khi xe vận hành, đặc biệt quan trọng ở hệ dẫn động cầu sau.",
   "Bạc đạn bánh sau thường là loại vòng bi kín tích hợp sẵn mỡ bôi trơn, được thiết kế để chịu lực tải trọng dọc và hướng tâm từ thân xe khi di chuyển.",
