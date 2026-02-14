@@ -108,7 +108,14 @@
   </div>
 
   <script src="moTaTheoLoai.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'https://iilwrpvussatcwkdbpwz.supabase.co';
+  const supabaseKey = 'sb_publishable_SjMakW0cOTbhYrEz666NmA_h0EjQTbQ';
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+</script>
   <script>
+    
     // Hàm loại bỏ dấu tiếng Việt để xử lý từ khóa
     function removeVietnameseTones(str) {
       return str
@@ -118,11 +125,251 @@
         .replace(/Đ/g, 'D');
     }
 
-    // Hàm tạo mô tả SEO tự động dựa trên tên phụ tùng
-    function sinhMoTaTuDong(ten) {
+    // ============================
+// AUTO REROLL MÔ TẢ (chống trùng giữa 4 web)
+// ============================
+const KG_TRACK_SITES = new Set(['kieugiaauto','phutunggiare','banphutung','phutungotokieugia']);
+
+function kgNormalizeText(s) {
+  return (s || '')
+    .toString()
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+// ===== NEAR DUPLICATE CHECK (Jaccard >= 80%) =====
+function kgTokenize(s) {
+  const t = removeVietnameseTones(kgNormalizeText(s))
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!t) return [];
+
+  return t.split(' ').filter(w => w.length >= 2);
+}
+
+function kgJaccardSim(a, b) {
+  const A = new Set(kgTokenize(a));
+  const B = new Set(kgTokenize(b));
+
+  if (A.size === 0 || B.size === 0) return 0;
+
+  let inter = 0;
+  for (const x of A) if (B.has(x)) inter++;
+
+  const uni = A.size + B.size - inter;
+  return uni ? (inter / uni) : 0;
+}
+
+
+function kgKeyNormalize(s) {
+  return removeVietnameseTones((s || '').toString())
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '')   // ✅ bỏ luôn dấu -, space, / ...
+    .trim();
+}
+
+
+// ✅ Ưu tiên MA (SKU) để key luôn giống nhau giữa các web
+function kgMakeProductKey(ten, ma) {
+  const sku = kgKeyNormalize(ma);
+  if (sku) return `sku__${sku}`;
+
+  const name = kgKeyNormalize(ten);
+  return `name__${name}`;
+}
+
+function kgLoadDescStore() {
+  try { return JSON.parse(localStorage.getItem('kg_desc_store') || '{}'); }
+  catch (e) { return {}; }
+}
+function kgSaveDescStore(store) {
+  localStorage.setItem('kg_desc_store', JSON.stringify(store));
+}
+
+// =========================
+// TTL 20 ngày + Auto Purge khi đầy
+// =========================
+const KG_TTL_DAYS = 20;
+const KG_TTL_MS = KG_TTL_DAYS * 24 * 60 * 60 * 1000;
+
+function kgNormalizeStore(store) {
+  const now = Date.now();
+  let changed = false;
+
+  for (const pkey of Object.keys(store || {})) {
+    const sites = store[pkey] || {};
+    for (const site of Object.keys(sites)) {
+      const item = sites[site];
+
+      if (typeof item === 'string') {
+        sites[site] = { desc: item, ts: now };
+        changed = true;
+        continue;
+      }
+
+      if (item && typeof item === 'object' && item.desc && !item.ts) {
+        item.ts = now;
+        changed = true;
+      }
+    }
+    store[pkey] = sites;
+  }
+
+  return { store, changed };
+}
+
+
+function kgListAllEntries(store) {
+  const rows = [];
+  for (const pkey of Object.keys(store || {})) {
+    for (const site of Object.keys((store[pkey] || {}))) {
+      const item = store[pkey][site];
+      const ts = (item && typeof item === 'object' && item.ts) ? item.ts : 0;
+      rows.push({ pkey, site, ts });
+    }
+  }
+  rows.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  return rows;
+}
+
+function kgDeleteEntry(store, pkey, site) {
+  if (!store[pkey]) return;
+  delete store[pkey][site];
+  if (!Object.keys(store[pkey]).length) delete store[pkey];
+}
+
+function kgPurgeExpiredOnly(store) {
+  const now = Date.now();
+
+  for (const pkey of Object.keys(store || {})) {
+    const sites = store[pkey] || {};
+
+    for (const site of Object.keys(sites)) {
+      const item = sites[site];
+      const ts = (item && typeof item === 'object' && item.ts) ? item.ts : 0;
+
+      if (!ts || (now - ts) >= KG_TTL_MS) {
+        delete sites[site];
+      }
+    }
+
+    if (!Object.keys(sites).length) {
+      delete store[pkey];
+    }
+  }
+
+  return store;
+}
+
+function kgSaveDescStoreSafe(store) {
+  // normalize trước (không xoá)
+  const norm = kgNormalizeStore(store);
+  store = norm.store;
+
+  const trySave = () => localStorage.setItem('kg_desc_store', JSON.stringify(store));
+
+  try {
+    trySave();
+    return true;
+  } catch (e) {
+    // ✅ chỉ khi localStorage đầy mới purge những cái > 20 ngày
+    store = kgPurgeExpiredOnly(store);
+
+    try {
+      trySave();
+      return true;
+    } catch (e2) {
+      // vẫn đầy mà không có gì quá 20 ngày để xoá
+      return false;
+    }
+  }
+}
+
+// LƯU mô tả đã dùng cho 1 sản phẩm + 1 web
+function kgCommitDesc(productKey, website, descHtml) {
+  let store = kgLoadDescStore();
+
+  // normalize format cũ nếu có
+  const norm = kgNormalizeStore(store);
+  store = norm.store;
+
+  if (!store[productKey]) store[productKey] = {};
+
+  store[productKey][website] = {
+    desc: kgNormalizeText(descHtml),
+    ts: Date.now()
+  };
+
+  // ✅ DỌN ngay các entry >= 20 ngày
+  store = kgPurgeExpiredOnly(store);
+
+  const ok = kgSaveDescStoreSafe(store);
+  if (!ok) console.warn('kg_desc_store đầy, không thể lưu.');
+}
+
+// =========================
+// GHI MÔ TẢ LÊN SUPABASE
+// =========================
+async function kgUpsertDescToSupabase(productKey, website, descHtml) {
+  const descNorm = kgNormalizeText(descHtml);
+
+  const { error } = await supabase
+    .from('desc_store')
+    .upsert(
+      [{ product_key: productKey, website, desc_norm: descNorm }],
+      { onConflict: 'product_key,website' }
+    );
+
+  if (error) console.error('❌ Lỗi upsert Supabase:', error);
+  else console.log('✅ Upsert mô tả lên Supabase');
+}
+
+// CHECK trùng tuyệt đối (bước #1 chỉ cần thế này)
+async function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
+  const descNorm = kgNormalizeText(descHtml);
+
+  const { data, error } = await supabase
+    .from('desc_store')
+    .select('website, desc_norm, created_at')
+    .eq('product_key', productKey)
+    .neq('website', website)
+    .gte('created_at', new Date(Date.now() - 20*24*60*60*1000).toISOString());
+
+  if (error) {
+    console.error(error);
+    return { duplicate: false, similarity: 0 };
+  }
+
+  let bestSim = 0;
+  let bestSite = '';
+
+  for (const row of data || []) {
+    if (row.desc_norm === descNorm) {
+      return { duplicate: true, conflictSite: row.website, similarity: 1, exact: true };
+    }
+
+    const sim = kgJaccardSim(row.desc_norm, descNorm);
+    if (sim > bestSim) { bestSim = sim; bestSite = row.website; }
+
+    if (sim >= threshold) {
+      return { duplicate: true, conflictSite: row.website, similarity: sim, exact: false };
+    }
+  }
+
+  return { duplicate: false, similarity: bestSim, conflictSite: bestSite };
+}
+
+   // Hàm tạo mô tả SEO tự động dựa trên tên phụ tùng
+   async function sinhMoTaTuDong(ten) {
       const regex = /(.*?)(ac|acura|aeolus|alfa_romeo|alpine|aston_martin|audi|bac|bahman|baic|bentley|bmw|bollinger|brilliance|bugatti|buick|byd|cadillac|callaway|carver|chery|chevrolet|chrysler|citroen|cupra|daihatsu|dodge|ds|ferrari|fiat|fisker|ford|geely|genesis|gmc|haval|hino|honda|hummer|hyundai|infiniti|isuzu|jaguar|jeep|kia|lamborghini|land_rover|lexus|lincoln|lotus|lucid|maserati|maybach|mazda|mclaren|mercedes_benz|mg|mini|mitsubishi|nissan|opel|pagani|peugeot|porsche|ram|renault|rivian|rolls_royce|saic|seat|skoda|smart|ssangyong|subaru|suzuki|tesla|toyota|vinfast|volkswagen|volvo|daewoo|mercedes)[\s-]+([a-zA-Z0-9\s.]+)(?:\s+(\d{4})(?:\D+(\d{4}))?)?$/i;
       const match = ten.match(regex);
-      if (!match) return '';
+if (!match) {
+  return `<p>Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.</p>`;
+}
 
       const tenPhuTung = match[1].trim();
       const hang = match[2].replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -178,45 +425,71 @@
         console.error('Lỗi khi truy cập moTaTheoLoai:', err);
       }
 
-      // Nếu không tìm thấy từ khóa, dùng mô tả mặc định
-      if (!gioiThieu) {
+            // Nếu vẫn không có mô tả từ moTaTheoLoai, dùng mô tả mặc định
+            if (!gioiThieu) {
         gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
       }
 
-      const moTaMau = {
-        kieugiaauto: [
-          `${gioiThieu} Sản phẩm phù hợp với ${hang} ${dong}${dateText}, dễ lắp đặt, được bảo hành đầy đủ.`,
-          `${gioiThieu} Được thiết kế dành riêng cho ${hang} ${dong}${dateText}, đảm bảo chính hãng với giá cạnh tranh.`
-        ],
-        phutungotokieugia: [
-          `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, được nhiều gara tin dùng.`,
-          `${gioiThieu} Hỗ trợ kỹ thuật tận tâm, phù hợp hoàn hảo cho ${hang} ${dong}${dateText}.`
-        ],
-        banphutung: [
-          `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, luôn có sẵn và giao hàng toàn quốc.`,
-          `${gioiThieu} Góp phần bảo vệ và nâng cao hiệu suất cho ${hang} ${dong}${dateText}.`
-        ],
-        phutunggiare: [
-          `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, giá tiết kiệm, bảo hành đầy đủ.`,
-          `${gioiThieu} Lựa chọn chính hãng, tiết kiệm chi phí cho ${hang} ${dong}${dateText}.`
-        ],
-        shopee: [
-          `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, giá ưu đãi trên Shopee.`,
-          `${gioiThieu} Sản phẩm chất lượng cao cho ${hang} ${dong}${dateText}, giao hàng nhanh chóng.`
-        ]
-      };
+      // ===== AUTO REROLL CHỐNG TRÙNG =====
+      const maInput = (document.getElementById('ma')?.value || '').trim();
+      const productKey = kgMakeProductKey(ten, maInput);
 
-      const mau = moTaMau[website];
-      if (!mau || !gioiThieu) return '';
-      let moTa = `<p>${mau[Math.floor(Math.random() * mau.length)]}</p>`;
+      const MAX_REROLL = 8;
+      let lastMoTa = '';
 
-      if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
-        const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
-        const regex = new RegExp(`\\b${hang}\\b(?![^<]*>)`, 'i');
-        moTa = moTa.replace(regex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(' ', '-')}" target="_blank">${hang}</a>`);
+      for (let attempt = 1; attempt <= MAX_REROLL; attempt++) {
+
+        const moTaMau = {
+          kieugiaauto: [
+            `${gioiThieu} Sản phẩm phù hợp với ${hang} ${dong}${dateText}, dễ lắp đặt, được bảo hành đầy đủ.`,
+            `${gioiThieu} Được thiết kế dành riêng cho ${hang} ${dong}${dateText}, đảm bảo chính hãng với giá cạnh tranh.`
+          ],
+          phutungotokieugia: [
+            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, được nhiều gara tin dùng.`,
+            `${gioiThieu} Hỗ trợ kỹ thuật tận tâm, phù hợp hoàn hảo cho ${hang} ${dong}${dateText}.`
+          ],
+          banphutung: [
+            `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, luôn có sẵn và giao hàng toàn quốc.`,
+            `${gioiThieu} Góp phần bảo vệ và nâng cao hiệu suất cho ${hang} ${dong}${dateText}.`
+          ],
+          phutunggiare: [
+            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, giá tiết kiệm, bảo hành đầy đủ.`,
+            `${gioiThieu} Lựa chọn chính hãng, tiết kiệm chi phí cho ${hang} ${dong}${dateText}.`
+          ],
+          shopee: [
+            `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, giá ưu đãi trên Shopee.`,
+            `${gioiThieu} Sản phẩm chất lượng cao cho ${hang} ${dong}${dateText}, giao hàng nhanh chóng.`
+          ]
+        };
+
+        const mau = moTaMau[website];
+        if (!mau || !gioiThieu) return '';
+
+        let moTa = `<p>${mau[Math.floor(Math.random() * mau.length)]}</p>`;
+
+        if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
+          const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
+          const regex = new RegExp(`\\b${hang}\\b(?![^<]*>)`, 'i');
+          moTa = moTa.replace(regex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(' ', '-')}" target="_blank">${hang}</a>`);
+        }
+
+        lastMoTa = moTa;
+
+        // Chỉ check trùng cho 4 web chính (shopee không tính)
+        if (KG_TRACK_SITES.has(website)) {
+          const dup = await kgIsDuplicateDesc(productKey, website, moTa);
+          if (dup.duplicate) {
+            // trùng -> reroll tiếp
+            continue;
+          }
+        }
+
+        // OK -> trả về
+        return moTa;
       }
 
-      return moTa;
+      // Nếu reroll vẫn trùng (xui), trả về cái cuối cùng
+      return lastMoTa;
     }
 
     // Hàm tạo danh sách xe phù hợp cho website Shopee
@@ -359,195 +632,307 @@
 
       return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
     }
+    async function kgGuardCopy (copyButton, opts = {}) {
+  const { silent = false, threshold = 0.65 } = opts;
 
-    // Hàm tạo nội dung SEO hoàn chỉnh
-    function taoNoiDung() {
-      const ten = document.getElementById('ten').value.trim();
-      const ma = document.getElementById('ma').value.trim();
-      const thuonghieu = document.getElementById('thuonghieu').value.trim();
-      const xuatxu = document.getElementById('xuatxu').value.trim();
-      const website = document.getElementById('website').value;
+  const website = copyButton.dataset.website || document.getElementById('website').value;
 
-      if (!ten || !ma || !thuonghieu || !xuatxu) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
-        return;
-      }
+  const ten = (document.getElementById('ten')?.value || '').trim();
+  const ma  = (document.getElementById('ma')?.value || '').trim();
+  const pkey = copyButton.dataset.productKey || kgMakeProductKey(ten, ma);
 
-      const moTaTuDong = sinhMoTaTuDong(ten);
-      const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee');
+  const descRaw = copyButton.dataset.descHtml || '';
+  if (!pkey || !descRaw) {
+    copyButton.style.display = 'block';
+    return { guarded: false };
+  }
 
-      const hangXeList = [
-        'Toyota', 'Kia', 'Mazda', 'Ford', 'Honda', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'Chevrolet',
-        'Isuzu', 'Daewoo', 'Lexus', 'BMW', 'Mercedes-Benz', 'Audi', 'VinFast', 'Hino', 'Thaco', 'Fiat',
-        'Jac', 'Kenbo', 'Veam', 'Dongben', 'SYM', 'Haima', 'Chery', 'Renault', 'Daihatsu', 'Bentley',
-        'Range Rover', 'Vinasuki'
-      ];
+  if (!KG_TRACK_SITES.has(website)) {
+    copyButton.style.display = 'block';
+    return { guarded: false };
+  }
 
-      let hangXeLinks = {};
-      switch (website) {
-        case 'banphutung':
-          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://banphutungoto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
-          break;
-        case 'phutunggiare':
-          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutunggiare.vn/phu-tung-${hang.toLowerCase().replace(' ', '-')}`]));
-          break;
-        case 'phutungotokieugia':
-          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutungotokieugia.vn/${hang.toLowerCase().replace(' ', '-')}`]));
-          break;
-        case 'kieugiaauto':
-          hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://kieugiaauto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
-          break;
-        default:
-          hangXeLinks = {};
-      }
+  const dup = await kgIsDuplicateDesc (pkey, website, descRaw, threshold);
 
-      const brandsToLink = [
-        'Audi', 'Nissan', 'Kia', 'Daewoo', 'Mazda', 'Ford', 'Toyota', 'Lexus', 'Isuzu', 'Chevrolet',
-        'Hyundai', 'Honda', 'Mitsubishi', 'Suzuki', 'Renault', 'Daihatsu', 'Chery', 'BMW', 'Vinasuki',
-        'Mercedes-Benz', 'Thaco', 'Fiat', 'Range Rover', 'Bentley'
-      ];
+  if (dup.duplicate) {
+    copyButton.style.display = 'none';
+    if (!silent) {
+      alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
+    }
+    return { guarded: true, dup };
+  }
+
+  copyButton.style.display = 'block';
+  return { guarded: false };
+}
+
+async function taoNoiDung() {
+  const ten = document.getElementById('ten').value.trim();
+  const ma = document.getElementById('ma').value.trim();
+  const thuonghieu = document.getElementById('thuonghieu').value.trim();
+  const xuatxu = document.getElementById('xuatxu').value.trim();
+  const website = document.getElementById('website').value;
+
+  if (!ten || !ma || !thuonghieu || !xuatxu) {
+    alert("Vui lòng nhập đầy đủ thông tin!");
+    return;
+  }
+
+  // Parse năm linh hoạt từ cuối chuỗi (bắt 2015-2017 hoặc 2015)
+  const yearRegex = /(\d{4})(?:\D+(\d{4}))?$/i;
+  const yearMatch = ten.match(yearRegex);
+
+  let tenPhuTung = ten.trim();
+  let dateText = ''; // " 2015–2017" hoặc " 2015"
+  let nam1 = '';
+  let nam2 = '';
+
+  if (yearMatch) {
+    nam1 = yearMatch[1];
+    nam2 = yearMatch[2] || '';
+    dateText = nam2 ? ` ${nam1}–${nam2}` : ` ${nam1}`;
+    // Cắt bỏ phần năm khỏi tenPhuTung để tên sạch
+    tenPhuTung = ten.replace(yearRegex, '').trim().replace(/\s+$/, '');
+  }
+
+  // Parse hãng xe và dòng xe (regex cũ, nhưng giờ optional)
+  const regex = /(.*?)(ac|acura|aeolus|alfa_romeo|alpine|aston_martin|audi|bac|bahman|baic|bentley|bmw|bollinger|brilliance|bugatti|buick|byd|cadillac|callaway|carver|chery|chevrolet|chrysler|citroen|cupra|daihatsu|dodge|ds|ferrari|fiat|fisker|ford|geely|genesis|gmc|haval|hino|honda|hummer|hyundai|infiniti|isuzu|jaguar|jeep|kia|lamborghini|land_rover|lexus|lincoln|lotus|lucid|maserati|maybach|mazda|mclaren|mercedes_benz|mg|mini|mitsubishi|nissan|opel|pagani|peugeot|porsche|ram|renault|rivian|rolls_royce|saic|seat|skoda|smart|ssangyong|subaru|suzuki|tesla|toyota|vinfast|volkswagen|volvo|daewoo|mercedes)[\s-]+([a-zA-Z0-9\s.]+)/i;
+  const match = tenPhuTung.match(regex);
+
+  let hang = thuonghieu || ''; // Ưu tiên input thương hiệu
+  let dong = '';
+
+  if (match) {
+    hang = match[2].replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    dong = match[3].trim();
+  } else {
+    // Nếu không match hãng, dùng input thương hiệu
+    hang = thuonghieu;
+    dong = tenPhuTung.replace(hang, '').trim(); // Đoán dong từ tên
+  }
+
+  // Variation H1 theo yêu cầu cuối cùng của mày
+  let h1Text = ten; // Default nếu không parse được
+  if (website === 'kieugiaauto') {
+    h1Text = tenPhuTung.trim(); // Bỏ năm cho web chính
+  } else if (website === 'phutunggiare') {
+    h1Text = `${tenPhuTung} mã ${ma}`.trim(); // Phụ 1: thêm mã từ input "ma"
+  } else if (website === 'banphutung') {
+    h1Text = `${tenPhuTung} giá tốt`.trim(); // Phụ 2: "giá tốt"
+  } else if (website === 'phutungotokieugia') {
+    h1Text = `${tenPhuTung}${dateText}`.trim(); // Phụ 3: giữ năm
+  } else if (website === 'shopee') {
+    h1Text = ten; // Giữ nguyên cho Shopee
+  }
+
+  const moTaTuDong = await sinhMoTaTuDong(ten);
+ // ===== STEP #2: nhớ mô tả auto để chặn trùng khi COPY =====
+window.__kg_last_auto_desc = {
+  productKey: kgMakeProductKey(ten, ma),
+  website,
+  descHtml: moTaTuDong
+};
+  const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee');
+
+  const hangXeList = [
+    'Toyota', 'Kia', 'Mazda', 'Ford', 'Honda', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'Chevrolet',
+    'Isuzu', 'Daewoo', 'Lexus', 'BMW', 'Mercedes-Benz', 'Audi', 'VinFast', 'Hino', 'Thaco', 'Fiat',
+    'Jac', 'Kenbo', 'Veam', 'Dongben', 'SYM', 'Haima', 'Chery', 'Renault', 'Daihatsu', 'Bentley',
+    'Range Rover', 'Vinasuki'
+  ];
+
+  let hangXeLinks = {};
+  switch (website) {
+    case 'banphutung':
+      hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://banphutungoto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+      break;
+    case 'phutunggiare':
+      hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutunggiare.vn/phu-tung-${hang.toLowerCase().replace(' ', '-')}`]));
+      break;
+    case 'phutungotokieugia':
+      hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://phutungotokieugia.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+      break;
+    case 'kieugiaauto':
+      hangXeLinks = Object.fromEntries(hangXeList.map(hang => [hang, `https://kieugiaauto.vn/${hang.toLowerCase().replace(' ', '-')}`]));
+      break;
+    default:
+      hangXeLinks = {};
+  }
+
+  const brandsToLink = [
+    'Audi', 'Nissan', 'Kia', 'Daewoo', 'Mazda', 'Ford', 'Toyota', 'Lexus', 'Isuzu', 'Chevrolet',
+    'Hyundai', 'Honda', 'Mitsubishi', 'Suzuki', 'Renault', 'Daihatsu', 'Chery', 'BMW', 'Vinasuki',
+    'Mercedes-Benz', 'Thaco', 'Fiat', 'Range Rover', 'Bentley'
+  ];
 
       let content = '';
       let copyContent = '';
-      if (website === 'kieugiaauto') {
-        content = `<h2><strong>${ten}</strong></h2>
+/* =========================
+ * WEB CHÍNH – kieugiaauto
+ * ========================= */
+ if (website === 'kieugiaauto') {
+  content = `<h2><strong>${h1Text}</strong></h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
 <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
 <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
 ${moTaTuDong}
-<h2>✔️ Mua "${ten}" chính hãng ở đâu?</h2>
-<p>Hãy đến với <a href="https://kieugiaauto.vn" target="_blank">Kiều Gia Auto</a>, đơn vị hàng đầu cung cấp phụ tùng ô tô chính hãng tại Ngõ 84 Kim Ngưu, Quận Hai Bà Trưng, Hà Nội.</p>
-<h3>✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
-<ul>
-  <li>Cung cấp "${ten}" với chất lượng vượt trội, giá cả cạnh tranh.</li>
-  <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo độ bền và an toàn.</li>
-  <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
-  <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
-</ul>
-<h4>✔️ Cam kết của Kiều Gia Auto:</h4>
-<ul>
-  <li>Dịch vụ chuyên nghiệp, mang đến trải nghiệm tốt nhất cho khách hàng.</li>
-  <li>Hình ảnh sản phẩm "${ten}" đúng 100% với thực tế.</li>
-  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
-  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
-  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
-  <li>Thương hiệu uy tín, đáng tin cậy.</li>
-</ul>
-<h5>✔️ Chính sách bảo hành:</h5>
-<ul>
-  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
-  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
-</ul>
-<p>✔️ Lưu ý:<br>
-+ Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</p>
-<p>Liên hệ ngay để được tư vấn chi tiết:<br>
-Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
-        copyContent = content;
-      } else if (website === 'phutungotokieugia') {
-        content = `<h2>✔️ ${ten}</h2>
-<p><strong>Mã sản phẩm:</strong> ${ma}</p>
-<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-${moTaTuDong}
-<h2>✔️ Mua "${ten}" chính hãng ở đâu?</h2>
-<p>Hãy đến với <a href="https://phutungotokieugia.vn" target="_blank">Kiều Gia Auto</a>, đơn vị uy tín hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
-<h3>✔️ Cam kết của Kiều Gia Auto:</h3>
-<ul>
-  <li>Phụ tùng có nguồn gốc rõ ràng, đảm bảo hiệu suất vận hành tối ưu.</li>
-  <li>Nhập khẩu chính hãng với giá cạnh tranh, phân phối toàn quốc.</li>
-  <li>Đội ngũ kỹ thuật viên giàu kinh nghiệm, tư vấn nhiệt tình, chuyên nghiệp.</li>
-  <li>Cam kết cung cấp sản phẩm đúng chủng loại, chất lượng cao.</li>
-  <li>Hình ảnh "${ten}" đúng 100% với thực tế.</li>
-  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
-  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
-  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
-</ul>
-<h3>✔️ Chính sách bảo hành:</h3>
-<ul>
-  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
-  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
-</ul>
-<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
-<p>Liên hệ ngay để được tư vấn chi tiết:<br>
-Hotline: <strong>0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666</strong></p>`;
-        copyContent = content;
-      } else if (website === 'banphutung') {
-        const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
-        const brandList = brandsToLink.map(brand => 
-          brand === randomBrand 
-            ? `<a href="${hangXeLinks[brand]}" target="_blank">${brand}</a>` 
-            : brand
-        ).join(', ');
 
-        content = `<h2><strong>${ten}</strong></h2>
+<p>
+<strong>${h1Text}</strong> là phụ tùng được sử dụng trong quá trình
+sửa chữa và thay thế, giúp đảm bảo khả năng vận hành ổn định
+và phù hợp với cấu tạo nguyên bản của xe.
+</p>
+
+<h3>Giá trị sử dụng khi thay thế phụ tùng đúng chủng loại</h3>
+<p>
+Việc lựa chọn phụ tùng phù hợp đời xe và đúng chủng loại
+giúp đảm bảo khả năng vận hành ổn định,
+hạn chế phát sinh hư hỏng và kéo dài tuổi thọ các bộ phận liên quan.
+</p>
+
+<h3>Mua phụ tùng ô tô chính hãng tại Kiều Gia Auto</h3>
+<p>
+Kiều Gia Auto là đơn vị chuyên cung cấp phụ tùng ô tô chính hãng,
+phục vụ nhu cầu sửa chữa, bảo dưỡng và thay thế thực tế
+cho cả khách lẻ và các gara trên toàn quốc.
+</p>
+
+<h3>Vì sao khách hàng tin chọn Kiều Gia Auto?</h3>
+<ul>
+  <li>Phụ tùng nguồn gốc rõ ràng, đúng chủng loại theo từng dòng xe</li>
+  <li>Chất lượng ổn định, phù hợp lắp đặt và sử dụng thực tế</li>
+  <li>Hỗ trợ tư vấn kỹ thuật rõ ràng, dễ hiểu</li>
+  <li>Giao hàng nhanh, đóng gói cẩn thận trên toàn quốc</li>
+</ul>
+
+<h4>Chính sách đổi trả & hỗ trợ</h4>
+<ul>
+  <li>Đổi trả trong vòng 7 ngày nếu sản phẩm còn nguyên vẹn, chưa lắp ráp</li>
+  <li>Áp dụng theo chính sách của cửa hàng</li>
+</ul>
+
+<p>
+📍 <strong>Địa chỉ:</strong> Ngõ 84 Kim Ngưu, Quận Hai Bà Trưng, Hà Nội<br>
+📞 <strong>Hotline:</strong> 0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666
+</p>`;
+  copyContent = content;
+
+/* =========================
+ * WEB PHỤ 1 – theo MÃ
+ * ========================= */
+} else if (website === 'phutungotokieugia') {
+  content = `<h2>✔️ ${h1Text}</h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
 <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
 <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
 ${moTaTuDong}
-<h3><strong>Mua "${ten}" chính hãng ở đâu?</strong></h3>
-<p>Hãy đến với <a href="https://banphutungoto.vn" target="_blank">Kiều Gia Auto</a>, đơn vị hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
+
+<p>
+<strong>${h1Text}</strong> là phụ tùng được lựa chọn theo đời xe sử dụng,
+giúp đảm bảo độ tương thích khi thay thế
+và hạn chế sai lệch trong quá trình lắp đặt thực tế.
+</p>
+
+<h3>✔️ Cần mua phụ tùng đúng mã?</h3>
+<p>
+Kiều Gia Auto hỗ trợ kiểm tra và đối chiếu mã sản phẩm trước khi giao hàng,
+giúp tránh mua nhầm và đảm bảo lắp đặt chính xác.
+</p>
+
 <ul>
-  <li>Cung cấp "${ten}" với chất lượng vượt trội, giá cả cạnh tranh.</li>
-  <li>Cam kết phụ tùng chính hãng, tương thích với nhiều dòng xe phổ biến như ${brandList}.</li>
-  <li>Hỗ trợ phụ tùng cho xe nhập khẩu và xe tải nhỏ như Hino, Thaco, Fiat, Jac, Kenbo, Veam, Dongben, SYM, Haima.</li>
+  <li>Tư vấn đúng mã, đúng đời xe</li>
+  <li>Phụ tùng nguồn gốc rõ ràng, phù hợp thay thế thực tế</li>
+  <li>Hỗ trợ giao hàng nhanh toàn quốc</li>
 </ul>
-<h4>Chính sách đổi trả:</h4>
+
+<h4>✔️ Đổi trả & bảo hành</h4>
 <ul>
-  <li>Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày xuất hóa đơn.</li>
-  <li>Sản phẩm phải còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
-  <li>Giao hàng nhanh chóng, an toàn trên toàn quốc.</li>
+  <li>Đổi trả trong 7 ngày nếu sản phẩm còn nguyên vẹn, chưa lắp ráp</li>
 </ul>
-<h4>Liên hệ:</h4>
-<p>Mọi thắc mắc, vui lòng liên hệ:<br>
-Hotline: <strong>0914.153.555 - 0898.153.555 - 0378.05.6666</strong></p>
-<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
+📍 <strong>Kho hàng:</strong> Số 84 Ngõ Kim Ngưu, Hai Bà Trưng, HN.<br>
+<p>
+📞 Hotline: <strong> 0924.153.555 – 0914.153.555 – 0898.153.555 – 0378.05.6666</strong>
+</p>`;
+  copyContent = content;
+
+/* =========================
+ * WEB PHỤ 3 – KỸ THUẬT / GARA
+ * ========================= */
+} else if (website === 'banphutung') {
+  content = `<h2><strong>${h1Text}</strong></h2>
+<p><strong>Mã sản phẩm:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+
+${moTaTuDong}
+
+<p>
+<strong>${h1Text}</strong> phù hợp cho nhu cầu thay thế nhanh,
+tối ưu chi phí và thời gian sửa chữa,
+hỗ trợ giao hàng toàn quốc khi khách cần nhận sớm.
+</p>
+
+<h3>✔️ Giá tốt – hàng sẵn – giao nhanh</h3>
+<p>
+Kiều Gia Auto hỗ trợ báo giá nhanh và tư vấn lựa chọn phù hợp theo nhu cầu sử dụng,
+phù hợp cho khách lẻ và gara cần mua nhanh.
+</p>
+
+<ul>
+  <li>Giá tốt, tối ưu chi phí thay thế</li>
+  <li>Phụ tùng đúng chủng loại, dễ lắp đặt</li>
+  <li>Giao hàng nhanh, đóng gói cẩn thận toàn quốc</li>
+</ul>
+
+<h4>✔️ Đổi trả & hỗ trợ</h4>
+<ul>
+  <li>Đổi trả trong 7 ngày nếu sản phẩm còn nguyên vẹn, chưa lắp ráp</li>
+</ul>
+📍 <strong>Cửa hàng:</strong> 84 Kim Ngưu, HBT, Hà Nội.<br>
+<p>
+📞 <strong>Báo giá nhanh:</strong> 0898.153.555 – 0914.153.555 – 0378.05.6666
+</p>
+
 <p><strong>Sản phẩm liên quan:</strong></p>`;
-        copyContent = content;
-      } else if (website === 'phutunggiare') {
-        const randomBrand = brandsToLink[Math.floor(Math.random() * brandsToLink.length)];
-        const brandList = brandsToLink.map(brand => 
-          brand === randomBrand 
-            ? `<a href="${hangXeLinks[brand]}" target="_blank">${brand}</a>` 
-            : brand
-        ).join(', ');
+  copyContent = content;
 
-        content = `<h2><strong>${ten}</strong></h2>
+/* =========================
+ * WEB PHỤ 2 – GIÁ RẺ / BÁN NHANH
+ * ========================= */
+} else if (website === 'phutunggiare') {
+  content = `<h2><strong>${h1Text}</strong></h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
 <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
 <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+
 ${moTaTuDong}
-<h3>Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
+
+<p>
+<strong>${h1Text}</strong> là phụ tùng được lựa chọn theo mã sản phẩm,
+giúp đảm bảo độ tương thích chính xác khi thay thế
+và hạn chế rủi ro lắp nhầm trong quá trình sửa chữa thực tế.
+</p>
+
+<h3>✔️ Cần mua phụ tùng theo đúng mã?</h3>
+<p>
+Kiều Gia Auto hỗ trợ kiểm tra và đối chiếu mã sản phẩm trước khi giao hàng,
+giúp khách hàng yên tâm khi thay thế và lắp đặt.
+</p>
+
 <ul>
-  <li>Cung cấp phụ tùng "${ten}" chất lượng vượt trội, giá cả cạnh tranh.</li>
-  <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo độ bền và an toàn.</li>
-  <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
-  <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
+  <li>Đối chiếu mã kỹ trước khi xuất kho</li>
+  <li>Phụ tùng đúng chủng loại, phù hợp đời xe</li>
+  <li>Hỗ trợ giao hàng nhanh trên toàn quốc</li>
 </ul>
-<h3>Mua "${ten}" chính hãng ở đâu?</h3>
-<p>Hãy đến với <a href="https://phutunggiare.vn" target="_blank">Kiều Gia Auto</a>, đơn vị uy tín hàng đầu cung cấp phụ tùng ô tô tại Số 22 Ngõ 84 Kim Ngưu, Phường Thanh Nhàn, Quận Hai Bà Trưng, Hà Nội.</p>
-<h3>Chính sách bảo hành:</h3>
+
+<h4>✔️ Đổi trả & hỗ trợ</h4>
 <ul>
-  <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
-  <li>Sản phẩm được đổi trả trong vòng 7 ngày kể từ ngày xuất hàng, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+  <li>Đổi trả trong 7 ngày nếu sản phẩm còn nguyên vẹn, chưa lắp ráp</li>
 </ul>
-<h3>Lưu ý:</h3>
-<p>Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</p>
-<h3>Cam kết của Kiều Gia Auto:</h3>
-<ul>
-  <li>Cung cấp phụ tùng chất lượng cao, đúng chủng loại cho các dòng xe ${brandList}.</li>
-  <li>Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.</li>
-  <li>Thương hiệu uy tín, đáng tin cậy.</li>
-</ul>
-<h3>Đảm bảo từ Kiều Gia Auto:</h3>
-<ul>
-  <li>Hình ảnh phụ tùng "${ten}" đúng 100% với thực tế.</li>
-  <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
-  <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
-  <li>Giao hàng nhanh chóng trên toàn quốc.</li>
-</ul>
-<p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>
-<p>Liên hệ ngay để được tư vấn chi tiết:<br>
-Hotline: <strong>0914.153.555 - 0924.153.555 - 0898.153.555 - 0378.05.6666</strong></p>`;
+📍 <strong>Phân phối bởi:</strong> Kiều Gia Auto - Ngõ 84 Kim Ngưu, Hà Nội.<br>
+<p>
+📞 <strong>Hỗ trợ kiểm tra mã:</strong> 0378.05.6666 – 0914.153.555 – 0924.153.555 – 0898.153.555
+</p>`;
         copyContent = content;
       } else if (website === 'shopee') {
         content = `<h2><strong>${ten}</strong></h2>
@@ -603,107 +988,145 @@ ${danhSachXe}
       document.getElementById('preview').innerHTML = content;
 
       const copyButton = document.getElementById('copyButton');
-      copyButton.dataset.content = copyContent;
-      copyButton.style.display = 'block';
+copyButton.dataset.content = copyContent;
+
+// ✅ Ghim info để check/commit đúng "moTaTuDong"
+copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
+copyButton.dataset.website    = website;
+copyButton.dataset.descHtml   = moTaTuDong || '';
+
+// ✅ Guard quyết định hiện/ẩn nút copy (ẩn nếu trùng với web khác đã copy)
+await kgGuardCopy(copyButton, { silent: true });
+}
+
+
+// =========================
+// Hàm sao chép nội dung
+// =========================
+async function saoChepNoiDung() {
+  const copyButton = document.getElementById('copyButton');
+
+  // ✅ chặn copy nếu trùng
+  const g = await kgGuardCopy(copyButton, { silent: false });
+  if (g.guarded) return;
+
+  const website = copyButton.dataset.website || document.getElementById('website').value;
+  let content = copyButton.dataset.content;
+
+  if (!content) {
+    alert('Chưa có nội dung để sao chép! Vui lòng tạo nội dung trước.');
+    return;
+  }
+
+  // ===== Làm sạch nội dung =====
+  if (website === 'banphutung' || website === 'phutungotokieugia') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+
+    const removeEmptyNodes = (node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (['P', 'DIV', 'UL', 'LI'].includes(node.tagName)
+          && !node.textContent.trim()
+          && !node.querySelector('a, strong, em')) {
+          node.remove();
+          return;
+        }
+        Array.from(node.childNodes).forEach(removeEmptyNodes);
+      }
+    };
+    removeEmptyNodes(doc.body);
+
+    content = doc.body.innerHTML.trim()
+      .replace(/\n\s*\n/g, '\n')
+      .replace(/\s+$/gm, '');
+
+  } else if (website === 'shopee') {
+    content = content.trim()
+      .replace(/\n\s*\n/g, '\n')
+      .replace(/\s+$/gm, '');
+
+  } else {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+
+    const removeEmptyNodes = (node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (['P', 'DIV', 'UL', 'LI'].includes(node.tagName)
+          && !node.textContent.trim()
+          && !node.querySelector('a, strong, em')) {
+          node.remove();
+          return;
+        }
+        Array.from(node.childNodes).forEach(removeEmptyNodes);
+      }
+    };
+    removeEmptyNodes(doc.body);
+
+    content = doc.body.innerHTML.trim()
+      .replace(/\n\s*\n/g, '\n')
+      .replace(/\s+$/gm, '');
+  }
+
+  // ===== Commit + UI sau copy =====
+  const commitAfterCopy = async () => {
+  if (KG_TRACK_SITES.has(website)) {
+    const pkey = copyButton.dataset.productKey;
+    const desc = copyButton.dataset.descHtml;
+
+    if (pkey && desc) {
+      kgCommitDesc(pkey, website, desc); // localStorage
+      await kgInsertDescToSupabase(pkey, website, desc); // 🔥 Supabase
     }
+  }
 
-    // Hàm sao chép nội dung
-    function saoChepNoiDung() {
-      const copyButton = document.getElementById('copyButton');
-      const website = document.getElementById('website').value;
-      let content = copyButton.dataset.content;
+  alert('Đã sao chép nội dung thành công!');
+  copyButton.style.display = 'none';
+};
 
-      if (!content) {
-        alert('Chưa có nội dung để sao chép! Vui lòng tạo nội dung trước.');
-        return;
-      }
+  // ===== Copy =====
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(content)
+      .then(commitAfterCopy)
+      .catch(err => {
+        console.error('Lỗi sao chép clipboard:', err);
+        const ok = fallbackCopy(content);
+        if (ok) commitAfterCopy();
+      });
+  } else {
+    const ok = fallbackCopy(content);
+    if (ok) commitAfterCopy();
+  }
+}
 
-      // Làm sạch nội dung
-      if (website === 'banphutung' || website === 'phutungotokieugia') {
-        // Xử lý nội dung HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(content, 'text/html');
-        
-        // Loại bỏ các thẻ trống (p, div, ul, li) không chứa nội dung hữu ích
-        const removeEmptyNodes = (node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            if (['P', 'DIV', 'UL', 'LI'].includes(node.tagName) && !node.textContent.trim() && !node.querySelector('a, strong, em')) {
-              node.remove();
-              return;
-            }
-            Array.from(node.childNodes).forEach(removeEmptyNodes);
-          }
-        };
-        removeEmptyNodes(doc.body);
+// =========================
+// Phương án dự phòng để sao chép
+// =========================
+function fallbackCopy(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.opacity = '0';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
 
-        // Chuyển lại thành chuỗi HTML
-        content = doc.body.innerHTML;
-
-        // Loại bỏ khoảng trắng và dòng trống thừa
-        content = content.trim();
-        content = content.replace(/\n\s*\n/g, '\n');
-        content = content.replace(/\s+$/gm, '');
-      } else if (website === 'shopee') {
-        // Nội dung đã được xử lý để giữ định dạng in đậm ở dạng **text**
-        content = content.trim();
-        content = content.replace(/\n\s*\n/g, '\n');
-        content = content.replace(/\s+$/gm, '');
-      } else {
-        // Xử lý các website khác (kieugiaauto, phutunggiare) cũng làm sạch HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(content, 'text/html');
-        
-        const removeEmptyNodes = (node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            if (['P', 'DIV', 'UL', 'LI'].includes(node.tagName) && !node.textContent.trim() && !node.querySelector('a, strong, em')) {
-              node.remove();
-              return;
-            }
-            Array.from(node.childNodes).forEach(removeEmptyNodes);
-          }
-        };
-        removeEmptyNodes(doc.body);
-
-        content = doc.body.innerHTML;
-        content = content.trim();
-        content = content.replace(/\n\s*\n/g, '\n');
-        content = content.replace(/\s+$/gm, '');
-      }
-
-      // Phương án chính: Sử dụng navigator.clipboard
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(content).then(() => {
-          alert('Đã sao chép nội dung thành công!');
-        }).catch(err => {
-          console.error('Lỗi sao chép clipboard:', err);
-          fallbackCopy(content);
-        });
-      } else {
-        // Phương án dự phòng
-        fallbackCopy(content);
-      }
-    }
-
-    // Phương án dự phòng để sao chép
-    function fallbackCopy(text) {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.opacity = '0';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        document.execCommand('copy');
-        alert('Đã sao chép nội dung thành công!');
-      } catch (err) {
-        console.error('Lỗi sao chép dự phòng:', err);
-        alert('Không thể sao chép nội dung! Vui lòng thử lại hoặc sao chép thủ công.');
-      } finally {
-        document.body.removeChild(textArea);
-      }
-    }
-  </script>
+  try {
+    const ok = document.execCommand('copy');
+    if (!ok) alert('Không thể sao chép nội dung! Vui lòng thử lại hoặc sao chép thủ công.');
+    return ok;
+  } catch (err) {
+    console.error('Lỗi sao chép dự phòng:', err);
+    alert('Không thể sao chép nội dung! Vui lòng thử lại hoặc sao chép thủ công.');
+    return false;
+  } finally {
+    document.body.removeChild(textArea);
+  }
+}
+(() => {
+  const raw = kgLoadDescStore();
+  const norm = kgNormalizeStore(raw);
+  if (norm.changed) kgSaveDescStore(norm.store);
+})();
+</script>
 </body>
 </html>
