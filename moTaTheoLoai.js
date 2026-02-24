@@ -2883,4 +2883,29 @@ var moTaTheoLoai = {
   "Sử dụng búa tăng kém chất lượng có thể gây tiếng ồn, nhanh mòn hoặc không đủ lực ép, làm giảm tuổi thọ toàn bộ hệ thống cam.",
   "Bảo dưỡng định kỳ nên kiểm tra tiếng máy, tăng cam và tình trạng búa sau mỗi 80.000–120.000 km hoặc khi có tiếng lạ từ buồng cam."
 ],
+  "kinh chan gio sau": [
+  "Kính chắn gió sau là bộ phận kính lắp ở phía sau xe, có nhiệm vụ che chắn khoang hành khách khỏi gió, bụi bẩn, nước mưa và các tác động từ môi trường bên ngoài.",
+  "Kính chắn gió sau thường được làm từ kính cường lực hoặc kính dán an toàn, có khả năng chịu va đập và khi vỡ sẽ tạo mảnh nhỏ ít gây nguy hiểm.",
+  "Nhiều kính chắn gió sau được tích hợp sấy kính nhằm làm tan sương mù hoặc hơi nước, giúp cải thiện tầm nhìn khi trời mưa hoặc thời tiết ẩm.",
+  "Dấu hiệu hư hỏng kính chắn gió sau gồm: nứt vỡ, trầy xước nặng, mờ kính, bong lớp sấy hoặc nước lọt vào khoang hành lý.",
+  "Nguyên nhân hư hỏng phổ biến là do va chạm giao thông, đá văng, thay kính kém chất lượng hoặc ron kính bị lão hóa theo thời gian.",
+  "Kính chắn gió sau bị nứt hoặc vỡ có thể làm giảm độ an toàn, ảnh hưởng kết cấu thân xe và gây nguy hiểm khi di chuyển tốc độ cao.",
+  "Khi thay kính chắn gió sau cần chọn đúng loại kính theo model xe, đảm bảo đúng kích thước, độ cong và vị trí các đường sấy nhiệt.",
+  "Quá trình lắp đặt kính chắn gió sau cần sử dụng keo chuyên dụng, lắp đúng vị trí và chờ đủ thời gian khô keo trước khi vận hành xe.",
+  "Sử dụng kính chắn gió sau kém chất lượng có thể gây méo hình, nhanh nứt vỡ và làm giảm hiệu quả cách âm của xe.",
+  "Bảo dưỡng định kỳ nên kiểm tra tình trạng kính, ron cao su và hệ thống sấy kính sau để đảm bảo tầm nhìn và an toàn khi sử dụng xe."
+],
+  "kinh chan gio truoc": [
+  "Kính chắn gió trước là bộ phận kính lắp ở phía trước xe, có nhiệm vụ bảo vệ người lái và hành khách khỏi gió, bụi, mưa, côn trùng và các vật thể văng từ bên ngoài.",
+  "Kính chắn gió trước thường được làm từ kính dán an toàn nhiều lớp, khi vỡ không bắn mảnh sắc nhọn mà chỉ nứt hoặc dính lại trên lớp film, giúp tăng độ an toàn.",
+  "Bề mặt kính chắn gió trước được thiết kế có độ cong phù hợp để đảm bảo tầm nhìn rộng, giảm méo hình và hỗ trợ khí động học cho xe.",
+  "Nhiều kính chắn gió trước hiện đại được tích hợp các công nghệ như chống tia UV, cách nhiệt, sưởi kính, cảm biến mưa hoặc giá đỡ camera hỗ trợ lái.",
+  "Dấu hiệu hư hỏng kính chắn gió trước gồm: nứt chân chim, vỡ kính, trầy xước nặng, mờ kính hoặc bong lớp phim dán an toàn.",
+  "Nguyên nhân hư hỏng phổ biến là do đá văng, va chạm giao thông, thay kính kém chất lượng hoặc keo dán kính bị lão hóa.",
+  "Kính chắn gió trước bị nứt hoặc vỡ có thể làm giảm tầm nhìn, ảnh hưởng đến kết cấu thân xe và gây nguy hiểm khi vận hành.",
+  "Khi thay kính chắn gió trước cần chọn đúng loại kính theo dòng xe, đúng độ dày, độ cong và tương thích với các cảm biến đi kèm.",
+  "Quá trình lắp đặt kính chắn gió trước phải sử dụng keo chuyên dụng, lắp kín khít để tránh thấm nước, gió và tiếng ồn khi xe chạy.",
+  "Bảo dưỡng định kỳ nên vệ sinh kính, kiểm tra ron, cần gạt mưa và xử lý sớm các vết nứt nhỏ để tránh lan rộng."
+],
 }
+
