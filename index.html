@@ -98,6 +98,7 @@
         <option value="banphutung">Bán phụ tùng</option>
         <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
         <option value="shopee">Shopee</option>
+        <option value="shopee2">Shopee 2</option>
       </select>
     </div>
     <div class="button-container">
@@ -434,7 +435,11 @@ if (!match) {
           shopee: [
             `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, giá ưu đãi trên Shopee.`,
             `${gioiThieu} Sản phẩm chất lượng cao cho ${hang} ${dong}${dateText}, giao hàng nhanh chóng.`
-          ]
+          ],
+          shopee2: [
+            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, phụ tùng chất lượng cao.`,
+            `${gioiThieu} Phù hợp cho ${hang} ${dong}${dateText}, lắp đặt dễ dàng.`
+          ],
         };
 
         const mau = moTaMau[website];
@@ -707,7 +712,7 @@ window.__kg_last_auto_desc = {
   website,
   descHtml: moTaTuDong
 };
-  const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee');
+  const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee' || website === 'shopee2');
 
   const hangXeList = [
     'Toyota', 'Kia', 'Mazda', 'Ford', 'Honda', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'Chevrolet',
@@ -948,6 +953,39 @@ ${danhSachXe}
   <li>Giao hàng nhanh chóng trên toàn quốc.</li>
 </ul>
 <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
+} else if (website === 'shopee2') {
+  content = `<h2>${ten}</h2>
+
+<p><strong>Mã phụ tùng:</strong> ${ma}</p>
+<p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+<p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+${moTaTuDong}
+${danhSachXe}
+<p>${ten} là phụ tùng quan trọng giúp xe vận hành ổn định và đảm bảo độ bền trong quá trình sử dụng.</p>
+
+<h3>🔧 Đặc điểm sản phẩm</h3>
+<ul>
+<li>Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.</li>
+<li>Độ bền cao, hoạt động ổn định.</li>
+<li>Phù hợp lắp đặt cho nhiều dòng xe.</li>
+<li>Dễ dàng thay thế tại các gara ô tô.</li>
+</ul>
+
+<h3>📦 Chính sách bán hàng</h3>
+<ul>
+<li>Sản phẩm được kiểm tra trước khi gửi.</li>
+<li>Đóng gói cẩn thận khi vận chuyển.</li>
+<li>Hỗ trợ đổi trả theo chính sách của sàn.</li>
+</ul>
+
+<h3>📌 Lưu ý khi đặt hàng</h3>
+<ul>
+<li>Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.</li>
+<li>Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.</li>
+<li>Nên lắp đặt tại gara hoặc thợ kỹ thuật.</li>
+</ul>
+
+<p>Cảm ơn quý khách đã quan tâm sản phẩm!</p>`;
         
         // Chuyển nội dung HTML sang plain text, nhưng giữ định dạng in đậm
         let plainMoTaTuDong = moTaTuDong
