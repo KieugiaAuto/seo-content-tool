@@ -2907,4 +2907,17 @@ var moTaTheoLoai = {
   "Quá trình lắp đặt kính chắn gió trước phải sử dụng keo chuyên dụng, lắp kín khít để tránh thấm nước, gió và tiếng ồn khi xe chạy.",
   "Bảo dưỡng định kỳ nên vệ sinh kính, kiểm tra ron, cần gạt mưa và xử lý sớm các vết nứt nhỏ để tránh lan rộng."
 ],
+  "cam bien do gio": [
+"Cảm biến đo gió (MAF) có nhiệm vụ đo lượng không khí đi vào động cơ và gửi tín hiệu về ECU để tính toán lượng nhiên liệu phun chính xác. Khi cảm biến hoạt động tốt, động cơ sẽ vận hành êm ái, tiết kiệm nhiên liệu và tăng tốc mượt mà.",
+"Cảm biến lưu lượng khí nạp giúp ECU điều chỉnh tỷ lệ hòa khí chính xác trong buồng đốt. Nếu cảm biến đo gió bị bẩn hoặc hỏng, xe có thể bị hụt ga, hao xăng hoặc phát ra khói đen từ ống xả.",
+"Là một trong những cảm biến quan trọng của hệ thống phun xăng điện tử, cảm biến MAF giúp đo chính xác lượng không khí nạp vào động cơ theo thời gian thực. Khi bị lỗi, động cơ thường chạy yếu, tăng tốc kém và có thể báo đèn Check Engine.",
+"Cảm biến đo gió ô tô thường được lắp trên đường ống nạp, gần lọc gió động cơ. Bộ phận này giúp ECU tính toán lượng xăng cần phun để đảm bảo quá trình đốt cháy hiệu quả và tiết kiệm nhiên liệu.",
+"Nếu cảm biến đo gió bị bẩn do bụi hoặc dầu bám, tín hiệu gửi về ECU sẽ sai lệch, khiến xe chạy ì, hao nhiên liệu hoặc khó nổ máy. Vệ sinh hoặc thay cảm biến đúng loại sẽ giúp động cơ phục hồi hiệu suất ban đầu.",
+"Cảm biến MAF chính hãng có độ nhạy cao và phản hồi nhanh, giúp động cơ duy trì tỷ lệ hòa khí tối ưu. Sử dụng cảm biến kém chất lượng có thể khiến ECU tính toán sai, làm giảm công suất và tăng mức tiêu hao nhiên liệu.",
+"Khi cảm biến đo gió bị hỏng, xe có thể xuất hiện các dấu hiệu như rung giật khi tăng tốc, ga không đều hoặc chết máy khi dừng. Kiểm tra và thay cảm biến kịp thời giúp động cơ hoạt động ổn định trở lại.",
+"Cảm biến lưu lượng khí nạp đóng vai trò quan trọng trong việc kiểm soát lượng nhiên liệu phun vào buồng đốt. Một cảm biến hoạt động tốt sẽ giúp xe tăng tốc mượt, giảm khí thải và kéo dài tuổi thọ động cơ.",
+"Đối với các dòng xe sử dụng hệ thống phun xăng điện tử, cảm biến đo gió là thiết bị không thể thiếu. Khi cảm biến gửi dữ liệu chính xác, ECU sẽ điều chỉnh lượng xăng phù hợp với từng điều kiện vận hành của động cơ.",
+"Thay cảm biến đo gió đúng mã theo dòng xe giúp đảm bảo tín hiệu chính xác và tương thích với ECU. Đây là phụ tùng nhỏ nhưng ảnh hưởng lớn đến hiệu suất động cơ, mức tiêu hao nhiên liệu và độ ổn định khi vận hành."
+],
 }
+
