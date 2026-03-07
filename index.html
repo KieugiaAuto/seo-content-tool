@@ -214,7 +214,7 @@
       }).then(() => console.log("☁️ Đã đồng bộ bài đăng mới lên Google Sheets!"));
     }
 
-    // Hàm check trùng dữ liệu (Đã tinh gọn)
+    // Hàm check trùng dữ liệu (Đã nâng cấp: Chặn copy lại đúng nội dung cũ trên cùng 1 web)
     function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
       let store = kgLoadDescStore();
       const used = store[productKey] || {};
@@ -223,13 +223,24 @@
       const KG_TTL_MS = 20 * 24 * 60 * 60 * 1000; // Check bài trong 20 ngày
 
       for (const [site, saved] of Object.entries(used)) {
-        if (site === website || !saved) continue;
+        if (!saved) continue;
 
         const savedDescN = (typeof saved === 'object' && saved.desc) ? saved.desc : String(saved);
         const ts = (typeof saved === 'object' && saved.ts) ? saved.ts : now; 
 
         if (now - ts > KG_TTL_MS) continue; 
 
+        // 1. NẾU LÀ CÙNG 1 WEBSITE (Ví dụ quay lại web 1)
+        if (site === website) {
+          // Nếu nội dung đang hiển thị Y HỆT nội dung đã bấm copy -> CHẶN LUÔN
+          if (savedDescN === curN) {
+            return { duplicate: true, conflictSite: "chính web này (Bạn đã copy bài này rồi)", similarity: 1, exact: true };
+          }
+          // Nếu nội dung khác (do anh vừa bấm Tạo nội dung lại) -> Bỏ qua để cho copy bản mới
+          continue;
+        }
+
+        // 2. NẾU LÀ CÁC WEBSITE KHÁC (Check trùng chéo)
         if (savedDescN === curN) {
           return { duplicate: true, conflictSite: site, similarity: 1, exact: true };
         }
@@ -851,3 +862,4 @@ ${danhSachXe}
 </script>
 </body>
 </html>
+
