@@ -169,21 +169,31 @@
       return `name__${name}`;
     }
 
-    // ==========================================
+// ==========================================
     // KẾT NỐI DATABASE GOOGLE SHEETS
     // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbxk0WE4cNx8-_6bwt4bv6ueLVRkgzhrfCPfX5VpkMmBe0fm41JMxOsAIdrLqFYxxQUhYA/exec";
-    window.kgGlobalStore = {}; 
+    if (!window.kgGlobalStore) window.kgGlobalStore = {};
 
-    // Tải lịch sử viết bài từ Sheets khi nhân viên vừa mở web
+    // Tải lịch sử viết bài từ Sheets (ĐÃ TRANG BỊ CHỐNG CACHE)
     async function loadDataFromSheets() {
       try {
-        const response = await fetch(API_URL);
+        // Thêm tham số thời gian để ép Google Sheets trả về dữ liệu mới nhất, không dùng đồ cũ
+        const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
         const data = await response.json();
-        window.kgGlobalStore = data;
-        console.log("✅ Đã tải dữ liệu đồng bộ từ Google Sheets!");
+
+        // Trộn dữ liệu thay vì xóa đè, đảm bảo không quên bài nhân viên vừa copy xong
+        for (let pkey in data) {
+          if (!window.kgGlobalStore[pkey]) window.kgGlobalStore[pkey] = {};
+          for (let site in data[pkey]) {
+            if (!window.kgGlobalStore[pkey][site]) {
+              window.kgGlobalStore[pkey][site] = data[pkey][site];
+            }
+          }
+        }
+        console.log("✅ Đã tải dữ liệu đồng bộ MỚI NHẤT từ Google Sheets!");
       } catch (err) {
-        console.error("❌ Lỗi tải dữ liệu mạng. Tạm thời check trùng bằng bộ nhớ trình duyệt:", err);
+        console.error("❌ Lỗi tải dữ liệu mạng:", err);
       }
     }
     loadDataFromSheets(); // Chạy ngay khi bật tool
@@ -194,14 +204,12 @@
 
     // Hàm lưu bài lên Google Sheets khi bấm "Sao chép"
     function kgCommitDesc(productKey, website, descHtml) {
-      // 1. Lưu ngay trên trình duyệt hiện tại để Reroll nhận ra ngay
       if (!window.kgGlobalStore[productKey]) window.kgGlobalStore[productKey] = {};
       window.kgGlobalStore[productKey][website] = {
         desc: kgNormalizeText(descHtml),
         ts: Date.now()
       };
 
-      // 2. Bắn data lên Google Sheets ngầm (Sử dụng no-cors để tránh lỗi bảo mật của Google)
       fetch(API_URL, {
         method: 'POST',
         mode: 'no-cors', 
@@ -211,34 +219,28 @@
           website: website,
           desc: kgNormalizeText(descHtml)
         })
-      }).then(() => console.log("☁️ Đã đồng bộ bài đăng mới lên Google Sheets!"));
+      }).then(() => console.log("☁️ Đã POST dữ liệu lên Sheets!"));
     }
 
-    // Hàm check trùng dữ liệu (Siêu cấp: Khóa chết theo Tên/Mã phụ tùng trên cùng 1 web)
+    // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
     function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
       let store = kgLoadDescStore();
       const used = store[productKey] || {};
       const curN = kgNormalizeText(descHtml);
       const now = Date.now();
-      
-      // Tăng thời gian lưu trữ lịch sử check lên rất dài (Ví dụ: 365 ngày) để nhân viên không đăng lại bài cũ của năm trước
-      const KG_TTL_MS = 365 * 24 * 60 * 60 * 1000; 
+      const KG_TTL_MS = 365 * 24 * 60 * 60 * 1000; // Lưu 1 năm để cấm đăng lại
 
-      // 1. CHỐT CHẶN TỬ THẦN: Kiểm tra xem TỪ KHÓA / MÃ SẢN PHẨM này đã từng đăng trên web này chưa?
-      // Nếu đã có dữ liệu trên Google Sheets cho web này -> CHẶN NGAY LẬP TỨC 100%
+      // 1. CHỐT CHẶN TRÊN CÙNG 1 WEB: Khóa cứng theo Mã Sản Phẩm
       if (used[website]) {
-        const ts = (typeof used[website] === 'object' && used[website].ts) ? used[website].ts : now;
-        if (now - ts <= KG_TTL_MS) {
-           return { 
-             duplicate: true, 
-             conflictSite: "CHÍNH WEB NÀY! (Từ khóa hoặc Mã sản phẩm này ĐÃ ĐƯỢC ĐĂNG trước đó. Hệ thống từ chối cấp phép đăng lại!)", 
-             similarity: 1, 
-             exact: true 
-           };
-        }
+        return { 
+          duplicate: true, 
+          conflictSite: "CHÍNH WEB NÀY! (Mã sản phẩm này ĐÃ ĐƯỢC COPY trước đó. Cấm đăng lại!)", 
+          similarity: 1, 
+          exact: true 
+        };
       }
 
-      // 2. NẾU CHƯA ĐĂNG TRÊN WEB NÀY -> Quét chéo xem nội dung có bị trùng với các WEB KHÁC không
+      // 2. CHECK CHÉO VỚI CÁC WEB KHÁC
       for (const [site, saved] of Object.entries(used)) {
         if (!saved || site === website) continue;
 
@@ -869,5 +871,6 @@ ${danhSachXe}
 </script>
 </body>
 </html>
+
 
 
