@@ -903,29 +903,29 @@ ${danhSachXe}
         return;
       }
 
-      // Đổi chữ trên nút để báo hiệu đang chạy
       btn.innerText = "Đang kiểm tra...";
       errorMsg.style.display = 'none';
       
       try {
-        // Gửi thông tin lên Apps Script để hỏi
         const response = await fetch(LOGIN_API_URL + `?action=login&user=${user}&pass=${pass}`);
         const data = await response.json();
 
         if (data.status === "success") {
-          // Đúng mật khẩu -> Mở khóa
           document.getElementById('login-screen').style.display = 'none';
           document.getElementById('main-app').style.display = 'block';
-          sessionStorage.setItem('kg_logged_in', 'true');
+          
+          // NÂNG CẤP: Lưu trạng thái đăng nhập gắn với NGÀY HÔM NAY
+          const homNay = new Date().toDateString();
+          localStorage.setItem('kg_login_date', homNay);
+          localStorage.setItem('kg_login_name', data.name);
+          
           alert('Xin chào: ' + data.name);
         } else {
-          // Sai mật khẩu
           errorMsg.innerText = "Sai tài khoản hoặc mật khẩu!";
           errorMsg.style.display = 'block';
           btn.innerText = "Đăng nhập";
         }
       } catch (err) {
-        // Lỗi mạng hoặc lỗi Google Sheets
         console.error("Lỗi đăng nhập:", err);
         errorMsg.innerText = "Lỗi hệ thống! Vui lòng báo quản lý kiểm tra lại link API.";
         errorMsg.style.display = 'block';
@@ -933,14 +933,16 @@ ${danhSachXe}
       }
     }
 
-    // Tự động mở khóa nếu đã đăng nhập trước đó
-    if (sessionStorage.getItem('kg_logged_in') === 'true') {
+    // NÂNG CẤP: Tự động mở khóa nếu ngày lưu trữ trùng với NGÀY HÔM NAY
+    const homNay = new Date().toDateString();
+    if (localStorage.getItem('kg_login_date') === homNay) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
     }
   </script>
   </div> </body>
 </html>
+
 
 
 
