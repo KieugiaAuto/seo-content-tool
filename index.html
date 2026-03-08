@@ -885,52 +885,62 @@ ${danhSachXe}
         document.body.removeChild(textArea);
       }
     }
-    </div> <script>
-    // Hàm xử lý khi bấm nút Đăng nhập
+
+    // =========================
+    // HÀM XỬ LÝ ĐĂNG NHẬP
+    // =========================
+    const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbxk0WE4cNx8-_6bwt4bv6ueLVRkgzhrfCPfX5VpkMmBe0fm41JMxOsAIdrLqFYxxQUhYA/exec";
+
     async function xuLyDangNhap() {
       const user = document.getElementById('username').value.trim();
       const pass = document.getElementById('password').value.trim();
       const btn = document.getElementById('btnLogin');
       const errorMsg = document.getElementById('login-error');
 
-      if (!user || !pass) return;
+      if (!user || !pass) {
+        errorMsg.innerText = "Vui lòng nhập đủ tài khoản và mật khẩu!";
+        errorMsg.style.display = 'block';
+        return;
+      }
 
+      // Đổi chữ trên nút để báo hiệu đang chạy
       btn.innerText = "Đang kiểm tra...";
+      errorMsg.style.display = 'none';
       
       try {
         // Gửi thông tin lên Apps Script để hỏi
-        const response = await fetch(API_URL + `?action=login&user=${user}&pass=${pass}`);
+        const response = await fetch(LOGIN_API_URL + `?action=login&user=${user}&pass=${pass}`);
         const data = await response.json();
 
         if (data.status === "success") {
-          // Đúng mật khẩu -> Ẩn màn hình đăng nhập, Hiển thị Tool
+          // Đúng mật khẩu -> Mở khóa
           document.getElementById('login-screen').style.display = 'none';
           document.getElementById('main-app').style.display = 'block';
-          
-          // Lưu trạng thái để F5 không bị bắt đăng nhập lại
           sessionStorage.setItem('kg_logged_in', 'true');
           alert('Xin chào: ' + data.name);
         } else {
           // Sai mật khẩu
+          errorMsg.innerText = "Sai tài khoản hoặc mật khẩu!";
           errorMsg.style.display = 'block';
           btn.innerText = "Đăng nhập";
         }
       } catch (err) {
-        errorMsg.innerText = "Lỗi kết nối mạng!";
+        // Lỗi mạng hoặc lỗi Google Sheets
+        console.error("Lỗi đăng nhập:", err);
+        errorMsg.innerText = "Lỗi hệ thống! Vui lòng báo quản lý kiểm tra lại link API.";
         errorMsg.style.display = 'block';
         btn.innerText = "Đăng nhập";
       }
     }
 
-    // Tự động mở khóa nếu đã đăng nhập từ trước
+    // Tự động mở khóa nếu đã đăng nhập trước đó
     if (sessionStorage.getItem('kg_logged_in') === 'true') {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
     }
-</script>
-</body>
+  </script>
+  </div> </body>
 </html>
-
 
 
 
