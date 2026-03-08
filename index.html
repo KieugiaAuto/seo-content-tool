@@ -202,8 +202,12 @@
       return window.kgGlobalStore || {};
     }
 
-    // Hàm lưu bài lên Google Sheets khi bấm "Sao chép"
+    // Hàm lưu bài lên Google Sheets khi bấm "Sao chép" (Bản đủ Tên + Mã)
     function kgCommitDesc(productKey, website, descHtml) {
+      // Lấy Tên và Mã nguyên bản từ các ô nhập liệu
+      const productName = document.getElementById('ten').value.trim();
+      const productCode = document.getElementById('ma').value.trim();
+
       if (!window.kgGlobalStore[productKey]) window.kgGlobalStore[productKey] = {};
       window.kgGlobalStore[productKey][website] = {
         desc: kgNormalizeText(descHtml),
@@ -216,10 +220,12 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productKey: productKey,
+          productName: productName, // Gửi tên
+          productCode: productCode, // Gửi mã nguyên bản
           website: website,
           desc: kgNormalizeText(descHtml)
         })
-      }).then(() => console.log("☁️ Đã POST dữ liệu lên Sheets!"));
+      }).then(() => console.log("☁️ Đã lưu dữ liệu kèm Tên và Mã lên Sheets!"));
     }
 
     // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
@@ -871,6 +877,7 @@ ${danhSachXe}
 </script>
 </body>
 </html>
+
 
 
 
