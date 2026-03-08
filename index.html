@@ -72,6 +72,17 @@
   </style>
 </head>
 <body>
+  <div id="login-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f4f4; z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 300px; text-align: center;">
+      <h2 style="margin-top: 0;">Kiều Gia Auto</h2>
+      <input type="text" id="username" placeholder="Tên đăng nhập" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <input type="password" id="password" placeholder="Mật khẩu" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <button onclick="xuLyDangNhap()" id="btnLogin" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Đăng nhập</button>
+      <p id="login-error" style="color: red; font-size: 13px; display: none; margin-top: 10px;">Sai tài khoản hoặc mật khẩu!</p>
+    </div>
+  </div>
+
+  <div id="main-app" style="display: none;">
   <div class="container">
     <h1>Tạo nội dung SEO cho Kiều Gia Auto</h1>
     <div class="form-group">
@@ -874,9 +885,52 @@ ${danhSachXe}
         document.body.removeChild(textArea);
       }
     }
+    </div> <script>
+    // Hàm xử lý khi bấm nút Đăng nhập
+    async function xuLyDangNhap() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const btn = document.getElementById('btnLogin');
+      const errorMsg = document.getElementById('login-error');
+
+      if (!user || !pass) return;
+
+      btn.innerText = "Đang kiểm tra...";
+      
+      try {
+        // Gửi thông tin lên Apps Script để hỏi
+        const response = await fetch(API_URL + `?action=login&user=${user}&pass=${pass}`);
+        const data = await response.json();
+
+        if (data.status === "success") {
+          // Đúng mật khẩu -> Ẩn màn hình đăng nhập, Hiển thị Tool
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('main-app').style.display = 'block';
+          
+          // Lưu trạng thái để F5 không bị bắt đăng nhập lại
+          sessionStorage.setItem('kg_logged_in', 'true');
+          alert('Xin chào: ' + data.name);
+        } else {
+          // Sai mật khẩu
+          errorMsg.style.display = 'block';
+          btn.innerText = "Đăng nhập";
+        }
+      } catch (err) {
+        errorMsg.innerText = "Lỗi kết nối mạng!";
+        errorMsg.style.display = 'block';
+        btn.innerText = "Đăng nhập";
+      }
+    }
+
+    // Tự động mở khóa nếu đã đăng nhập từ trước
+    if (sessionStorage.getItem('kg_logged_in') === 'true') {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-app').style.display = 'block';
+    }
 </script>
 </body>
 </html>
+
 
 
 
