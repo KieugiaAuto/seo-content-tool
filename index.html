@@ -213,11 +213,13 @@
       return window.kgGlobalStore || {};
     }
 
-    // Hàm lưu bài lên Google Sheets khi bấm "Sao chép" (Bản đủ Tên + Mã)
+    // Hàm lưu bài lên Google Sheets (Đã thêm chức năng Gắn tên nhân viên)
     function kgCommitDesc(productKey, website, descHtml) {
-      // Lấy Tên và Mã nguyên bản từ các ô nhập liệu
       const productName = document.getElementById('ten').value.trim();
       const productCode = document.getElementById('ma').value.trim();
+      
+      // Lấy tên nhân viên đang đăng nhập từ bộ nhớ
+      const employeeName = localStorage.getItem('kg_login_name') || "Không rõ";
 
       if (!window.kgGlobalStore[productKey]) window.kgGlobalStore[productKey] = {};
       window.kgGlobalStore[productKey][website] = {
@@ -231,12 +233,13 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productKey: productKey,
-          productName: productName, // Gửi tên
-          productCode: productCode, // Gửi mã nguyên bản
+          productName: productName,
+          productCode: productCode,
           website: website,
-          desc: kgNormalizeText(descHtml)
+          desc: kgNormalizeText(descHtml),
+          employeeName: employeeName // Đóng gói tên nhân viên gửi đi
         })
-      }).then(() => console.log("☁️ Đã lưu dữ liệu kèm Tên và Mã lên Sheets!"));
+      }).then(() => console.log("☁️ Đã lưu dữ liệu kèm tên nhân viên!"));
     }
 
     // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
@@ -942,6 +945,7 @@ ${danhSachXe}
   </script>
   </div> </body>
 </html>
+
 
 
 
