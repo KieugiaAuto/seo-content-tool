@@ -130,7 +130,7 @@
         .replace(/Đ/g, 'D');
     }
 
-    const KG_TRACK_SITES = new Set(['kieugiaauto','phutunggiare','banphutung','phutungotokieugia', 'shopee', 'shopee2']);
+    const KG_TRACK_SITES = new Set(['kieugiaauto','phutunggiare','banphutung','phutungotokieugia']);
 
     function kgNormalizeText(s) {
       return (s || '')
@@ -846,11 +846,11 @@ ${danhSachXe}
       }
 
       const commitAfterCopy = () => {
-        if (KG_TRACK_SITES.has(website)) {
-          const pkey = copyButton.dataset.productKey;
-          const desc = copyButton.dataset.descHtml;
-          if (pkey && desc) kgCommitDesc(pkey, website, desc); // Gọi hàm lưu lên Google Sheets
-        }
+        // Bỏ lệnh kiểm tra, LUÔN LUÔN lưu lịch sử lên Google Sheets cho TẤT CẢ website (bao gồm cả Shopee)
+        const pkey = copyButton.dataset.productKey;
+        const desc = copyButton.dataset.descHtml;
+        if (pkey && desc) kgCommitDesc(pkey, website, desc); // Gọi hàm lưu lên Sheets
+        
         alert('Đã sao chép nội dung thành công!');
         copyButton.style.display = 'none';
       };
@@ -945,6 +945,7 @@ ${danhSachXe}
   </script>
   </div> </body>
 </html>
+
 
 
 
