@@ -83,40 +83,49 @@
   </div>
 
   <div id="main-app" style="display: none;">
-  <div class="container">
-    <h1>Tạo nội dung SEO cho Kiều Gia Auto</h1>
-    <div class="form-group">
-      <label for="ten">Tên phụ tùng:</label>
-      <input type="text" id="ten" placeholder="Ví dụ: Càng A Suzuki Swift 2013-2018">
+    <div class="container">
+      <h1>Tạo nội dung SEO cho Kiều Gia Auto</h1>
+      <div class="form-group">
+        <label for="ten">Tên phụ tùng:</label>
+        <input type="text" id="ten" placeholder="Ví dụ: Càng A Suzuki Swift 2013-2018">
+      </div>
+      <div class="form-group">
+        <label for="ma">Mã sản phẩm:</label>
+        <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
+      </div>
+      <div class="form-group">
+        <label for="thuonghieu">Thương hiệu:</label>
+        <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
+      </div>
+      <div class="form-group">
+        <label for="xuatxu">Xuất xứ:</label>
+        <input type="text" id="xuatxu" placeholder="Ví dụ: Nhật Bản">
+      </div>
+      <div class="form-group">
+        <label for="website">Chọn website:</label>
+        <select id="website">
+          <option value="phutunggiare">Phụ tùng giá rẻ</option>
+          <option value="kieugiaauto">Kiều Gia Auto</option>
+          <option value="banphutung">Bán phụ tùng</option>
+          <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
+          <option value="shopee">Shopee</option>
+          <option value="shopee2">Shopee 2</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="khung-mo-khoa" style="display: none; margin-top: -5px;">
+        <label style="font-weight: normal; cursor: pointer; color: #d9534f; font-size: 14px;">
+          <input type="checkbox" id="allowUpdate"> 🔓 Mở khóa cho phép sửa/cập nhật bài cũ (Bỏ qua cảnh báo trùng)
+        </label>
+      </div>
+
+      <div class="button-container">
+        <button onclick="taoNoiDung()">Tạo nội dung</button>
+        <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung</button>
+        <button id="pushWpButton" onclick="dayLenWordPress()" style="display: none; background-color: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">🚀 Đẩy lên Web (Bản nháp)</button>
+      </div>
+      <div id="preview"></div>
     </div>
-    <div class="form-group">
-      <label for="ma">Mã sản phẩm:</label>
-      <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
-    </div>
-    <div class="form-group">
-      <label for="thuonghieu">Thương hiệu:</label>
-      <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
-    </div>
-    <div class="form-group">
-      <label for="xuatxu">Xuất xứ:</label>
-      <input type="text" id="xuatxu" placeholder="Ví dụ: Nhật Bản">
-    </div>
-    <div class="form-group">
-      <label for="website">Chọn website:</label>
-      <select id="website">
-        <option value="phutunggiare">Phụ tùng giá rẻ</option>
-        <option value="kieugiaauto">Kiều Gia Auto</option>
-        <option value="banphutung">Bán phụ tùng</option>
-        <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
-        <option value="shopee">Shopee</option>
-        <option value="shopee2">Shopee 2</option>
-      </select>
-    </div>
-    <div class="button-container">
-      <button onclick="taoNoiDung()">Tạo nội dung</button>
-      <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung</button>
-    </div>
-    <div id="preview"></div>
   </div>
 
   <script src="moTaTheoLoai.js"></script>
@@ -141,7 +150,6 @@
         .toLowerCase();
     }
 
-    // ===== NEAR DUPLICATE CHECK (Jaccard >= 80%) =====
     function kgTokenize(s) {
       const t = removeVietnameseTones(kgNormalizeText(s))
         .replace(/[^a-z0-9\s]/g, ' ')
@@ -180,20 +188,20 @@
       return `name__${name}`;
     }
 
-// ==========================================
-    // KẾT NỐI DATABASE GOOGLE SHEETS
+    // ==========================================
+    // KẾT NỐI DATABASE GOOGLE SHEETS VÀ API ĐĂNG NHẬP
     // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbxk0WE4cNx8-_6bwt4bv6ueLVRkgzhrfCPfX5VpkMmBe0fm41JMxOsAIdrLqFYxxQUhYA/exec";
+    const LOGIN_API_URL = API_URL; 
+    
     if (!window.kgGlobalStore) window.kgGlobalStore = {};
 
     // Tải lịch sử viết bài từ Sheets (ĐÃ TRANG BỊ CHỐNG CACHE)
     async function loadDataFromSheets() {
       try {
-        // Thêm tham số thời gian để ép Google Sheets trả về dữ liệu mới nhất, không dùng đồ cũ
         const response = await fetch(API_URL + "?nocache=" + new Date().getTime());
         const data = await response.json();
 
-        // Trộn dữ liệu thay vì xóa đè, đảm bảo không quên bài nhân viên vừa copy xong
         for (let pkey in data) {
           if (!window.kgGlobalStore[pkey]) window.kgGlobalStore[pkey] = {};
           for (let site in data[pkey]) {
@@ -207,18 +215,16 @@
         console.error("❌ Lỗi tải dữ liệu mạng:", err);
       }
     }
-    loadDataFromSheets(); // Chạy ngay khi bật tool
+    loadDataFromSheets();
 
     function kgLoadDescStore() {
       return window.kgGlobalStore || {};
     }
 
-    // Hàm lưu bài lên Google Sheets (Đã thêm chức năng Gắn tên nhân viên)
+    // Hàm lưu bài lên Google Sheets (Bao gồm tên nhân viên)
     function kgCommitDesc(productKey, website, descHtml) {
       const productName = document.getElementById('ten').value.trim();
       const productCode = document.getElementById('ma').value.trim();
-      
-      // Lấy tên nhân viên đang đăng nhập từ bộ nhớ
       const employeeName = localStorage.getItem('kg_login_name') || "Không rõ";
 
       if (!window.kgGlobalStore[productKey]) window.kgGlobalStore[productKey] = {};
@@ -237,30 +243,23 @@
           productCode: productCode,
           website: website,
           desc: kgNormalizeText(descHtml),
-          employeeName: employeeName // Đóng gói tên nhân viên gửi đi
+          employeeName: employeeName
         })
-      }).then(() => console.log("☁️ Đã lưu dữ liệu kèm tên nhân viên!"));
+      }).then(() => console.log("☁️ Đã lưu dữ liệu lên Sheets!"));
     }
 
-    // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
+    // Hàm check trùng dữ liệu
     function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
       let store = kgLoadDescStore();
       const used = store[productKey] || {};
       const curN = kgNormalizeText(descHtml);
       const now = Date.now();
-      const KG_TTL_MS = 365 * 24 * 60 * 60 * 1000; // Lưu 1 năm để cấm đăng lại
+      const KG_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 
-      // 1. CHỐT CHẶN TRÊN CÙNG 1 WEB: Khóa cứng theo Mã Sản Phẩm
       if (used[website]) {
-        return { 
-          duplicate: true, 
-          conflictSite: "CHÍNH WEB NÀY! (Mã sản phẩm này ĐÃ ĐƯỢC COPY trước đó. Cấm đăng lại!)", 
-          similarity: 1, 
-          exact: true 
-        };
+        return { duplicate: true, conflictSite: "CHÍNH WEB NÀY! (Mã sản phẩm này ĐÃ ĐƯỢC COPY trước đó. Cấm đăng lại!)", similarity: 1, exact: true };
       }
 
-      // 2. CHECK CHÉO VỚI CÁC WEB KHÁC
       for (const [site, saved] of Object.entries(used)) {
         if (!saved || site === website) continue;
 
@@ -279,19 +278,13 @@
           return { duplicate: true, conflictSite: site, similarity: sim, exact: false };
         }
       }
-
       return { duplicate: false, similarity: 0, exact: false };
     }
 
-    // ==========================================
-    // CÁC HÀM XỬ LÝ NỘI DUNG
-    // ==========================================
     function sinhMoTaTuDong(ten) {
       const regex = /(.*?)(ac|acura|aeolus|alfa_romeo|alpine|aston_martin|audi|bac|bahman|baic|bentley|bmw|bollinger|brilliance|bugatti|buick|byd|cadillac|callaway|carver|chery|chevrolet|chrysler|citroen|cupra|daihatsu|dodge|ds|ferrari|fiat|fisker|ford|geely|genesis|gmc|haval|hino|honda|hummer|hyundai|infiniti|isuzu|jaguar|jeep|kia|lamborghini|land_rover|lexus|lincoln|lotus|lucid|maserati|maybach|mazda|mclaren|mercedes_benz|mg|mini|mitsubishi|nissan|opel|pagani|peugeot|porsche|ram|renault|rivian|rolls_royce|saic|seat|skoda|smart|ssangyong|subaru|suzuki|tesla|toyota|vinfast|volkswagen|volvo|daewoo|mercedes)[\s-]+([a-zA-Z0-9\s.]+)(?:\s+(\d{4})(?:\D+(\d{4}))?)?$/i;
       const match = ten.match(regex);
-      if (!match) {
-        return `<p>Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.</p>`;
-      }
+      if (!match) return `<p>Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.</p>`;
 
       const tenPhuTung = match[1].trim();
       const hang = match[2].replace('_', '-').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -335,9 +328,7 @@
         console.error('Lỗi khi truy cập moTaTheoLoai:', err);
       }
 
-      if (!gioiThieu) {
-        gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
-      }
+      if (!gioiThieu) gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
 
       const maInput = (document.getElementById('ma')?.value || '').trim();
       const productKey = kgMakeProductKey(ten, maInput);
@@ -500,9 +491,24 @@
       const dup = kgIsDuplicateDesc(pkey, website, descRaw, threshold);
 
       if (dup.duplicate) {
+        // Kiểm tra xem có đang tích mở khóa không
+        const allowUpdateCheckbox = document.getElementById('allowUpdate');
+        const isEditMode = allowUpdateCheckbox && allowUpdateCheckbox.checked;
+        
+        if (isEditMode) {
+          copyButton.style.display = 'block';
+          if (website === 'kieugiaauto') {
+            document.getElementById('pushWpButton').style.display = 'block';
+          }
+          return { guarded: false }; 
+        }
+
+        // Nếu KHÔNG tick mở khóa -> Chặn
         copyButton.style.display = 'none';
+        document.getElementById('pushWpButton').style.display = 'none';
+        
         if (!silent) {
-          alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
+          alert(`❌ Mã này đã đăng trên "${dup.conflictSite}".\n\nNếu bạn muốn SỬA/CẬP NHẬT bài cũ này, hãy tick vào ô "🔓 Mở khóa cho phép sửa bài cũ" ở phía trên rồi bấm "Tạo nội dung" lại!`);
         }
         return { guarded: true, dup };
       }
@@ -512,11 +518,25 @@
     }
 
     function taoNoiDung() {
+      const website = document.getElementById('website').value;
+      const pushBtn = document.getElementById('pushWpButton');
+      const khungMoKhoa = document.getElementById('khung-mo-khoa');
+      
+      // Cả 4 web chính (có trong bộ lọc KG_TRACK_SITES) đều hiện Ô Mở Khóa và Nút Đẩy Web
+      if (KG_TRACK_SITES.has(website)) {
+        pushBtn.style.display = 'block';
+        khungMoKhoa.style.display = 'block';
+      } else {
+        // Shopee thì giấu tiệt cả 2 cái này đi
+        pushBtn.style.display = 'none';
+        khungMoKhoa.style.display = 'none';
+        if(document.getElementById('allowUpdate')) document.getElementById('allowUpdate').checked = false;
+      }
+
       const ten = document.getElementById('ten').value.trim();
       const ma = document.getElementById('ma').value.trim();
       const thuonghieu = document.getElementById('thuonghieu').value.trim();
       const xuatxu = document.getElementById('xuatxu').value.trim();
-      const website = document.getElementById('website').value;
 
       if (!ten || !ma || !thuonghieu || !xuatxu) {
         alert("Vui lòng nhập đầy đủ thông tin!");
@@ -846,10 +866,10 @@ ${danhSachXe}
       }
 
       const commitAfterCopy = () => {
-        // Bỏ lệnh kiểm tra, LUÔN LUÔN lưu lịch sử lên Google Sheets cho TẤT CẢ website (bao gồm cả Shopee)
+        // LUÔN LUÔN ghi sổ log lên Google Sheets cho TẤT CẢ website (kể cả Shopee)
         const pkey = copyButton.dataset.productKey;
         const desc = copyButton.dataset.descHtml;
-        if (pkey && desc) kgCommitDesc(pkey, website, desc); // Gọi hàm lưu lên Sheets
+        if (pkey && desc) kgCommitDesc(pkey, website, desc); 
         
         alert('Đã sao chép nội dung thành công!');
         copyButton.style.display = 'none';
@@ -890,10 +910,69 @@ ${danhSachXe}
     }
 
     // =========================
+    // HÀM ĐẨY THẲNG LÊN WORDPRESS
+    // =========================
+    function dayLenWordPress() {
+      const copyButton = document.getElementById('copyButton');
+      const pushBtn = document.getElementById('pushWpButton');
+
+      // Vẫn check Thiết Quân Luật (Có tính đến trường hợp đã tick mở khóa)
+      const g = kgGuardCopy(copyButton, { silent: false });
+      if (g.guarded) {
+        pushBtn.style.display = 'none'; 
+        return; 
+      }
+
+      let content = copyButton.dataset.content;
+      if (!content) return alert('Chưa có nội dung để đẩy!');
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'text/html');
+      content = doc.body.innerHTML.trim().replace(/\n\s*\n/g, '\n').replace(/\s+$/gm, '');
+
+      const pkey = copyButton.dataset.productKey;
+      const website = copyButton.dataset.website;
+      
+      const productName = document.getElementById('ten').value.trim();
+      const productCode = document.getElementById('ma').value.trim();
+      const thuonghieu = document.getElementById('thuonghieu').value.trim();
+      const xuatxu = document.getElementById('xuatxu').value.trim();
+      const employeeName = localStorage.getItem('kg_login_name') || "Không rõ";
+
+      pushBtn.innerText = "⏳ Đang đẩy lên web...";
+      pushBtn.disabled = true;
+
+      fetch(LOGIN_API_URL, {
+        method: 'POST',
+        mode: 'no-cors', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pushToWP: true, 
+          productKey: pkey,
+          productName: productName,
+          productCode: productCode,
+          thuonghieu: thuonghieu,
+          xuatxu: xuatxu,
+          website: website,
+          desc: content,
+          employeeName: employeeName
+        })
+      }).then(() => {
+        alert('🎉 Đã tạo thành công BẢN NHÁP trên website Kiều Gia Auto!');
+        pushBtn.innerText = "🚀 Đẩy lên Web (Bản nháp)";
+        pushBtn.disabled = false;
+        pushBtn.style.display = 'none';
+        copyButton.style.display = 'none';
+      }).catch(() => {
+        alert('Lỗi kết nối! Vui lòng thử lại.');
+        pushBtn.innerText = "🚀 Đẩy lên Web (Bản nháp)";
+        pushBtn.disabled = false;
+      });
+    }
+
+    // =========================
     // HÀM XỬ LÝ ĐĂNG NHẬP
     // =========================
-    const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbxk0WE4cNx8-_6bwt4bv6ueLVRkgzhrfCPfX5VpkMmBe0fm41JMxOsAIdrLqFYxxQUhYA/exec";
-
     async function xuLyDangNhap() {
       const user = document.getElementById('username').value.trim();
       const pass = document.getElementById('password').value.trim();
@@ -917,7 +996,6 @@ ${danhSachXe}
           document.getElementById('login-screen').style.display = 'none';
           document.getElementById('main-app').style.display = 'block';
           
-          // NÂNG CẤP: Lưu trạng thái đăng nhập gắn với NGÀY HÔM NAY
           const homNay = new Date().toDateString();
           localStorage.setItem('kg_login_date', homNay);
           localStorage.setItem('kg_login_name', data.name);
@@ -936,21 +1014,12 @@ ${danhSachXe}
       }
     }
 
-    // NÂNG CẤP: Tự động mở khóa nếu ngày lưu trữ trùng với NGÀY HÔM NAY
+    // Tự động mở khóa nếu ngày lưu trữ trùng với NGÀY HÔM NAY
     const homNay = new Date().toDateString();
     if (localStorage.getItem('kg_login_date') === homNay) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
     }
   </script>
-  </div> </body>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
