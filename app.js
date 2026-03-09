@@ -760,37 +760,64 @@ copyButton.style.display = 'none';
 const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
 const g = kgGuardCopy(copyButton, { silent: true });
 
-// 3. Logic hiển thị gọn gàng
+// 3. Logic hiển thị gọn gàng và tự động quét "Log rác" (Báo cáo láo)
 if (g.guarded) {
-        hienThongBao(`❌ Nội dung mô tả bị trùng lặp với bài trước!<br>Bấm "Tạo nội dung" lại để hệ thống viết lại câu chữ khác.`, 'error');
-      } else {
-        if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
-          
-          // Tạo một cái "Thẻ căn cước" cho mã sản phẩm trên web này
-          const cacheKey = website + "___" + ma;
-
-          // KIỂM TRA BỘ NHỚ: Nếu lúc nãy đã hỏi Sheets và biết mã này an toàn rồi -> Cho qua luôn!
-          if (window.kgSkuCache.has(cacheKey)) {
-            copyButton.style.display = 'block';
-          } else {
-            // NẾU LÀ LẦN ĐẦU TIÊN BẤM -> Đi hỏi Google Sheets
-            kgCheckProductOnWebsite(website, ma, ten).then(exists => {
-              if (!exists) {
-                // Sheets bảo an toàn -> Lưu ngay vào Bộ nhớ tạm để lần sau khỏi hỏi
-                window.kgSkuCache.add(cacheKey);
-                copyButton.style.display = 'block'; 
-              } else {
-                hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
-              }
-            });
-          }
-
+  
+    // 3.1 NẾU BỊ CHẶN VÌ CÓ TRONG LOG CỦA "CHÍNH WEB NÀY" -> Đem đi đối chiếu với kho SKU
+    if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
+      
+      hienThongBao(`⏳ Đang đối chiếu kho SKU để xác minh Log...`, 'success');
+      
+      // Gọi Apps Script để dò tìm trong tab SKU_ tương ứng trên Google Sheets
+      kgCheckProductOnWebsite(website, ma, ten).then(existsInSkuTab => {
+        if (existsInSkuTab) {
+          // Đã có trong tab SKU_ -> Đã đăng thật -> Chặn cứng luôn
+          hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website} (Đã đối chiếu với kho SKU)`, 'error');
         } else {
-          // Web shopee hoặc đang bật Sửa Bài -> Hiện nút luôn
-          copyButton.style.display = 'block'; 
+          // KHÔNG CÓ TRONG TAB SKU_ -> Báo cáo láo (chưa đăng thật)
+          // Xóa cái log ảo đó trong bộ nhớ đi
+          const pkey = copyButton.dataset.productKey;
+          if (window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
+            delete window.kgGlobalStore[pkey][website]; 
+          }
+          
+          // Ghi nhớ vào cache là mã này đã an toàn
+          window.kgSkuCache.add(website + "___" + ma);
+          
+          // Hiện nút cho phép Copy đè
+          copyButton.style.display = 'block';
+          hienThongBao(`⚠️ Phát hiện Log ảo mã "<b>${ma}</b>" (do ai đó copy nhưng quên đăng). Đã mở khóa, bạn có thể Copy đè!`, 'success');
         }
-      }
+      });
+      
+    } else {
+      // 3.2 NẾU BỊ CHẶN DO TRÙNG MÔ TẢ VỚI WEB KHÁC -> Báo lỗi đỏ yêu cầu tạo lại
+      hienThongBao(`❌ Nội dung mô tả bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
     }
+  
+  } else {
+    // KHÔNG CÓ TRONG LOG -> ĐI KIỂM TRA BÌNH THƯỜNG TRÊN TAB SKU_
+    if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
+      const cacheKey = website + "___" + ma;
+  
+      if (window.kgSkuCache.has(cacheKey)) {
+        copyButton.style.display = 'block';
+      } else {
+        kgCheckProductOnWebsite(website, ma, ten).then(exists => {
+          if (!exists) {
+            window.kgSkuCache.add(cacheKey);
+            copyButton.style.display = 'block'; 
+          } else {
+            hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
+          }
+        });
+      }
+    } else {
+      // Web Shopee hoặc đang tích Sửa bài -> Hiện luôn
+      copyButton.style.display = 'block'; 
+    }
+  }
+  }
     // =========================
     // HÀM SAO CHÉP VÀ GHI DATABASE
     // =========================
