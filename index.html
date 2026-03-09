@@ -959,7 +959,7 @@ ${danhSachXe}
     // HÀM XỬ LÝ ĐĂNG NHẬP
     // =========================
     async function xuLyDangNhap() {
-      const user = document.getElementById('username').value.trim();
+      const user = document.getElementById('username').value.trim().toLowerCase();
       const pass = document.getElementById('password').value.trim();
       const btn = document.getElementById('btnLogin');
       const errorMsg = document.getElementById('login-error');
@@ -1010,3 +1010,4 @@ ${danhSachXe}
   </div>
 </body>
 </html>
+
