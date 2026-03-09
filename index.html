@@ -112,6 +112,12 @@
         <option value="shopee2">Shopee 2</option>
       </select>
     </div>
+    <div class="form-group" style="margin-bottom: 15px; padding: 10px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px;">
+      <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #856404; font-weight: bold; margin: 0;">
+        <input type="checkbox" id="modeUpdate" style="width: 18px; height: 18px; cursor: pointer;">
+        ⚠️ Chế độ SỬA BÀI (Tích vào đây để Tool cho phép Copy đè lên bài cũ)
+      </label>
+    </div>
     <div class="button-container">
       <button onclick="taoNoiDung()">Tạo nội dung</button>
       <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung</button>
@@ -528,7 +534,11 @@
 
       const dup = kgIsDuplicateDesc(pkey, website, descRaw, threshold);
 
-      if (dup.duplicate) {
+      // Kiểm tra xem ô Sửa Bài có đang được tích không
+      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+
+      // Chỉ ẩn nút copy khi: Bị trùng lặp VÀ Không bật chế độ sửa bài
+      if (dup.duplicate && !isUpdate) {
         copyButton.style.display = 'none';
         if (!silent) {
           alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
@@ -835,7 +845,8 @@ ${danhSachXe}
       kgGuardCopy(copyButton, { silent: true });
 
       // Kiểm tra async: nếu sản phẩm đã có trên web -> ẩn nút copy
-      if (KG_CHECK_SKU_SITES.has(website)) {
+      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+      if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
         kgCheckProductOnWebsite(website, ma, ten).then(exists => {
           if (exists) {
             copyButton.style.display = 'none';
@@ -857,8 +868,9 @@ ${danhSachXe}
       const ten = (document.getElementById('ten')?.value || '').trim();
       const ma = (document.getElementById('ma')?.value || '').trim();
 
+      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
       // Kiểm tra sản phẩm đã tồn tại trên website thật chưa
-      if (KG_CHECK_SKU_SITES.has(website)) {
+      if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
         copyButton.disabled = true;
         copyButton.textContent = '⏳ Đang kiểm tra...';
         const existsOnSite = await kgCheckProductOnWebsite(website, ma, ten);
@@ -998,4 +1010,3 @@ ${danhSachXe}
   </div>
 </body>
 </html>
-
