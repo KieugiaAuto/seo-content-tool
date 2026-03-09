@@ -5,69 +5,218 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tạo nội dung SEO cho Kiều Gia Auto</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* =========================================
+       GIAO DIỆN MỚI CHUYÊN NGHIỆP CHO KIỀU GIA AUTO
+       ========================================= */
+       body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background-color: #f4f4f4;
+      padding: 40px 20px;
+      background-color: #f0f2f5; /* Màu nền xám nhạt hiện đại */
     }
     .container {
-      max-width: 1200px;
+      max-width: 850px; /* Thu gọn lại cho form cân đối, dễ nhìn */
       margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 16px; /* Bo góc to mềm mại */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Bóng đổ 3D mượt mà */
+      border: 1px solid #eaeaea;
     }
     h1 {
       text-align: center;
-      color: #333;
+      color: #1a202c;
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #edf2f7; /* Đường gạch dưới tiêu đề */
     }
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 22px;
     }
     label {
       display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+      font-size: 15px;
     }
     input, select {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      padding: 14px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
       box-sizing: border-box;
+      font-size: 15px;
+      color: #2d3748;
+      background-color: #f8fafc;
+      transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt */
     }
+    /* Hiệu ứng khi click vào ô nhập liệu */
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3182ce;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.15); /* Phát sáng viền xanh */
+    }
+    /* Chỉnh giao diện chung cho Nút bấm */
     button {
-      background-color: #28a745;
+      background-color: #10b981; /* Xanh lá hiện đại */
       color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 14px 28px;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
     }
     button:hover {
-      background-color: #218838;
+      background-color: #059669;
+      transform: translateY(-2px); /* Hiệu ứng nổi lên khi di chuột */
+      box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+    }
+    button:active {
+      transform: translateY(0); /* Hiệu ứng lún xuống khi click */
+    }
+    /* Chỉnh riêng nút copy cho khác biệt */
+    #copyButton {
+      background-color: #3b82f6; /* Xanh dương */
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    }
+    #copyButton:hover {
+      background-color: #2563eb;
+      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+    }
+    #copyButton:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
     .button-container {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 15px;
+      margin-bottom: 25px;
       flex-wrap: wrap;
     }
+    /* Khung hiển thị trước nội dung */
     #preview {
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #f9f9f9;
+      padding: 25px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background-color: #f8fafc;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #2d3748;
     }
+    /* Đè CSS cho khung cảnh báo sửa bài (bỏ giao diện cũ) */
+    #khung-sua-bai {
+      background-color: #fffbeb !important;
+      border: 1px solid #fde68a !important;
+      border-radius: 10px !important;
+      padding: 15px 20px !important;
+    }
+    #khung-sua-bai label {
+      color: #b45309 !important;
+      font-size: 15px;
+    }
+    /* Toast Notification (Thông báo góc màn hình) */
+    #kg-toast {
+      visibility: hidden;
+      min-width: 280px;
+      background-color: #28a745; 
+      color: #fff;
+      text-align: left;
+      border-radius: 10px;
+      padding: 16px 24px;
+      position: fixed;
+      z-index: 99999;
+      right: 20px;
+      bottom: 20px; 
+      font-size: 15px;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transition: opacity 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), visibility 0.4s;
+    }
+    #kg-toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 40px; 
+    }
+    /* Giao diện trên điện thoại */
     @media (max-width: 600px) {
-      .button-container {
-        flex-direction: column;
-      }
-      button {
-        width: 100%;
-      }
+      .button-container { flex-direction: column; }
+      button { width: 100%; }
+      .container { padding: 20px; border-radius: 12px; }
+      body { padding: 15px; }
+    }
+    /* Giao diện thông báo góc màn hình */
+    #kg-toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #28a745; /* Màu xanh lá đồng bộ với nút */
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 15px 20px;
+      position: fixed;
+      z-index: 99999;
+      right: 20px;
+      bottom: 20px; /* Hiện ở góc dưới bên phải */
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.4s, bottom 0.4s, visibility 0.4s;
+    }
+
+    #kg-toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 40px; /* Hiệu ứng trượt lên nhẹ cho mượt */
+    }
+    /* --- CSS CHIA 2 CỘT CHO FORM ĐỂ TIẾT KIỆM DIỆN TÍCH --- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Chia form thành 2 cột bằng nhau */
+      gap: 0 20px; /* Cột cách nhau 20px */
+    }
+    .full-width {
+      grid-column: span 2; /* Riêng tên phụ tùng dài nên cho chiếm cả 2 cột */
+    }
+    
+    /* Ép lại các khoảng trắng thừa để đẩy form lên cao */
+    body { padding: 15px 20px; }
+    .container { padding: 25px 35px; }
+    h1 { 
+      margin-bottom: 20px; 
+      font-size: 24px; 
+      padding-bottom: 10px; 
+    }
+    .form-group { margin-bottom: 15px; }
+    
+    /* Chỉnh lại khung cảnh báo cho vừa vặn ô lưới */
+    .khung-canh-bao {
+      background-color: #fffbeb !important;
+      border: 1px solid #fde68a !important;
+      border-radius: 10px !important;
+      padding: 8px 15px !important;
+      display: flex;
+      align-items: center;
+      margin-top: 28px; /* Đẩy xuống cho bằng hàng với chữ 'Chọn website' */
+      height: fit-content;
+    }
+    
+    /* Responsive trên điện thoại thì tự động dồn lại 1 cột */
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+      .khung-canh-bao { margin-top: 0; }
     }
   </style>
 </head>
@@ -84,39 +233,42 @@
 
   <div id="main-app" style="display: none;">
   <div class="container">
-    <h1>Tạo nội dung SEO cho Kiều Gia Auto</h1>
-    <div class="form-group">
-      <label for="ten">Tên phụ tùng:</label>
-      <input type="text" id="ten" placeholder="Ví dụ: Càng A Suzuki Swift 2013-2018">
-    </div>
-    <div class="form-group">
-      <label for="ma">Mã sản phẩm:</label>
-      <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
-    </div>
-    <div class="form-group">
-      <label for="thuonghieu">Thương hiệu:</label>
-      <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
-    </div>
-    <div class="form-group">
-      <label for="xuatxu">Xuất xứ:</label>
-      <input type="text" id="xuatxu" placeholder="Ví dụ: Nhật Bản">
-    </div>
-    <div class="form-group">
-      <label for="website">Chọn website:</label>
-      <select id="website">
-        <option value="phutunggiare">Phụ tùng giá rẻ</option>
-        <option value="kieugiaauto">Kiều Gia Auto</option>
-        <option value="banphutung">Bán phụ tùng</option>
-        <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
-        <option value="shopee">Shopee</option>
-        <option value="shopee2">Shopee 2</option>
-      </select>
-    </div>
-    <div class="form-group" style="margin-bottom: 15px; padding: 10px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px;">
-      <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #856404; font-weight: bold; margin: 0;">
-        <input type="checkbox" id="modeUpdate" style="width: 18px; height: 18px; cursor: pointer;">
-        ⚠️ Chế độ SỬA BÀI (Tích vào đây để Tool cho phép Copy đè lên bài cũ)
-      </label>
+    <h1>Kiều Gia Content Pro</h1>
+    
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="ten">Tên phụ tùng:</label>
+        <input type="text" id="ten" placeholder="Ví dụ: Càng A Suzuki Swift 2013-2018">
+      </div>
+      <div class="form-group">
+        <label for="ma">Mã sản phẩm:</label>
+        <input type="text" id="ma" placeholder="Ví dụ: CANGA123">
+      </div>
+      <div class="form-group">
+        <label for="thuonghieu">Thương hiệu:</label>
+        <input type="text" id="thuonghieu" placeholder="Ví dụ: Suzuki">
+      </div>
+      <div class="form-group">
+        <label for="xuatxu">Xuất xứ:</label>
+        <input type="text" id="xuatxu" placeholder="Ví dụ: Nhật Bản">
+      </div>
+      <div class="form-group">
+        <label for="website">Chọn website:</label>
+        <select id="website" onchange="kiemTraWebSuaBai()">
+          <option value="phutunggiare">Phụ tùng giá rẻ</option>
+          <option value="kieugiaauto">Kiều Gia Auto</option>
+          <option value="banphutung">Bán phụ tùng</option>
+          <option value="phutungotokieugia">Phụ tùng ô tô Kiều Gia</option>
+          <option value="shopee">Shopee</option>
+          <option value="shopee2">Shopee 2</option>
+        </select>
+      </div>
+      <div id="khung-sua-bai" class="form-group khung-canh-bao">
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #b45309; font-weight: bold; margin: 0; padding-top: 5px;">
+          <input type="checkbox" id="modeUpdate" style="width: 18px; height: 18px; cursor: pointer;">
+          ⚠️ Tích để cho phép Copy sửa bài cũ
+        </label>
+      </div>
     </div>
     <div class="button-container">
       <button onclick="taoNoiDung()">Tạo nội dung</button>
@@ -127,6 +279,53 @@
 
   <script src="moTaTheoLoai.js"></script>
   <script>
+    // Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài
+    function kiemTraWebSuaBai() {
+      const website = document.getElementById('website').value;
+      const khungSuaBai = document.getElementById('khung-sua-bai');
+      const nutSuaBai = document.getElementById('modeUpdate');
+
+      // Nếu chọn 1 trong 2 web Shopee
+      if (website === 'shopee' || website === 'shopee2') {
+        khungSuaBai.style.display = 'none'; // Giấu ô sửa bài đi
+        nutSuaBai.checked = false;          // Tự động bỏ tích (phòng hờ nhân viên đang tích mà chuyển web)
+      } else {
+        // Nếu là 4 web chính
+        khungSuaBai.style.display = 'block'; // Hiện lại bình thường
+      }
+    }
+
+    // Chạy hàm này 1 lần ngay khi mở file để hệ thống set trạng thái chuẩn từ đầu
+    document.addEventListener('DOMContentLoaded', kiemTraWebSuaBai);
+
+    function hienThongBao(text, loai = 'success') {
+      let toast = document.getElementById("kg-toast");
+      // Tự động tạo thẻ div thông báo nếu chưa có
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "kg-toast";
+        document.body.appendChild(toast);
+      }
+      
+      // Cho phép dùng thẻ <br> để xuống dòng
+      toast.innerHTML = text;
+      
+      // Chọn màu nền tùy theo loại thông báo
+      if (loai === 'error') {
+        toast.style.backgroundColor = "#dc3545"; // Màu đỏ cho lỗi
+        toast.style.color = "#fff";
+      } else {
+        toast.style.backgroundColor = "#28a745"; // Màu xanh cho thành công
+        toast.style.color = "#fff";
+      }
+
+      toast.className = "show"; // Hiển thị thông báo
+      
+      // Tự động ẩn đi sau 3.5 giây (để lâu hơn chút cho nhân viên kịp đọc lỗi dài)
+      setTimeout(function() {
+        toast.className = toast.className.replace("show", "");
+      }, 3500);
+    }
     // ==========================================
     // HẰNG SỐ CHUNG
     // ==========================================
@@ -558,7 +757,7 @@
       const website = document.getElementById('website').value;
 
       if (!ten || !ma || !thuonghieu || !xuatxu) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
+        hienThongBao("⚠️ Vui lòng nhập đầy đủ thông tin!", 'error');
         return;
       }
 
@@ -836,24 +1035,45 @@ ${danhSachXe}
       content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
       document.getElementById('preview').innerHTML = content;
 
-      const copyButton = document.getElementById('copyButton');
-      copyButton.dataset.content = copyContent;
-      copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
-      copyButton.dataset.website    = website;
-      copyButton.dataset.descHtml   = moTaTuDong || '';
+const copyButton = document.getElementById('copyButton');
+copyButton.dataset.content = copyContent;
+copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
+copyButton.dataset.website    = website;
+copyButton.dataset.descHtml   = moTaTuDong || '';
 
-      kgGuardCopy(copyButton, { silent: true });
+// 1. ẨN NÚT COPY NGAY LẬP TỨC KHI VỪA BẤM TẠO BÀI
+copyButton.style.display = 'none';
 
-      // Kiểm tra async: nếu sản phẩm đã có trên web -> ẩn nút copy
-      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
-      if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
-        kgCheckProductOnWebsite(website, ma, ten).then(exists => {
-          if (exists) {
-            copyButton.style.display = 'none';
-          }
-        });
+// 2. Kiểm tra trùng lặp mô tả (check nội bộ)
+const g = kgGuardCopy(copyButton, { silent: true });
+
+// Hàm kgGuardCopy có thói quen tự bật nút lên, ta ép ẩn lại lần nữa cho chắc
+copyButton.style.display = 'none';
+
+const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+
+// 3. NẾU KHÔNG BỊ TRÙNG MÔ TẢ TỪ TRƯỚC -> Chuyển sang check trên Website
+if (!g.guarded) {
+  if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
+    // Check xem trên web đã có mã sản phẩm này chưa
+    kgCheckProductOnWebsite(website, ma, ten).then(exists => {
+      if (!exists) {
+        // CHƯA CÓ TRÊN WEB -> CHÍNH THỨC CHO HIỆN NÚT COPY
+        copyButton.style.display = 'block';
+      } else {
+        // ĐÃ CÓ TRÊN WEB -> GIỮ NGUYÊN TRẠNG THÁI ẨN VÀ BÁO LỖI
+        hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
+            }
+          });
+        } else {
+          // Nếu đang bật chế độ SỬA BÀI hoặc đăng Shopee -> Hiện nút luôn
+          copyButton.style.display = 'block';
+        }
+      } else {
+        // Nếu trùng mô tả -> Giữ ẩn nút và báo cho nhân viên biết để tạo lại
+        hienThongBao(`❌ Nội dung mô tả bị trùng lặp với bài trước!<br>Bấm "Tạo nội dung" lại để hệ thống viết lại câu chữ khác.`, 'error');
       }
-    }
+}
 
     // =========================
     // HÀM SAO CHÉP VÀ GHI DATABASE
@@ -868,21 +1088,9 @@ ${danhSachXe}
       const ten = (document.getElementById('ten')?.value || '').trim();
       const ma = (document.getElementById('ma')?.value || '').trim();
 
-      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
-      // Kiểm tra sản phẩm đã tồn tại trên website thật chưa
-      if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
-        copyButton.disabled = true;
-        copyButton.textContent = '⏳ Đang kiểm tra...';
-        const existsOnSite = await kgCheckProductOnWebsite(website, ma, ten);
-        copyButton.disabled = false;
-        copyButton.textContent = '📋 Sao chép nội dung';
+      // Đã xóa bỏ phần kiểm tra (await kgCheckProductOnWebsite) gây chậm ở đây
+      // Vì đã được kiểm tra từ lúc ấn "Tạo nội dung" rồi
 
-        if (existsOnSite) {
-          alert('❌ Sản phẩm này (tên: "' + ten + '" / mã: "' + ma + '") ĐÃ TỒN TẠI trên website.\nKhông cho phép copy để tránh đăng trùng.');
-          copyButton.style.display = 'none';
-          return;
-        }
-      }
       let content = copyButton.dataset.content;
 
       if (!content) {
@@ -917,7 +1125,8 @@ ${danhSachXe}
         const desc = copyButton.dataset.descHtml;
         if (pkey && desc) kgCommitDesc(pkey, website, desc); // Gọi hàm lưu lên Sheets
         
-        alert('Đã sao chép nội dung thành công!');
+        // Gọi thông báo đẹp thay vì dùng alert
+        hienThongBao('✅ Đã sao chép nội dung thành công!');
         copyButton.style.display = 'none';
       };
 
@@ -954,7 +1163,6 @@ ${danhSachXe}
         document.body.removeChild(textArea);
       }
     }
-
     // =========================
     // HÀM XỬ LÝ ĐĂNG NHẬP
     // =========================
@@ -1010,4 +1218,3 @@ ${danhSachXe}
   </div>
 </body>
 </html>
-
