@@ -613,7 +613,7 @@ QUY TẮC VIẾT CÂU:
         else if (KG_CHECK_SKU_SITES.has(website)) {
           // Check nhanh trong Cache
           if (window.kgSkuCache.has(cacheKey)) {
-             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web. KHÔNG gọi AI!`, "error");
+             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
              btnTao.innerText = "Tạo nội dung";
              btnTao.disabled = false;
              return; // Dừng lập tức
@@ -622,7 +622,7 @@ QUY TẮC VIẾT CÂU:
           const tonTaiThat = await kgCheckProductOnWebsite(website, ma, ten);
           if (tonTaiThat) {
              window.kgSkuCache.add(cacheKey);
-             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web. KHÔNG gọi AI!`, "error");
+             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
              btnTao.innerText = "Tạo nội dung";
              btnTao.disabled = false;
              return; // Dừng lập tức
@@ -1034,4 +1034,5 @@ ${danhSachXe}
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
     }
+
 
