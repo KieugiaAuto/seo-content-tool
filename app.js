@@ -267,113 +267,121 @@
       return { duplicate: false, similarity: 0, exact: false };
     }
 
-    // ==========================================
+// ==========================================
     // CÁC HÀM XỬ LÝ NỘI DUNG
     // ==========================================
-    function sinhMoTaTuDong(ten) {
-      const match = ten.match(CAR_BRAND_REGEX_FULL);
-      if (!match) {
-        return `<p>Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.</p>`;
+
+    /// 1. HÀM GỌI GEMINI: ÉP LOGIC SEO VÀ TIÊU ĐỀ CHO TỪNG WEB (Đã xóa Thương hiệu & Xuất xứ khỏi Prompt)
+    async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text) {
+      let yeuCau = "";
+      let tenXe = `${hang} ${dong}`.trim();
+      let doiXe = dateText ? dateText.trim() : "";
+
+      // Phân luồng AI viết bài theo đúng logic SEO của bác
+      switch (website) {
+        case 'kieugiaauto':
+          yeuCau = `
+          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
+          - Logic 1: Giải thích công dụng phụ tùng (ví dụ: bảo vệ khu vực cản trước, hấp thụ lực).
+          - Logic 2: Nêu dấu hiệu cần thay (nứt, vỡ, biến dạng do va chạm thì nên kiểm tra/thay thế kịp thời).
+          - Logic 3: Nhấn mạnh sự tương thích với xe ${tenXe}, giúp lắp đặt chính xác và đồng bộ.`;
+          break;
+        case 'phutunggiare':
+          yeuCau = `
+          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
+          - Logic 1: Nêu công dụng hoàn thiện và bảo vệ của phụ tùng.
+          - Logic 2: Nhấn mạnh sự tương thích với ${tenXe}, lắp đặt vừa vặn, hoạt động ổn định.
+          - Logic 3: Khẳng định việc thay thế đúng mã giúp quá trình sửa chữa nhanh chóng và tiết kiệm chi phí hợp lý.`;
+          break;
+        case 'banphutung':
+          yeuCau = `
+          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
+          - Logic 1: Nêu vai trò phụ tùng (hoàn thiện, bảo vệ xe).
+          - Logic 2: Nhấn mạnh sản phẩm sản xuất chuẩn kích thước thông số lắp đặt của ${tenXe}.
+          - Logic 3: Khẳng định đây là phụ tùng thường được các gara lựa chọn để sửa chữa, phục hồi.`;
+          break;
+        case 'phutungotokieugia':
+          yeuCau = `
+          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
+          - Logic 1: Giới thiệu chi tiết nằm ở đâu, bảo vệ xe thế nào.
+          - Logic 2: Nêu khi nào cần thay thế (nứt, vỡ, cong do va chạm) để đảm bảo an toàn, thẩm mỹ.
+          - Logic 3: Nhấn mạnh tương thích chính xác với ${tenXe} đời ${doiXe}.`;
+          break;
+        case 'shopee':
+        case 'shopee2':
+          yeuCau = `
+          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
+          - Giới thiệu phụ tùng chất lượng, dễ lắp ráp.
+          - Nhấn mạnh sự vận hành ổn định và độ bền cao cho xe ${tenXe}.`;
+          break;
+        default:
+          yeuCau = `Viết tự nhiên, mở đầu bằng "${h1Text} là..."`;
       }
 
-      const tenPhuTung = match[1].trim();
-      const hang = kgFormatHang(match[2]);
-      const dong = match[3].trim();
-      const nam1 = match[4] || '';
-      const nam2 = match[5] || '';
-      const dateText = nam1 ? (nam2 ? ` từ ${nam1} đến ${nam2}` : ` đời ${nam1}`) : '';
-      const website = document.getElementById('website').value;
+      // ĐÃ XÓA DÒNG THƯƠNG HIỆU & XUẤT XỨ Ở ĐÂY
+      const prompt = `Bạn là chuyên gia bán phụ tùng ô tô. Viết 1 đoạn văn ngắn (khoảng 3 câu hoàn chỉnh) để giới thiệu sản phẩm.
+      
+      YÊU CẦU BẮT BUỘC VỀ LOGIC (Phải tuân thủ tuyệt đối):
+      ${yeuCau}
 
-      let gioiThieu = '';
-      const tenPhuTungParts = tenPhuTung.split(' ');
-      const tenPhuTungVariants = [];
-      for (let i = tenPhuTungParts.length; i >= 2; i--) { 
-        tenPhuTungVariants.push(tenPhuTungParts.slice(0, i).join(' ').trim());
-      }
-
-      const keywords = [];
-      const fullKey = `${tenPhuTung} ${hang} ${dong}${nam1 ? ` ${nam1}` : ''}${nam2 ? ` ${nam2}` : ''}`.trim();
-      keywords.push(fullKey);
-      if (nam1) keywords.push(`${tenPhuTung} ${hang} ${dong} ${nam1}`.trim());
-      keywords.push(`${tenPhuTung} ${hang} ${dong}`.trim());
-      keywords.push(`${tenPhuTung} ${hang}`.trim());
-      keywords.push(tenPhuTung);
-      keywords.push(...tenPhuTungVariants);
-
+      LƯU Ý KỸ THUẬT QUAN TRỌNG:
+      - Trả về 1 đoạn văn bản trơn liền mạch. Không xuống dòng.
+      - Tuyệt đối KHÔNG dùng các ký tự đánh dấu (như *, #, -, <, >).
+      - Không viết thêm bất kỳ tiêu đề nào. Phải viết câu trọn vẹn.`;
+      
       try {
-        const tuKhoaList = Object.keys(moTaTheoLoai).sort((a, b) => b.length - a.length);
-        for (const keyword of keywords) {
-          const keywordNoTones = removeVietnameseTones(keyword).toLowerCase().replace(/\s+/g, ' ').trim();
-          for (const tuKhoa of tuKhoaList) {
-            const tuKhoaNoTones = removeVietnameseTones(tuKhoa).toLowerCase().replace(/\s+/g, ' ').trim();
-            if (keywordNoTones === tuKhoaNoTones) {
-              const dsMoTa = moTaTheoLoai[tuKhoa];
-              gioiThieu = dsMoTa[Math.floor(Math.random() * dsMoTa.length)];
-              break;
-            }
-          }
-          if (gioiThieu) break; 
+        const res = await fetch(API_BASE, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'gemini', prompt: prompt })
+        });
+        const data = await res.json();
+        if (data.status === "success" && data.moTa) {
+          // Xóa dọn các ký tự < > (nếu AI lỡ tạo ra) để tránh lỗi đứt đoạn HTML
+          return data.moTa.replace(/</g, "").replace(/>/g, "").trim();
         }
       } catch (err) {
-        console.error('Lỗi khi truy cập moTaTheoLoai:', err);
+        console.error('Lỗi gọi Gemini:', err);
+      }
+      return `${h1Text} là phụ tùng chất lượng cao, đảm bảo hiệu suất vận hành ổn định.`;
+    }
+
+    // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
+   // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
+    // Đã thêm h1Text vào tham số hàm
+    async function sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text) {
+      const website = document.getElementById('website').value;
+      let hang = thuonghieu || '';
+      let dong = '';
+      let dateText = '';
+
+      // Logic phân tích tên xe để lấy Đời, Dòng, Hãng
+      const match = ten.match(CAR_BRAND_REGEX_FULL);
+      if (match) {
+        hang = kgFormatHang(match[2]);
+        dong = match[3].trim();
+        const nam1 = match[4] || '';
+        const nam2 = match[5] || '';
+        // Căn chỉnh lại dateText cho Gemini dễ đọc (vd: 2015-2017)
+        dateText = nam1 ? (nam2 ? `${nam1}-${nam2}` : `${nam1}`) : '';
+      } else {
+        hang = thuonghieu;
+        dong = ten.replace(hang, '').trim(); 
       }
 
-      if (!gioiThieu) {
-        gioiThieu = 'Phụ tùng ô tô chất lượng cao, tương thích với nhiều dòng xe, đảm bảo hiệu suất và độ bền tối ưu.';
-      }
+      // Nhờ Gemini viết đoạn giới thiệu chuẩn theo ý đồ của từng web
+      // Đã nạp thêm h1Text vào cuối dòng này để AI nhận diện được tiêu đề
+      let moTa = await layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text);
 
-      const maInput = (document.getElementById('ma')?.value || '').trim();
-      const productKey = kgMakeProductKey(ten, maInput);
-      let lastMoTa = '';
-
-      const moTaMau = {
-        kieugiaauto: [
-            `${gioiThieu} Sản phẩm phù hợp với ${hang} ${dong}${dateText}, dễ lắp đặt, được bảo hành đầy đủ.`,
-            `${gioiThieu} Được thiết kế dành riêng cho ${hang} ${dong}${dateText}, đảm bảo chính hãng với giá cạnh tranh.`
-          ],
-          phutungotokieugia: [
-            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, được nhiều gara tin dùng.`,
-            `${gioiThieu} Hỗ trợ kỹ thuật tận tâm, phù hợp hoàn hảo cho ${hang} ${dong}${dateText}.`
-          ],
-          banphutung: [
-            `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, luôn có sẵn và giao hàng toàn quốc.`,
-            `${gioiThieu} Góp phần bảo vệ và nâng cao hiệu suất cho ${hang} ${dong}${dateText}.`
-          ],
-          phutunggiare: [
-            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, giá tiết kiệm, bảo hành đầy đủ.`,
-            `${gioiThieu} Lựa chọn chính hãng, tiết kiệm chi phí cho ${hang} ${dong}${dateText}.`
-          ],
-          shopee: [
-            `${gioiThieu} Phù hợp với ${hang} ${dong}${dateText}, giá ưu đãi trên Shopee.`,
-            `${gioiThieu} Sản phẩm chất lượng cao cho ${hang} ${dong}${dateText}, giao hàng nhanh chóng.`
-          ],
-          shopee2: [
-            `${gioiThieu} Tương thích với ${hang} ${dong}${dateText}, phụ tùng chất lượng cao.`,
-            `${gioiThieu} Phù hợp cho ${hang} ${dong}${dateText}, lắp đặt dễ dàng.`
-          ],
-      };
-
-      for (let attempt = 1; attempt <= MAX_REROLL; attempt++) {
-        const mau = moTaMau[website];
-        if (!mau || !gioiThieu) return '';
-
-        let moTa = `<p>${mau[Math.floor(Math.random() * mau.length)]}</p>`;
-
-        if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
-          const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
+      // Vẫn GIỮ NGUYÊN logic chèn link nội bộ cực xịn của bác
+      if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
+        const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
+        if (hang) {
           const hangRegex = new RegExp(`\\b${hang.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?![^<]*>)`, 'gi');
           moTa = moTa.replace(hangRegex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(/\s+/g, '-')}" target="_blank">${hang}</a>`);
         }
-
-        lastMoTa = moTa;
-
-        if (KG_TRACK_SITES.has(website)) {
-          const dup = kgIsDuplicateDesc(productKey, website, moTa);
-          if (dup.duplicate) continue;
-        }
-        return moTa;
       }
-      return lastMoTa;
+
+      return `<p>${moTa}</p>`;
     }
 
     function sinhDanhSachXe(ten, thuonghieu, isShopee = false) {
@@ -461,7 +469,8 @@
       return { guarded: false };
     }
 
-    function taoNoiDung() {
+    // 3. SỬA HÀM TẠO NỘI DUNG: Nâng cấp thành async để chờ AI viết xong
+    async function taoNoiDung() {
       const ten = document.getElementById('ten').value.trim();
       const ma = document.getElementById('ma').value.trim();
       const thuonghieu = document.getElementById('thuonghieu').value.trim();
@@ -472,6 +481,13 @@
         hienThongBao("⚠️ Vui lòng nhập đầy đủ thông tin!", 'error');
         return;
       }
+
+      // Khóa nút tạo nội dung và hiện thông báo
+      const btnTao = document.querySelector('button[onclick="taoNoiDung()"]');
+      const oldBtnText = btnTao.innerText;
+      btnTao.innerText = "⏳ AI đang viết bài...";
+      btnTao.disabled = true;
+      hienThongBao("⏳ Đang kết nối AI Gemini để viết bài, vui lòng đợi...", "success");
 
       const yearRegex = /(\d{4})(?:\D+(\d{4}))?$/i;
       const yearMatch = ten.match(yearRegex);
@@ -514,7 +530,9 @@
         h1Text = ten; 
       }
 
-      const moTaTuDong = sinhMoTaTuDong(ten);
+     // --- CHỜ GEMINI TRẢ KẾT QUẢ ---
+     const moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
+      
       window.__kg_last_auto_desc = {
         productKey: kgMakeProductKey(ten, ma),
         website,
@@ -525,6 +543,7 @@
       let content = '';
       let copyContent = '';
 
+      // --- BÊN DƯỚI GIỮ NGUYÊN 100% CẤU TRÚC HTML CỦA TỪNG TRANG ---
       if (website === 'kieugiaauto') {
         content = `<h2><strong>${h1Text}</strong></h2>
 <p><strong>Mã sản phẩm:</strong> ${ma}</p>
@@ -747,77 +766,64 @@ ${danhSachXe}
       content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
       document.getElementById('preview').innerHTML = content;
 
-const copyButton = document.getElementById('copyButton');
-copyButton.dataset.content = copyContent;
-copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
-copyButton.dataset.website    = website;
-copyButton.dataset.descHtml   = moTaTuDong || '';
+      const copyButton = document.getElementById('copyButton');
+      copyButton.dataset.content = copyContent;
+      copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
+      copyButton.dataset.website    = website;
+      copyButton.dataset.descHtml   = moTaTuDong || '';
 
-// 1. Mặc định ẩn nút Copy
-copyButton.style.display = 'none';
+      // Mặc định ẩn nút Copy
+      copyButton.style.display = 'none';
 
-// 2. Kiểm tra trùng nội bộ
-const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
-const g = kgGuardCopy(copyButton, { silent: true });
+      // Kiểm tra trùng nội bộ
+      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+      const g = kgGuardCopy(copyButton, { silent: true });
 
-// 3. Logic hiển thị gọn gàng và tự động quét "Log rác" (Báo cáo láo)
-if (g.guarded) {
-  
-    // 3.1 NẾU BỊ CHẶN VÌ CÓ TRONG LOG CỦA "CHÍNH WEB NÀY" -> Đem đi đối chiếu với kho SKU
-    if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
-      
-      hienThongBao(`⏳ Đang đối chiếu kho SKU để xác minh Log...`, 'success');
-      
-      // Gọi Apps Script để dò tìm trong tab SKU_ tương ứng trên Google Sheets
-      kgCheckProductOnWebsite(website, ma, ten).then(existsInSkuTab => {
-        if (existsInSkuTab) {
-          // Đã có trong tab SKU_ -> Đã đăng thật -> Chặn cứng luôn
-          hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website} (Đã đối chiếu với kho SKU)`, 'error');
+      // Logic hiển thị gọn gàng và tự động quét "Log rác"
+      if (g.guarded) {
+        if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
+          hienThongBao(`⏳ Đang đối chiếu kho SKU để xác minh Log...`, 'success');
+          kgCheckProductOnWebsite(website, ma, ten).then(existsInSkuTab => {
+            if (existsInSkuTab) {
+              hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website} (Đã đối chiếu với kho SKU)`, 'error');
+            } else {
+              const pkey = copyButton.dataset.productKey;
+              if (window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
+                delete window.kgGlobalStore[pkey][website]; 
+              }
+              window.kgSkuCache.add(website + "___" + ma);
+              copyButton.style.display = 'block';
+              hienThongBao(`⚠️ Phát hiện Log ảo mã "<b>${ma}</b>" (do ai đó copy nhưng quên đăng). Đã mở khóa, bạn có thể Copy đè!`, 'success');
+            }
+          });
         } else {
-          // KHÔNG CÓ TRONG TAB SKU_ -> Báo cáo láo (chưa đăng thật)
-          // Xóa cái log ảo đó trong bộ nhớ đi
-          const pkey = copyButton.dataset.productKey;
-          if (window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
-            delete window.kgGlobalStore[pkey][website]; 
-          }
-          
-          // Ghi nhớ vào cache là mã này đã an toàn
-          window.kgSkuCache.add(website + "___" + ma);
-          
-          // Hiện nút cho phép Copy đè
-          copyButton.style.display = 'block';
-          hienThongBao(`⚠️ Phát hiện Log ảo mã "<b>${ma}</b>" (do ai đó copy nhưng quên đăng). Đã mở khóa, bạn có thể Copy đè!`, 'success');
+          hienThongBao(`❌ Nội dung mô tả bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
         }
-      });
-      
-    } else {
-      // 3.2 NẾU BỊ CHẶN DO TRÙNG MÔ TẢ VỚI WEB KHÁC -> Báo lỗi đỏ yêu cầu tạo lại
-      hienThongBao(`❌ Nội dung mô tả bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
-    }
-  
-  } else {
-    // KHÔNG CÓ TRONG LOG -> ĐI KIỂM TRA BÌNH THƯỜNG TRÊN TAB SKU_
-    if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
-      const cacheKey = website + "___" + ma;
-  
-      if (window.kgSkuCache.has(cacheKey)) {
-        copyButton.style.display = 'block';
       } else {
-        kgCheckProductOnWebsite(website, ma, ten).then(exists => {
-          if (!exists) {
-            window.kgSkuCache.add(cacheKey);
-            copyButton.style.display = 'block'; 
+        if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
+          const cacheKey = website + "___" + ma;
+          if (window.kgSkuCache.has(cacheKey)) {
+            copyButton.style.display = 'block';
           } else {
-            hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
+            kgCheckProductOnWebsite(website, ma, ten).then(exists => {
+              if (!exists) {
+                window.kgSkuCache.add(cacheKey);
+                copyButton.style.display = 'block'; 
+              } else {
+                hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
+              }
+            });
           }
-        });
+        } else {
+          copyButton.style.display = 'block'; 
+        }
       }
-    } else {
-      // Web Shopee hoặc đang tích Sửa bài -> Hiện luôn
-      copyButton.style.display = 'block'; 
+
+      // Mở khóa lại nút bấm sau khi AI viết xong và mọi check logic đã hoàn tất
+      btnTao.innerText = "Tạo nội dung";
+      btnTao.disabled = false;
+      hienThongBao("✅ Đã tạo nội dung thành công!", "success");
     }
-  }
-  }
     // =========================
     // HÀM SAO CHÉP VÀ GHI DATABASE
     // =========================
