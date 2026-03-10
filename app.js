@@ -1,518 +1,516 @@
-    function kgLoadDescStore() {
-      return window.kgGlobalStore || {};
-    }
-
-    // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
-    function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
-      let store = kgLoadDescStore();
-      const used = store[productKey] || {};
-      const curN = kgNormalizeText(descHtml);
-      const now = Date.now();
-
-      // 1. TRÙNG MÃ TRÊN CÙNG 1 WEB -> KHÓA LUÔN (Độ trễ = 0s)
-      if (used[website]) {
-        return { duplicate: true, conflictSite: "CHÍNH WEB NÀY! (Mã sản phẩm đã được copy)", similarity: 1, exact: true };
-      }
-
-      // 2. CHECK CHÉO CÁC WEB: Tối ưu Delay Tokenize
-      let curTokens = null; // Trì hoãn việc băm chữ (tiết kiệm tài nguyên)
-
-      for (const [site, saved] of Object.entries(used)) {
-        if (!saved || site === website) continue;
-        const ts = (typeof saved === 'object' && saved.ts) ? saved.ts : now; 
-        if (now - ts > KG_TTL_MS) continue; 
-
-        const savedDescN = (typeof saved === 'object' && saved.desc) ? saved.desc : String(saved);
-
-        // NẾU GIỐNG HỆT NHAU -> CHẶN LUÔN (Không cần chạy thuật toán Jaccard)
-        if (savedDescN === curN) {
-          return { duplicate: true, conflictSite: site, similarity: 1, exact: true };
+        function kgLoadDescStore() {
+          return window.kgGlobalStore || {};
         }
 
-        // CHỈ TÍNH TOÁN % KHI KHÔNG GIỐNG HỆT 100%
-        if (!curTokens) curTokens = new Set(kgTokenize(curN));
-        const savedTokens = new Set(kgTokenize(savedDescN));
+        // Hàm check trùng dữ liệu (Thiết Quân Luật tuyệt đối)
+        function kgIsDuplicateDesc(productKey, website, descHtml, threshold = 0.8) {
+          let store = kgLoadDescStore();
+          const used = store[productKey] || {};
+          const curN = kgNormalizeText(descHtml);
+          const now = Date.now();
 
-        let inter = 0;
-        for (const x of curTokens) if (savedTokens.has(x)) inter++;
-        const sim = inter / (curTokens.size + savedTokens.size - inter);
-
-        if (sim >= threshold) {
-          return { duplicate: true, conflictSite: site, similarity: sim, exact: false };
-        }
-      }
-
-      return { duplicate: false, similarity: 0, exact: false };
-    }
-
-    function kgGuardCopy(copyButton, opts = {}) {
-      const { silent = false, threshold = 0.65 } = opts;
-      const website = copyButton.dataset.website || document.getElementById('website').value;
-      const ten = (document.getElementById('ten')?.value || '').trim();
-      const ma  = (document.getElementById('ma')?.value || '').trim();
-      const pkey = copyButton.dataset.productKey || kgMakeProductKey(ten, ma);
-
-      const descRaw = copyButton.dataset.descHtml || '';
-      // Trả về false luôn nếu thiếu thông tin hoặc web không cần track
-      if (!pkey || !descRaw || !KG_TRACK_SITES.has(website)) return { guarded: false };
-
-      const dup = kgIsDuplicateDesc(pkey, website, descRaw, threshold);
-      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
-
-      if (dup.duplicate && !isUpdate) {
-        if (!silent) {
-          alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
-        }
-        return { guarded: true, dup };
-      }
-
-      return { guarded: false };
-    }
-
-    // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
-    // Đã thêm h1Text vào tham số hàm
-    async function sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text) {
-      const website = document.getElementById('website').value;
-      let hang = thuonghieu || '';
-      let dong = '';
-      let dateText = '';
-
-      // Logic phân tích tên xe để lấy Đời, Dòng, Hãng
-      const match = ten.match(CAR_BRAND_REGEX_FULL);
-      if (match) {
-        hang = kgFormatHang(match[2]);
-        dong = match[3].trim();
-        const nam1 = match[4] || '';
-        const nam2 = match[5] || '';
-        // Căn chỉnh lại dateText cho Gemini dễ đọc (vd: 2015-2017)
-        dateText = nam1 ? (nam2 ? `${nam1}-${nam2}` : `${nam1}`) : '';
-      } else {
-        hang = thuonghieu;
-        dong = ten.replace(hang, '').trim(); 
-      }
-
-      // Nhờ Gemini viết đoạn giới thiệu chuẩn theo ý đồ của từng web
-      let moTa = await layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text);
-
-      // Vẫn GIỮ NGUYÊN logic chèn link nội bộ cực xịn
-      if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
-        const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
-        if (hang) {
-          const hangRegex = new RegExp(`\\b${hang.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?![^<]*>)`, 'gi');
-          moTa = moTa.replace(hangRegex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(/\s+/g, '-')}" target="_blank">${hang}</a>`);
-        }
-      }
-
-      return `<p>${moTa}</p>`;
-    }
-
-    function sinhDanhSachXe(ten, thuonghieu, isShopee = false) {
-      if (!isShopee) return '';
-      if (!ten || !thuonghieu) return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
-
-      ten = ten.toLowerCase();
-      const match = ten.match(CAR_BRAND_REGEX_WITH_YEARS);
-      if (match) {
-        const hang = kgFormatHang(match[1]);
-        const dong = match[2] ? match[2].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : '';
-        const nam1 = match[3] || '';
-        const nam2 = match[4] || '';
-
-        if (nam1 && nam2) {
-          const list = [];
-          for (let y = parseInt(nam1); y <= parseInt(nam2); y++) { list.push(`${hang} ${dong} ${y}`); }
-          return `<h3>Phù hợp với các dòng xe:</h3><p>${list.join(', ')}</p>`;
-        } else if (nam1) {
-          return `<h3>Phù hợp với các dòng xe:</h3><p>${hang} ${dong} ${nam1}</p>`;
-        } else {
-          return `<h3>Phù hợp với các dòng xe:</h3><p>${dong ? `${hang} ${dong}` : hang}</p>`;
-        }
-      }
-
-      const hangOnly = Object.keys(HANG_XE_MAP).find(h => ten.includes(h));
-      if (hangOnly) {
-        const dongXeList = HANG_XE_MAP[hangOnly].slice().sort((a, b) => b.length - a.length);
-        const dongXe = dongXeList.find(dong => {
-          const pattern = dong.toLowerCase().replace(/\s+/g, '\\s+');
-          const regex = new RegExp(pattern, 'i');
-          return regex.test(ten);
-        });
-
-        const hangUc = kgFormatHang(hangOnly);
-
-        if (dongXe) {
-          const matchedDong = ten.match(new RegExp(dongXe.toLowerCase().replace(/\s+/g, '\\s*'), 'i'));
-          const finalDong = matchedDong
-            ? matchedDong[0].split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
-            : dongXe;
-          return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc} ${finalDong}</p>`;
-        }
-        return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc}</p>`;
-      }
-      return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
-    }
-
-    // 3. SỬA HÀM TẠO NỘI DUNG: Nâng cấp thành async để chờ AI viết xong
-    async function taoNoiDung() {
-      const ten = document.getElementById('ten').value.trim();
-      const ma = document.getElementById('ma').value.trim();
-      const thuonghieu = document.getElementById('thuonghieu').value.trim();
-      const xuatxu = document.getElementById('xuatxu').value.trim();
-      const website = document.getElementById('website').value;
-
-      if (!ten || !ma || !thuonghieu || !xuatxu) {
-        hienThongBao("⚠️ Vui lòng nhập đầy đủ thông tin!", 'error');
-        return;
-      }
-
-      // Khóa nút tạo nội dung 
-      const btnTao = document.querySelector('button[onclick="taoNoiDung()"]');
-      btnTao.innerText = "⏳ Đang kiểm tra dữ liệu...";
-      btnTao.disabled = true;
-
-      const yearRegex = /(\d{4})(?:\D+(\d{4}))?$/i;
-      const yearMatch = ten.match(yearRegex);
-
-      let tenPhuTung = ten.trim();
-      let dateText = ''; 
-      let nam1 = '';
-      let nam2 = '';
-
-      if (yearMatch) {
-        nam1 = yearMatch[1];
-        nam2 = yearMatch[2] || '';
-        dateText = nam2 ? ` ${nam1}–${nam2}` : ` ${nam1}`;
-        tenPhuTung = ten.replace(yearRegex, '').trim().replace(/\s+$/, '');
-      }
-
-      const match = tenPhuTung.match(CAR_BRAND_REGEX_SIMPLE);
-
-      let hang = thuonghieu || '';
-      let dong = '';
-
-      if (match) {
-        hang = kgFormatHang(match[2]);
-        dong = match[3].trim();
-      } else {
-        hang = thuonghieu;
-        dong = tenPhuTung.replace(hang, '').trim(); 
-      }
-
-      let h1Text = ten; 
-      if (website === 'kieugiaauto') {
-        h1Text = tenPhuTung.trim(); 
-      } else if (website === 'phutunggiare') {
-        h1Text = `${tenPhuTung} phụ tùng thay thế`.trim();
-      } else if (website === 'banphutung') {
-        h1Text = `${tenPhuTung} giá tốt`.trim(); 
-      } else if (website === 'phutungotokieugia') {
-        h1Text = `${tenPhuTung}${dateText}`.trim(); 
-      } else if (website === 'shopee' || website === 'shopee2') {
-        h1Text = ten; 
-      }
-
-      // ========================================================
-      // TỐI ƯU HÓA: LOGIC KIỂM TRA 3 LỚP TRƯỚC KHI GỌI AI
-      // ========================================================
-      const pkey = kgMakeProductKey(ten, ma);
-      const cacheKey = website + "___" + ma;
-      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
-      let moTaTuDong = "";
-
-      if (isUpdate) {
-        hienThongBao("🛠 Chế độ sửa bài: Bỏ qua kiểm tra, gọi AI viết lại...", "success");
-      } else {
-        // LỚP 1: Kiểm tra trong Log tạm
-        if (window.kgGlobalStore && window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
-          hienThongBao("♻️ Mã này đã có trong Log! Đang tải lại bài viết cũ...", "success");
-          let baiCu = window.kgGlobalStore[pkey][website].desc;
-          moTaTuDong = baiCu.includes("<p>") ? baiCu : `<p>${baiCu}</p>`;
-        } 
-        // LỚP 2: Kiểm tra dữ liệu SKU trên Web (Chỉ check nếu Log chưa có)
-        else if (KG_CHECK_SKU_SITES.has(website)) {
-          // Check nhanh trong Cache
-          if (window.kgSkuCache.has(cacheKey)) {
-            hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
-            btnTao.innerText = "Tạo nội dung";
-            btnTao.disabled = false;
-            return; // Dừng lập tức
+          // 1. TRÙNG MÃ TRÊN CÙNG 1 WEB -> KHÓA LUÔN (Độ trễ = 0s)
+          if (used[website]) {
+            return { duplicate: true, conflictSite: "CHÍNH WEB NÀY! (Mã sản phẩm đã được copy)", similarity: 1, exact: true };
           }
-          // Check sâu vào cơ sở dữ liệu (Apps Script)
-          const tonTaiThat = await kgCheckProductOnWebsite(website, ma, ten);
-          if (tonTaiThat) {
-            window.kgSkuCache.add(cacheKey);
-            hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
-            btnTao.innerText = "Tạo nội dung";
-            btnTao.disabled = false;
-            return; // Dừng lập tức
+
+          // 2. CHECK CHÉO CÁC WEB: Tối ưu Delay Tokenize
+          let curTokens = null; // Trì hoãn việc băm chữ (tiết kiệm tài nguyên)
+
+          for (const [site, saved] of Object.entries(used)) {
+            if (!saved || site === website) continue;
+            const ts = (typeof saved === 'object' && saved.ts) ? saved.ts : now; 
+            if (now - ts > KG_TTL_MS) continue; 
+
+            const savedDescN = (typeof saved === 'object' && saved.desc) ? saved.desc : String(saved);
+
+            // NẾU GIỐNG HỆT NHAU -> CHẶN LUÔN (Không cần chạy thuật toán Jaccard)
+            if (savedDescN === curN) {
+              return { duplicate: true, conflictSite: site, similarity: 1, exact: true };
+            }
+
+            // CHỈ TÍNH TOÁN % KHI KHÔNG GIỐNG HỆT 100%
+            if (!curTokens) curTokens = new Set(kgTokenize(curN));
+            const savedTokens = new Set(kgTokenize(savedDescN));
+
+            let inter = 0;
+            for (const x of curTokens) if (savedTokens.has(x)) inter++;
+            const sim = inter / (curTokens.size + savedTokens.size - inter);
+
+            if (sim >= threshold) {
+              return { duplicate: true, conflictSite: site, similarity: sim, exact: false };
+            }
           }
+
+          return { duplicate: false, similarity: 0, exact: false };
         }
-      }
 
-      // LỚP 3: GỌI AI GEMINI (Chỉ chạy khi 2 lớp trên đã thông qua)
-      if (!moTaTuDong) {
-        hienThongBao("⏳ Đang viết bài, vui lòng đợi...", "success");
-        moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
-      }
-      
-      window.__kg_last_auto_desc = {
-        productKey: pkey,
-        website,
-        descHtml: moTaTuDong
-      };
-      
-      const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee' || website === 'shopee2' || website === 'phutungotokieugia');
+        function kgGuardCopy(copyButton, opts = {}) {
+          const { silent = false, threshold = 0.65 } = opts;
+          const website = copyButton.dataset.website || document.getElementById('website').value;
+          const ten = (document.getElementById('ten')?.value || '').trim();
+          const ma  = (document.getElementById('ma')?.value || '').trim();
+          const pkey = copyButton.dataset.productKey || kgMakeProductKey(ten, ma);
 
-      let content = '';
-      let copyContent = '';
+          const descRaw = copyButton.dataset.descHtml || '';
+          // Trả về false luôn nếu thiếu thông tin hoặc web không cần track
+          if (!pkey || !descRaw || !KG_TRACK_SITES.has(website)) return { guarded: false };
 
-      // --- BÊN DƯỚI GIỮ NGUYÊN 100% CẤU TRÚC HTML CỦA TỪNG TRANG ---
-      if (website === 'kieugiaauto') {
-        content = `<h2><strong>${h1Text}</strong></h2>
-    <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-    <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-    <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-    ${moTaTuDong}
+          const dup = kgIsDuplicateDesc(pkey, website, descRaw, threshold);
+          const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
 
-    <h3>Tầm quan trọng của ${h1Text} đối với xe</h3>
-    <p>
-    <strong>Phụ tùng này</strong> là một chi tiết quan trọng trong tổng thể chiếc xe. Bộ phận này chịu trách nhiệm duy trì tính ổn định, đảm bảo sự đồng bộ và bảo vệ các cụm cơ cấu liên quan. Khi chi tiết này ở trạng thái tốt nhất, chiếc xe của bạn sẽ vận hành an toàn, giữ được tính thẩm mỹ và đạt hiệu suất đúng như thiết kế ban đầu.
-    </p>
+          if (dup.duplicate && !isUpdate) {
+            if (!silent) {
+              alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
+            }
+            return { guarded: true, dup };
+          }
 
-    <h3>Khi nào cần kiểm tra và thay thế?</h3>
-    <p>
-    Trong quá trình sử dụng, các bộ phận trên xe có thể bị xuống cấp do hao mòn tự nhiên, tác động của môi trường, hoặc hư hỏng đột xuất do va chạm. Dù là lỗi cơ khí, điện tử hay tổn hại về mặt ngoại quan, việc bộ phận này không còn giữ được trạng thái nguyên bản đều ảnh hưởng trực tiếp đến trải nghiệm lái và độ an toàn. Khi nhận thấy các dấu hiệu bất thường hoặc hư hại rõ rệt, <strong>${h1Text}</strong> cần được thay thế kịp thời để tránh làm giảm giá trị xe và ảnh hưởng đến các chi tiết liên đới.
-    </p>
+          return { guarded: false };
+        }
 
-    <h3>Tại sao nên chọn mua tại Kiều Gia Auto?</h3>
-    <ul>
-      <li>Sản phẩm được tuyển chọn kỹ lưỡng, độ bền cao, vật liệu chế tạo chuẩn xác.</li>
-      <li>Kích thước hình học đồng bộ, lắp ráp vừa vặn, khôi phục hoàn toàn chức năng.</li>
-      <li>Đội ngũ kỹ thuật hỗ trợ tư vấn bắt đúng "bệnh", mua đúng hàng.</li>
-    </ul>
+        // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
+        // Đã thêm h1Text vào tham số hàm
+        async function sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text) {
+          const website = document.getElementById('website').value;
+          let hang = thuonghieu || '';
+          let dong = '';
+          let dateText = '';
 
-    <h4>Chính sách hỗ trợ khách hàng</h4>
-    <ul>
-      <li>Bảo hành lỗi 1 đổi 1 theo đúng quy định của nhà sản xuất.</li>
-      <li>Đổi trả trong 7 ngày nếu sản phẩm chưa lắp ráp và còn nguyên vẹn.</li>
-    </ul>
+          // Logic phân tích tên xe để lấy Đời, Dòng, Hãng
+          const match = ten.match(CAR_BRAND_REGEX_FULL);
+          if (match) {
+            hang = kgFormatHang(match[2]);
+            dong = match[3].trim();
+            const nam1 = match[4] || '';
+            const nam2 = match[5] || '';
+            // Căn chỉnh lại dateText cho Gemini dễ đọc (vd: 2015-2017)
+            dateText = nam1 ? (nam2 ? `${nam1}-${nam2}` : `${nam1}`) : '';
+          } else {
+            hang = thuonghieu;
+            dong = ten.replace(hang, '').trim(); 
+          }
 
-    <p>
-    📍 <strong>Trụ sở:</strong> Ngõ 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
-    📞 <strong>Liên hệ tư vấn:</strong> 0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666
-    </p>`;
-        copyContent = content;
+          // Nhờ Gemini viết đoạn giới thiệu chuẩn theo ý đồ của từng web
+          let moTa = await layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text);
 
-      } else if (website === 'phutungotokieugia') {
-        content = `<h2><strong>${h1Text}</strong></h2>
-    <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-    <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-    <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-    ${moTaTuDong}
-    ${danhSachXe}
+          // Vẫn GIỮ NGUYÊN logic chèn link nội bộ cực xịn
+          if (website === 'kieugiaauto' || website === 'phutungotokieugia') {
+            const linkTrangChu = website === 'kieugiaauto' ? 'https://kieugiaauto.vn' : 'https://phutungotokieugia.vn';
+            if (hang) {
+              const hangRegex = new RegExp(`\\b${hang.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b(?![^<]*>)`, 'gi');
+              moTa = moTa.replace(hangRegex, `<a href="${linkTrangChu}/${hang.toLowerCase().replace(/\s+/g, '-')}" target="_blank">${hang}</a>`);
+            }
+          }
 
-    <h3>Tương thích chuẩn xác theo form xe nguyên bản</h3>
-    <p>
-    Sản phẩm <strong>${h1Text}</strong> được sản xuất đúng theo kích thước và thông số của đời xe này. Việc sử dụng phụ tùng chuẩn form giúp quá trình lắp ráp diễn ra nhanh chóng, ăn khớp tuyệt đối với các chi tiết xung quanh mà không cần phải can thiệp hay thay đổi kết cấu nguyên bản của xe.
-    </p>
+          return `<p>${moTa}</p>`;
+        }
 
-    <h3>Khôi phục trạng thái hoạt động và thẩm mỹ</h3>
-    <p>
-    Trong quá trình sử dụng, các bộ phận trên xe có thể bị hư hỏng do sự cố va chạm, tác động của môi trường hoặc hao mòn tự nhiên theo thời gian. Việc thay mới <strong>${h1Text}</strong> đúng đời xe là giải pháp tối ưu để khôi phục lại chức năng hoạt động, đảm bảo an toàn cũng như duy trì sự đồng bộ và thẩm mỹ cho tổng thể chiếc xe.
-    </p>
+        function sinhDanhSachXe(ten, thuonghieu, isShopee = false) {
+          if (!isShopee) return '';
+          if (!ten || !thuonghieu) return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
 
-    <h3>Ưu điểm khi sử dụng sản phẩm</h3>
-    <ul>
-      <li>Thiết kế đồng bộ hoàn toàn với cấu hình và năm sản xuất của xe.</li>
-      <li>Chất liệu đạt chuẩn, đáp ứng tốt các điều kiện vận hành và sử dụng tại Việt Nam.</li>
-      <li>Bảo vệ các chi tiết liên quan, giúp xe duy trì tình trạng tốt nhất.</li>
-    </ul>
+          ten = ten.toLowerCase();
+          const match = ten.match(CAR_BRAND_REGEX_WITH_YEARS);
+          if (match) {
+            const hang = kgFormatHang(match[1]);
+            const dong = match[2] ? match[2].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : '';
+            const nam1 = match[3] || '';
+            const nam2 = match[4] || '';
 
-    <h4>Chính sách bán hàng & Hỗ trợ kỹ thuật</h4>
-    <ul>
-      <li>Tư vấn rõ ràng sự khác biệt giữa các form xe (form cũ / form mới) để tránh mua nhầm.</li>
-      <li>Hỗ trợ đổi trả nếu sản phẩm có lỗi từ nhà sản xuất. Giao hàng tận nơi toàn quốc.</li>
-    </ul>
+            if (nam1 && nam2) {
+              const list = [];
+              for (let y = parseInt(nam1); y <= parseInt(nam2); y++) { list.push(`${hang} ${dong} ${y}`); }
+              return `<h3>Phù hợp với các dòng xe:</h3><p>${list.join(', ')}</p>`;
+            } else if (nam1) {
+              return `<h3>Phù hợp với các dòng xe:</h3><p>${hang} ${dong} ${nam1}</p>`;
+            } else {
+              return `<h3>Phù hợp với các dòng xe:</h3><p>${dong ? `${hang} ${dong}` : hang}</p>`;
+            }
+          }
 
-    <p>
-    📍 <strong>Địa chỉ kho:</strong> Số 84 Ngõ Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
-    📞 <strong>Hotline tư vấn đời xe & đặt hàng:</strong> 0924.153.555 – 0914.153.555
-    </p>`;
-        copyContent = content;
+          const hangOnly = Object.keys(HANG_XE_MAP).find(h => ten.includes(h));
+          if (hangOnly) {
+            const dongXeList = HANG_XE_MAP[hangOnly].slice().sort((a, b) => b.length - a.length);
+            const dongXe = dongXeList.find(dong => {
+              const pattern = dong.toLowerCase().replace(/\s+/g, '\\s+');
+              const regex = new RegExp(pattern, 'i');
+              return regex.test(ten);
+            });
 
-      } else if (website === 'banphutung') {
-        content = `<h2><strong>${h1Text}</strong></h2>
-    <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-    <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-    <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+            const hangUc = kgFormatHang(hangOnly);
 
-    ${moTaTuDong}
+            if (dongXe) {
+              const matchedDong = ten.match(new RegExp(dongXe.toLowerCase().replace(/\s+/g, '\\s*'), 'i'));
+              const finalDong = matchedDong
+                ? matchedDong[0].split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+                : dongXe;
+              return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc} ${finalDong}</p>`;
+            }
+            return `<h3>Phù hợp với các dòng xe:</h3><p>${hangUc}</p>`;
+          }
+          return `<h3>Phù hợp với các dòng xe:</h3><p>Tương thích với các dòng xe thuộc thương hiệu ${thuonghieu}</p>`;
+        }
 
-    <h3>Cung ứng sỉ ${h1Text} cho Gara & Trung tâm dịch vụ</h3>
-    <p>
-    Trong quá trình tiếp nhận sửa chữa, bảo dưỡng định kỳ hoặc phục hồi xe sau va chạm, <strong>${h1Text}</strong> là hạng mục vật tư đòi hỏi tính chính xác cao về mặt thông số. Chúng tôi cung cấp nguồn hàng ổn định, thiết kế chuẩn O.E.M giúp thợ kỹ thuật thao tác lắp ráp nhanh chóng, hoàn thiện xe cho khách một cách trơn tru mà không tốn thời gian căn chỉnh hay chế cháo lại.
-    </p>
+        // 3. SỬA HÀM TẠO NỘI DUNG: Nâng cấp thành async để chờ AI viết xong
+        async function taoNoiDung() {
+          const ten = document.getElementById('ten').value.trim();
+          const ma = document.getElementById('ma').value.trim();
+          const thuonghieu = document.getElementById('thuonghieu').value.trim();
+          const xuatxu = document.getElementById('xuatxu').value.trim();
+          const website = document.getElementById('website').value;
 
-    <h3>Chính sách ưu đãi dành riêng cho thợ và Gara</h3>
-    <ul>
-      <li><strong>Sẵn kho số lượng lớn:</strong> Không để anh em thợ phải chờ đợi, tránh tình trạng xe nằm cầu lâu chiếm diện tích xưởng.</li>
-      <li><strong>Giao hàng hỏa tốc:</strong> Ship cực nhanh nội thành Hà Nội, hỗ trợ gửi chành xe hoặc xe khách đi tỉnh ngay trong ngày.</li>
-      <li><strong>Chiết khấu linh hoạt:</strong> Báo giá sỉ cạnh tranh cao, tối ưu biên độ lợi nhuận cho các xưởng dịch vụ.</li>
-      <li><strong>Hậu mãi rõ ràng:</strong> Hỗ trợ bảo hành nhanh gọn, đối chiếu mã chuẩn xác ngay từ khâu xuất kho.</li>
-    </ul>
+          if (!ten || !ma || !thuonghieu || !xuatxu) {
+            hienThongBao("⚠️ Vui lòng nhập đầy đủ thông tin!", 'error');
+            return;
+          }
 
-    <p>
-    Quý đối tác cần lấy sỉ <strong>${h1Text}</strong> hoặc nhập hàng định kỳ, vui lòng liên hệ trực tiếp phòng kinh doanh để nhận báo giá tốt nhất hôm nay.
-    </p>
+          // Khóa nút tạo nội dung 
+          const btnTao = document.querySelector('button[onclick="taoNoiDung()"]');
+          btnTao.innerText = "⏳ Đang kiểm tra dữ liệu...";
+          btnTao.disabled = true;
 
-    <p>
-    📍 <strong>Kho tổng:</strong> 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
-    📞 <strong>Liên hệ báo giá sỉ & đặt hàng:</strong> 0898.153.555 – 0914.153.555 – 0378.05.6666
-    </p>`;
-        copyContent = content;
+          const yearRegex = /(\d{4})(?:\D+(\d{4}))?$/i;
+          const yearMatch = ten.match(yearRegex);
 
-      } else if (website === 'phutunggiare') {
-        content = `<h2><strong>${h1Text}</strong></h2>
+          let tenPhuTung = ten.trim();
+          let dateText = ''; 
+          let nam1 = '';
+          let nam2 = '';
+
+          if (yearMatch) {
+            nam1 = yearMatch[1];
+            nam2 = yearMatch[2] || '';
+            dateText = nam2 ? ` ${nam1}–${nam2}` : ` ${nam1}`;
+            tenPhuTung = ten.replace(yearRegex, '').trim().replace(/\s+$/, '');
+          }
+
+          const match = tenPhuTung.match(CAR_BRAND_REGEX_SIMPLE);
+
+          let hang = thuonghieu || '';
+          let dong = '';
+
+          if (match) {
+            hang = kgFormatHang(match[2]);
+            dong = match[3].trim();
+          } else {
+            hang = thuonghieu;
+            dong = tenPhuTung.replace(hang, '').trim(); 
+          }
+
+          let h1Text = ten; 
+          if (website === 'kieugiaauto') {
+            h1Text = tenPhuTung.trim(); 
+          } else if (website === 'phutunggiare') {
+            h1Text = `${tenPhuTung} phụ tùng thay thế`.trim();
+          } else if (website === 'banphutung') {
+            h1Text = `${tenPhuTung} giá tốt`.trim(); 
+          } else if (website === 'phutungotokieugia') {
+            h1Text = `${tenPhuTung}${dateText}`.trim(); 
+          } else if (website === 'shopee' || website === 'shopee2') {
+            h1Text = ten; 
+          }
+
+          // ========================================================
+          // TỐI ƯU HÓA: LOGIC KIỂM TRA 3 LỚP TRƯỚC KHI GỌI AI
+          // ========================================================
+          const pkey = kgMakeProductKey(ten, ma);
+          const cacheKey = website + "___" + ma;
+          const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+          let moTaTuDong = "";
+
+          if (isUpdate) {
+            hienThongBao("🛠 Chế độ sửa bài: Bỏ qua kiểm tra, gọi AI viết lại...", "success");
+          } else {
+            // LỚP 1: Kiểm tra trong Log tạm
+            if (window.kgGlobalStore && window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
+              hienThongBao("♻️ Mã này đã có trong Log! Đang tải lại bài viết cũ...", "success");
+              let baiCu = window.kgGlobalStore[pkey][website].desc;
+              moTaTuDong = baiCu.includes("<p>") ? baiCu : `<p>${baiCu}</p>`;
+            } 
+            // LỚP 2: Kiểm tra dữ liệu SKU trên Web (Chỉ check nếu Log chưa có)
+            else if (KG_CHECK_SKU_SITES.has(website)) {
+              // Check nhanh trong Cache
+              if (window.kgSkuCache.has(cacheKey)) {
+                hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
+                btnTao.innerText = "Tạo nội dung";
+                btnTao.disabled = false;
+                return; // Dừng lập tức
+              }
+              // Check sâu vào cơ sở dữ liệu (Apps Script)
+              const tonTaiThat = await kgCheckProductOnWebsite(website, ma, ten);
+              if (tonTaiThat) {
+                window.kgSkuCache.add(cacheKey);
+                hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" Đã tồn tại trên web.`, "error");
+                btnTao.innerText = "Tạo nội dung";
+                btnTao.disabled = false;
+                return; // Dừng lập tức
+              }
+            }
+          }
+
+          // LỚP 3: GỌI AI GEMINI (Chỉ chạy khi 2 lớp trên đã thông qua)
+          if (!moTaTuDong) {
+            hienThongBao("⏳ Đang viết bài, vui lòng đợi...", "success");
+            moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
+          }
+          
+          window.__kg_last_auto_desc = {
+            productKey: pkey,
+            website,
+            descHtml: moTaTuDong
+          };
+          
+          const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee' || website === 'shopee2' || website === 'phutungotokieugia');
+
+          let content = '';
+          let copyContent = '';
+
+          // --- BÊN DƯỚI GIỮ NGUYÊN 100% CẤU TRÚC HTML CỦA TỪNG TRANG ---
+          if (website === 'kieugiaauto') {
+            content = `<h2><strong>${h1Text}</strong></h2>
         <p><strong>Mã sản phẩm:</strong> ${ma}</p>
         <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
         <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-        
         ${moTaTuDong}
-        
-        <h3>Giải pháp phụ tùng thay thế khi xe cần sửa chữa</h3>
+
+        <h3>Tầm quan trọng của ${h1Text} đối với xe</h3>
         <p>
-        Trong quá trình sử dụng ô tô, nhiều chi tiết có thể bị hao mòn theo thời gian hoặc hư hỏng do tác động từ môi trường và va chạm. Khi đó, việc lựa chọn <strong>${h1Text}</strong> phù hợp sẽ giúp thay thế nhanh chóng bộ phận đã xuống cấp, góp phần khôi phục khả năng vận hành ổn định của xe và đảm bảo các hệ thống liên quan hoạt động trơn tru.
+        <strong>Phụ tùng này</strong> là một chi tiết quan trọng trong tổng thể chiếc xe. Bộ phận này chịu trách nhiệm duy trì tính ổn định, đảm bảo sự đồng bộ và bảo vệ các cụm cơ cấu liên quan. Khi chi tiết này ở trạng thái tốt nhất, chiếc xe của bạn sẽ vận hành an toàn, giữ được tính thẩm mỹ và đạt hiệu suất đúng như thiết kế ban đầu.
         </p>
-        
-        <h3>Ưu điểm khi sử dụng phụ tùng thay thế</h3>
+
+        <h3>Khi nào cần kiểm tra và thay thế?</h3>
+          <p>
+    Sau một thời gian vận hành, nhiều bộ phận trên xe có thể bị suy giảm chất lượng do ma sát, nhiệt độ và tác động từ môi trường. Khi các chi tiết này không còn đảm bảo trạng thái hoạt động ban đầu, việc thay thế kịp thời sẽ giúp xe duy trì hiệu suất vận hành và đảm bảo an toàn khi sử dụng.
+    </p>
+
+        <h3>Tại sao nên chọn mua tại Kiều Gia Auto?</h3>
         <ul>
-        <li><strong>Dễ dàng thay thế:</strong> Thiết kế và cấu tạo phù hợp với vị trí lắp đặt trên xe, giúp quá trình tháo lắp diễn ra nhanh chóng.</li>
-        <li><strong>Đảm bảo vận hành ổn định:</strong> Sau khi thay thế, bộ phận trên xe có thể hoạt động ổn định và đáp ứng nhu cầu sử dụng thực tế.</li>
-        <li><strong>Phù hợp cho sửa chữa và bảo dưỡng:</strong> Là lựa chọn phổ biến khi cần thay mới các chi tiết đã hư hỏng hoặc xuống cấp.</li>
+          <li>Sản phẩm được tuyển chọn kỹ lưỡng, độ bền cao, vật liệu chế tạo chuẩn xác.</li>
+          <li>Kích thước hình học đồng bộ, lắp ráp vừa vặn, khôi phục hoàn toàn chức năng.</li>
+          <li>Đội ngũ kỹ thuật hỗ trợ tư vấn bắt đúng "bệnh", mua đúng hàng.</li>
         </ul>
-        
-        <h4>Hỗ trợ tư vấn & giao hàng</h4>
+
+        <h4>Chính sách hỗ trợ khách hàng</h4>
         <ul>
-        <li>Tư vấn lựa chọn đúng phụ tùng thay thế phù hợp với dòng xe.</li>
-        <li>Hỗ trợ giao hàng nhanh chóng trên toàn quốc.</li>
-        <li>Khách hàng có thể kiểm tra đúng sản phẩm trước khi nhận hàng.</li>
+          <li>Bảo hành lỗi 1 đổi 1 theo đúng quy định của nhà sản xuất.</li>
+          <li>Đổi trả trong 7 ngày nếu sản phẩm chưa lắp ráp và còn nguyên vẹn.</li>
         </ul>
-        
+
         <p>
-        📍 <strong>Kho phân phối phụ tùng:</strong> Ngõ 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
-        📞 <strong>Hotline tư vấn phụ tùng & đặt hàng:</strong> 0378.05.6666 – 0914.153.555
+        📍 <strong>Trụ sở:</strong> Ngõ 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
+        📞 <strong>Liên hệ tư vấn:</strong> 0914.153.555 – 0924.153.555 – 0898.153.555 – 0378.05.6666
         </p>`;
-        
-        copyContent = content;
-        
-      } else if (website === 'shopee') {
-        content = `<h2><strong>${ten}</strong></h2>
-    <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-    <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-    <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-    ${moTaTuDong}
-    ${danhSachXe}
-    <h3>✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
-    <ul>
-      <li>Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.</li>
-      <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.</li>
-      <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
-      <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
-    </ul>
-    <h3>✔️ Chính sách bảo hành:</h3>
-    <ul>
-      <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
-      <li>Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
-    </ul>
-    <h3>✔️ Lưu ý:</h3>
-    <ul>
-      <li>Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</li>
-      <li>Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!</li>
-    </ul>
-    <h3>✔️ Cam kết của Kiều Gia Auto:</h3>
-    <ul>
-      <li>Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.</li>
-      <li>Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.</li>
-      <li>Thương hiệu uy tín, đáng tin cậy.</li>
-    </ul>
-    <h3>✔️ Đảm bảo từ Kiều Gia Auto:</h3>
-    <ul>
-      <li>Hình ảnh “${ten}” đúng 100% với thực tế.</li>
-      <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
-      <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
-      <li>Giao hàng nhanh chóng trên toàn quốc.</li>
-    </ul>
-    <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
-        copyContent = content;
+            copyContent = content;
 
-      } else if (website === 'shopee2') {
-        content = `<h2>${ten}</h2>
-    <p><strong>Mã phụ tùng:</strong> ${ma}</p>
-    <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-    <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
-    ${moTaTuDong}
-    ${danhSachXe}
-    <p>${ten} là phụ tùng quan trọng giúp xe vận hành ổn định và đảm bảo độ bền trong quá trình sử dụng.</p>
+          } else if (website === 'phutungotokieugia') {
+            content = `<h2><strong>${h1Text}</strong></h2>
+        <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+        <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+        <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+        ${moTaTuDong}
+        ${danhSachXe}
 
-    <h3>🔧 Đặc điểm sản phẩm</h3>
-    <ul>
-    <li>Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.</li>
-    <li>Độ bền cao, hoạt động ổn định.</li>
-    <li>Phù hợp lắp đặt cho nhiều dòng xe.</li>
-    <li>Dễ dàng thay thế tại các gara ô tô.</li>
-    </ul>
+        <h3>Tương thích chuẩn xác theo form xe nguyên bản</h3>
+        <p>
+        Sản phẩm <strong>${h1Text}</strong> được sản xuất đúng theo kích thước và thông số của đời xe này. Việc sử dụng phụ tùng chuẩn form giúp quá trình lắp ráp diễn ra nhanh chóng, ăn khớp tuyệt đối với các chi tiết xung quanh mà không cần phải can thiệp hay thay đổi kết cấu nguyên bản của xe.
+        </p>
 
-    <h3>📦 Chính sách bán hàng</h3>
-    <ul>
-    <li>Sản phẩm được kiểm tra trước khi gửi.</li>
-    <li>Đóng gói cẩn thận khi vận chuyển.</li>
-    <li>Hỗ trợ đổi trả theo chính sách của sàn.</li>
-    </ul>
+        <h3>Khôi phục trạng thái hoạt động và thẩm mỹ</h3>
+        <p>
+        Trong quá trình sử dụng, các bộ phận trên xe có thể bị hư hỏng do sự cố va chạm, tác động của môi trường hoặc hao mòn tự nhiên theo thời gian. Việc thay mới <strong>${h1Text}</strong> đúng đời xe là giải pháp tối ưu để khôi phục lại chức năng hoạt động, đảm bảo an toàn cũng như duy trì sự đồng bộ và thẩm mỹ cho tổng thể chiếc xe.
+        </p>
 
-    <h3>📌 Lưu ý khi đặt hàng</h3>
-    <ul>
-    <li>Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.</li>
-    <li>Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.</li>
-    <li>Nên lắp đặt tại gara hoặc thợ kỹ thuật.</li>
-    </ul>
+        <h3>Ưu điểm khi sử dụng sản phẩm</h3>
+        <ul>
+          <li>Thiết kế đồng bộ hoàn toàn với cấu hình và năm sản xuất của xe.</li>
+          <li>Chất liệu đạt chuẩn, đáp ứng tốt các điều kiện vận hành và sử dụng tại Việt Nam.</li>
+          <li>Bảo vệ các chi tiết liên quan, giúp xe duy trì tình trạng tốt nhất.</li>
+        </ul>
 
-    <p>Cảm ơn quý khách đã quan tâm sản phẩm!</p>`;
-        
-        let plainMoTaTuDong = moTaTuDong.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '');
-        let plainDanhSachXe = danhSachXe.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '');
+        <h4>Chính sách bán hàng & Hỗ trợ kỹ thuật</h4>
+        <ul>
+          <li>Tư vấn rõ ràng sự khác biệt giữa các form xe (form cũ / form mới) để tránh mua nhầm.</li>
+          <li>Hỗ trợ đổi trả nếu sản phẩm có lỗi từ nhà sản xuất. Giao hàng tận nơi toàn quốc.</li>
+        </ul>
 
-        copyContent = `**${ten}**\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${plainMoTaTuDong}\n\n${plainDanhSachXe}\n\n**Đặc điểm sản phẩm**\n- Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.\n- Độ bền cao, hoạt động ổn định.\n- Phù hợp lắp đặt cho nhiều dòng xe.\n- Dễ dàng thay thế tại các gara ô tô.\n\n**Chính sách bán hàng**\n- Sản phẩm được kiểm tra trước khi gửi.\n- Đóng gói cẩn thận khi vận chuyển.\n- Hỗ trợ đổi trả theo chính sách của sàn.\n\n**Lưu ý khi đặt hàng**\n- Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.\n- Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.\n- Nên lắp đặt tại gara hoặc thợ kỹ thuật.\n\nCảm ơn quý khách đã quan tâm sản phẩm!`;
-      }
+        <p>
+        📍 <strong>Địa chỉ kho:</strong> Số 84 Ngõ Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
+        📞 <strong>Hotline tư vấn đời xe & đặt hàng:</strong> 0924.153.555 – 0914.153.555
+        </p>`;
+            copyContent = content;
 
-      content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
-      document.getElementById('preview').innerHTML = content;
+          } else if (website === 'banphutung') {
+            content = `<h2><strong>${h1Text}</strong></h2>
+        <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+        <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+        <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
 
-      const copyButton = document.getElementById('copyButton');
-      copyButton.dataset.content = copyContent;
-      copyButton.dataset.productKey = pkey;
-      copyButton.dataset.website    = website;
-      copyButton.dataset.descHtml   = moTaTuDong || '';
+        ${moTaTuDong}
 
-      copyButton.style.display = 'none';
+        <h3>Cung ứng sỉ ${h1Text} cho Gara & Trung tâm dịch vụ</h3>
+        <p>
+        Trong quá trình tiếp nhận sửa chữa, bảo dưỡng định kỳ hoặc phục hồi xe sau va chạm, <strong>${h1Text}</strong> là hạng mục vật tư đòi hỏi tính chính xác cao về mặt thông số. Chúng tôi cung cấp nguồn hàng ổn định, thiết kế chuẩn O.E.M giúp thợ kỹ thuật thao tác lắp ráp nhanh chóng, hoàn thiện xe cho khách một cách trơn tru mà không tốn thời gian căn chỉnh hay chế cháo lại.
+        </p>
 
-      // ========================================================
-      // KIỂM TRA ĐỂ HIỆN NÚT COPY
-      // ========================================================
-      const g = kgGuardCopy(copyButton, { silent: true });
+        <h3>Chính sách ưu đãi dành riêng cho thợ và Gara</h3>
+        <ul>
+          <li><strong>Sẵn kho số lượng lớn:</strong> Không để anh em thợ phải chờ đợi, tránh tình trạng xe nằm cầu lâu chiếm diện tích xưởng.</li>
+          <li><strong>Giao hàng hỏa tốc:</strong> Ship cực nhanh nội thành Hà Nội, hỗ trợ gửi chành xe hoặc xe khách đi tỉnh ngay trong ngày.</li>
+          <li><strong>Chiết khấu linh hoạt:</strong> Báo giá sỉ cạnh tranh cao, tối ưu biên độ lợi nhuận cho các xưởng dịch vụ.</li>
+          <li><strong>Hậu mãi rõ ràng:</strong> Hỗ trợ bảo hành nhanh gọn, đối chiếu mã chuẩn xác ngay từ khâu xuất kho.</li>
+        </ul>
 
-      if (g.guarded) {
-        if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
-          // Log ảo thì cho phép hiện Copy
-          copyButton.style.display = 'block';
-        } else {
-          hienThongBao(`❌ Nội dung bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
+        <p>
+        Quý đối tác cần lấy sỉ <strong>${h1Text}</strong> hoặc nhập hàng định kỳ, vui lòng liên hệ trực tiếp phòng kinh doanh để nhận báo giá tốt nhất hôm nay.
+        </p>
+
+        <p>
+        📍 <strong>Kho tổng:</strong> 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
+        📞 <strong>Liên hệ báo giá sỉ & đặt hàng:</strong> 0898.153.555 – 0914.153.555 – 0378.05.6666
+        </p>`;
+            copyContent = content;
+
+          } else if (website === 'phutunggiare') {
+            content = `<h2><strong>${h1Text}</strong></h2>
+            <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+            <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+            <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+            
+            ${moTaTuDong}
+            
+            <h3>Giải pháp phụ tùng thay thế khi xe cần sửa chữa</h3>
+            <p>
+            Khi xe đến hạn bảo dưỡng định kỳ hoặc bất ngờ gặp sự cố hỏng hóc, việc tìm kiếm vật tư thay thế kịp thời là vô cùng cấp thiết. Lúc này, lựa chọn <strong>${h1Text}</strong> chuẩn xác là giải pháp thiết thực giúp chủ xe khắc phục nhanh chóng bộ phận đã xuống cấp, khôi phục lại trạng thái hoạt động trơn tru và an toàn trên mọi hành trình.          </p>
+            <h3>Ưu điểm khi sử dụng phụ tùng thay thế</h3>
+            <ul>
+            <li><strong>Dễ dàng thay thế:</strong> Thiết kế và cấu tạo phù hợp với vị trí lắp đặt trên xe, giúp quá trình tháo lắp diễn ra nhanh chóng.</li>
+            <li><strong>Đảm bảo vận hành ổn định:</strong> Sau khi thay thế, bộ phận trên xe có thể hoạt động ổn định và đáp ứng nhu cầu sử dụng thực tế.</li>
+            <li><strong>Phù hợp cho sửa chữa và bảo dưỡng:</strong> Là lựa chọn phổ biến khi cần thay mới các chi tiết đã hư hỏng hoặc xuống cấp.</li>
+            </ul>
+            
+            <h4>Hỗ trợ tư vấn & giao hàng</h4>
+            <ul>
+            <li>Tư vấn lựa chọn đúng phụ tùng thay thế phù hợp với dòng xe.</li>
+            <li>Hỗ trợ giao hàng nhanh chóng trên toàn quốc.</li>
+            <li>Khách hàng có thể kiểm tra đúng sản phẩm trước khi nhận hàng.</li>
+            </ul>
+            
+            <p>
+            📍 <strong>Kho phân phối phụ tùng:</strong> Ngõ 84 Kim Ngưu, Hai Bà Trưng, Hà Nội<br>
+            📞 <strong>Hotline tư vấn phụ tùng & đặt hàng:</strong> 0378.05.6666 – 0914.153.555
+            </p>`;
+            
+            copyContent = content;
+            
+          } else if (website === 'shopee') {
+            content = `<h2><strong>${ten}</strong></h2>
+        <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+        <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+        <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+        ${moTaTuDong}
+        ${danhSachXe}
+        <h3>✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất</h3>
+        <ul>
+          <li>Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.</li>
+          <li>Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.</li>
+          <li>Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.</li>
+          <li>Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.</li>
+        </ul>
+        <h3>✔️ Chính sách bảo hành:</h3>
+        <ul>
+          <li>Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.</li>
+          <li>Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.</li>
+        </ul>
+        <h3>✔️ Lưu ý:</h3>
+        <ul>
+          <li>Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.</li>
+          <li>Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!</li>
+        </ul>
+        <h3>✔️ Cam kết của Kiều Gia Auto:</h3>
+        <ul>
+          <li>Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.</li>
+          <li>Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.</li>
+          <li>Thương hiệu uy tín, đáng tin cậy.</li>
+        </ul>
+        <h3>✔️ Đảm bảo từ Kiều Gia Auto:</h3>
+        <ul>
+          <li>Hình ảnh “${ten}” đúng 100% với thực tế.</li>
+          <li>Chất lượng sản phẩm đảm bảo tuyệt đối.</li>
+          <li>Hỗ trợ đổi trả theo chính sách quy định.</li>
+          <li>Giao hàng nhanh chóng trên toàn quốc.</li>
+        </ul>
+        <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
+            copyContent = content;
+
+          } else if (website === 'shopee2') {
+            content = `<h2>${ten}</h2>
+        <p><strong>Mã phụ tùng:</strong> ${ma}</p>
+        <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+        <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+        ${moTaTuDong}
+        ${danhSachXe}
+        <p>${ten} là phụ tùng quan trọng giúp xe vận hành ổn định và đảm bảo độ bền trong quá trình sử dụng.</p>
+
+        <h3>🔧 Đặc điểm sản phẩm</h3>
+        <ul>
+        <li>Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.</li>
+        <li>Độ bền cao, hoạt động ổn định.</li>
+        <li>Phù hợp lắp đặt cho nhiều dòng xe.</li>
+        <li>Dễ dàng thay thế tại các gara ô tô.</li>
+        </ul>
+
+        <h3>📦 Chính sách bán hàng</h3>
+        <ul>
+        <li>Sản phẩm được kiểm tra trước khi gửi.</li>
+        <li>Đóng gói cẩn thận khi vận chuyển.</li>
+        <li>Hỗ trợ đổi trả theo chính sách của sàn.</li>
+        </ul>
+
+        <h3>📌 Lưu ý khi đặt hàng</h3>
+        <ul>
+        <li>Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.</li>
+        <li>Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.</li>
+        <li>Nên lắp đặt tại gara hoặc thợ kỹ thuật.</li>
+        </ul>
+
+        <p>Cảm ơn quý khách đã quan tâm sản phẩm!</p>`;
+            
+            let plainMoTaTuDong = moTaTuDong.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '');
+            let plainDanhSachXe = danhSachXe.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '');
+
+            copyContent = `**${ten}**\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${plainMoTaTuDong}\n\n${plainDanhSachXe}\n\n**Đặc điểm sản phẩm**\n- Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.\n- Độ bền cao, hoạt động ổn định.\n- Phù hợp lắp đặt cho nhiều dòng xe.\n- Dễ dàng thay thế tại các gara ô tô.\n\n**Chính sách bán hàng**\n- Sản phẩm được kiểm tra trước khi gửi.\n- Đóng gói cẩn thận khi vận chuyển.\n- Hỗ trợ đổi trả theo chính sách của sàn.\n\n**Lưu ý khi đặt hàng**\n- Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.\n- Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.\n- Nên lắp đặt tại gara hoặc thợ kỹ thuật.\n\nCảm ơn quý khách đã quan tâm sản phẩm!`;
+          }
+
+          content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
+          document.getElementById('preview').innerHTML = content;
+
+          const copyButton = document.getElementById('copyButton');
+          copyButton.dataset.content = copyContent;
+          copyButton.dataset.productKey = pkey;
+          copyButton.dataset.website    = website;
+          copyButton.dataset.descHtml   = moTaTuDong || '';
+
+          copyButton.style.display = 'none';
+
+          // ========================================================
+          // KIỂM TRA ĐỂ HIỆN NÚT COPY
+          // ========================================================
+          const g = kgGuardCopy(copyButton, { silent: true });
+
+          if (g.guarded) {
+            if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
+              // Log ảo thì cho phép hiện Copy
+              copyButton.style.display = 'block';
+            } else {
+              hienThongBao(`❌ Nội dung bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
+            }
+          } else {
+            copyButton.style.display = 'block'; 
+          }
+
+          // Mở khóa lại nút bấm
+          btnTao.innerText = "Tạo nội dung";
+          btnTao.disabled = false;
+          hienThongBao("✅ Đã tạo nội dung thành công!", "success");
         }
-      } else {
-        copyButton.style.display = 'block'; 
-      }
-
-      // Mở khóa lại nút bấm
-      btnTao.innerText = "Tạo nội dung";
-      btnTao.disabled = false;
-      hienThongBao("✅ Đã tạo nội dung thành công!", "success");
-    }
