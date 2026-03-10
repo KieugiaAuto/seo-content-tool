@@ -271,79 +271,143 @@
     // CÁC HÀM XỬ LÝ NỘI DUNG
     // ==========================================
 
-    /// 1. HÀM GỌI GEMINI: ÉP LOGIC SEO VÀ TIÊU ĐỀ CHO TỪNG WEB (Đã xóa Thương hiệu & Xuất xứ khỏi Prompt)
-    async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text) {
-      let yeuCau = "";
-      let tenXe = `${hang} ${dong}`.trim();
-      let doiXe = dateText ? dateText.trim() : "";
+// 1. HÀM GỌI GEMINI: ÉP LOGIC CHUẨN 4 WEB VÀ THIẾT QUÂN LUẬT VỀ ĐỘ DÀI
+async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text) {
+  let yeuCau = "";
+  let tenXe = `${hang} ${dong}`.trim();
+  let doiXe = dateText ? dateText.trim() : "";
 
-      // Phân luồng AI viết bài theo đúng logic SEO của bác
-      switch (website) {
-        case 'kieugiaauto':
-          yeuCau = `
-          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
-          - Logic 1: Giải thích công dụng phụ tùng (ví dụ: bảo vệ khu vực cản trước, hấp thụ lực).
-          - Logic 2: Nêu dấu hiệu cần thay (nứt, vỡ, biến dạng do va chạm thì nên kiểm tra/thay thế kịp thời).
-          - Logic 3: Nhấn mạnh sự tương thích với xe ${tenXe}, giúp lắp đặt chính xác và đồng bộ.`;
-          break;
-        case 'phutunggiare':
-          yeuCau = `
-          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
-          - Logic 1: Nêu công dụng hoàn thiện và bảo vệ của phụ tùng.
-          - Logic 2: Nhấn mạnh sự tương thích với ${tenXe}, lắp đặt vừa vặn, hoạt động ổn định.
-          - Logic 3: Khẳng định việc thay thế đúng mã giúp quá trình sửa chữa nhanh chóng và tiết kiệm chi phí hợp lý.`;
-          break;
-        case 'banphutung':
-          yeuCau = `
-          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
-          - Logic 1: Nêu vai trò phụ tùng (hoàn thiện, bảo vệ xe).
-          - Logic 2: Nhấn mạnh sản phẩm sản xuất chuẩn kích thước thông số lắp đặt của ${tenXe}.
-          - Logic 3: Khẳng định đây là phụ tùng thường được các gara lựa chọn để sửa chữa, phục hồi.`;
-          break;
-        case 'phutungotokieugia':
-          yeuCau = `
-          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
-          - Logic 1: Giới thiệu chi tiết nằm ở đâu, bảo vệ xe thế nào.
-          - Logic 2: Nêu khi nào cần thay thế (nứt, vỡ, cong do va chạm) để đảm bảo an toàn, thẩm mỹ.
-          - Logic 3: Nhấn mạnh tương thích chính xác với ${tenXe} đời ${doiXe}.`;
-          break;
-        case 'shopee':
-        case 'shopee2':
-          yeuCau = `
-          - Mở đầu đoạn văn bằng cụm từ: "${h1Text} là..."
-          - Giới thiệu phụ tùng chất lượng, dễ lắp ráp.
-          - Nhấn mạnh sự vận hành ổn định và độ bền cao cho xe ${tenXe}.`;
-          break;
-        default:
-          yeuCau = `Viết tự nhiên, mở đầu bằng "${h1Text} là..."`;
-      }
+  let phongCach = "";
 
-      // ĐÃ XÓA DÒNG THƯƠNG HIỆU & XUẤT XỨ Ở ĐÂY
-      const prompt = `Bạn là chuyên gia bán phụ tùng ô tô. Viết 1 đoạn văn ngắn (khoảng 3 câu hoàn chỉnh) để giới thiệu sản phẩm.
-      
-      YÊU CẦU BẮT BUỘC VỀ LOGIC (Phải tuân thủ tuyệt đối):
-      ${yeuCau}
+const STYLE_MAP = {
+  kieugiaauto: [
+    "Viết theo phong cách kỹ thuật ô tô, giải thích vai trò của phụ tùng trong hệ thống xe.",
+    "Viết theo phong cách phân tích vận hành của xe và tầm quan trọng của phụ tùng.",
+    "Viết theo phong cách kỹ thuật chuyên sâu như tài liệu kỹ thuật ô tô."
+  ],
+  phutunggiare: [
+    "Viết theo phong cách tư vấn phụ tùng, nhấn mạnh việc sử dụng đúng mã phụ tùng.",
+    "Viết theo phong cách giải thích kỹ thuật về mã phụ tùng và tính tương thích.",
+    "Viết theo phong cách hướng dẫn lựa chọn phụ tùng đúng mã."
+  ],
+  banphutung: [
+    "Viết theo góc nhìn của thợ sửa xe tại gara.",
+    "Viết theo phong cách kỹ thuật sửa chữa ô tô.",
+    "Viết theo góc nhìn của quá trình bảo dưỡng và thay thế phụ tùng."
+  ],
+  phutungotokieugia: [
+    "Viết theo phong cách giải thích phụ tùng theo đời xe.",
+    "Viết theo phong cách kỹ thuật nhấn mạnh sự tương thích với đời xe.",
+    "Viết theo phong cách mô tả cấu tạo và sự phù hợp với dòng xe."
+  ],
+  shopee: [
+    "Viết theo phong cách bán hàng dễ hiểu cho người dùng.",
+    "Viết theo phong cách mô tả sản phẩm rõ ràng và dễ đọc.",
+    "Viết theo phong cách giới thiệu sản phẩm thương mại điện tử."
+  ],
+  shopee2: [
+    "Viết theo phong cách bán hàng dễ hiểu cho người dùng.",
+    "Viết theo phong cách mô tả sản phẩm rõ ràng và dễ đọc.",
+    "Viết theo phong cách giới thiệu sản phẩm thương mại điện tử."
+  ]
+};
 
-      LƯU Ý KỸ THUẬT QUAN TRỌNG:
-      - Trả về 1 đoạn văn bản trơn liền mạch. Không xuống dòng.
-      - Tuyệt đối KHÔNG dùng các ký tự đánh dấu (như *, #, -, <, >).
-      - Không viết thêm bất kỳ tiêu đề nào. Phải viết câu trọn vẹn.`;
-      
-      try {
-        const res = await fetch(API_BASE, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'gemini', prompt: prompt })
-        });
-        const data = await res.json();
-        if (data.status === "success" && data.moTa) {
-          // Xóa dọn các ký tự < > (nếu AI lỡ tạo ra) để tránh lỗi đứt đoạn HTML
-          return data.moTa.replace(/</g, "").replace(/>/g, "").trim();
-        }
-      } catch (err) {
-        console.error('Lỗi gọi Gemini:', err);
-      }
-      return `${h1Text} là phụ tùng chất lượng cao, đảm bảo hiệu suất vận hành ổn định.`;
+if (STYLE_MAP[website]) {
+  const styles = STYLE_MAP[website];
+  phongCach = styles[Math.floor(Math.random() * styles.length)];
+}
+  // Phân luồng logic cực kỳ sắc bén cho 4 website
+  switch (website) {
+    case 'kieugiaauto': // SEO Kỹ thuật (4 Câu)
+      yeuCau = `
+      - Câu 1: Giải thích phụ tùng này là gì, nằm ở đâu hoặc có chức năng gì.
+      - Câu 2: Nêu rõ các dấu hiệu nhận biết khi nào cần phải thay thế.
+      - Câu 3: Khẳng định sự tương thích chính xác với dòng xe ${tenXe}.
+      - Câu 4: Nêu lợi ích của việc thay thế phụ tùng mới đối với xe.`;
+      break;
+    case 'phutunggiare': // SEO Mã & Giá (3 Câu)
+      yeuCau = `
+      - Câu 1: Nêu rõ công dụng của phụ tùng đối với xe.
+      - Câu 2: Nhấn mạnh sản phẩm được thiết kế tương thích hoàn hảo với xe ${tenXe}.
+      - Câu 3: Khẳng định lợi ích của việc sử dụng đúng mã phụ tùng giúp việc sửa chữa nhanh gọn và tiết kiệm chi phí.`;
+      break;
+    case 'banphutung': // SEO Gara / Thợ (3 Câu)
+      yeuCau = `
+      - Câu 1: Nêu vai trò của phụ tùng đối với quá trình vận hành hoặc bảo vệ xe.
+      - Câu 2: Nhấn mạnh sản phẩm có thông số kích thước chuẩn xác, giúp việc lắp đặt dễ dàng, không cần chế cháo.
+      - Câu 3: Khẳng định đây là vật tư chất lượng, cực kỳ phù hợp và được các gara sửa xe ưu tiên lựa chọn.`;
+      break;
+    case 'phutungotokieugia': // SEO Đời xe (3 Câu)
+      yeuCau = `
+      - Câu 1: Giới thiệu tổng quan về chi tiết/phụ tùng này trên xe.
+      - Câu 2: Nêu rõ các trường hợp hoặc tình trạng nào thì cần phải thay thế phụ tùng này.
+      - Câu 3: Nhấn mạnh độ tương thích chuẩn xác 100% với form xe ${tenXe} đời ${doiXe}.`;
+      break;
+    case 'shopee':
+    case 'shopee2':
+      yeuCau = `
+      - Câu 1: Giới thiệu đây là phụ tùng thay thế chất lượng cao.
+      - Câu 2: Nhấn mạnh việc thao tác lắp đặt dễ dàng, nhanh chóng.
+      - Câu 3: Khẳng định tương thích hoàn hảo với xe ${tenXe} và có độ bền bỉ cao.`;
+      break;
+    default:
+      yeuCau = `Viết giới thiệu ngắn gọn về phụ tùng.`;
+  }
+
+  /// PROMPT ĐÃ ĐƯỢC TỐI ƯU CỰC KỲ KHOA HỌC VÀ CHẶT CHẼ
+  const prompt = `Bạn là chuyên gia phụ tùng ô tô và kỹ thuật sửa chữa xe.
+
+PHONG CÁCH VIẾT:
+${phongCach}
+
+TÊN SẢN PHẨM:
+${h1Text}
+
+NHIỆM VỤ:
+Viết 1 đoạn mô tả ngắn giới thiệu sản phẩm phụ tùng ô tô.
+
+QUY TẮC BẮT BUỘC:
+- Tên sản phẩm "${h1Text}" phải xuất hiện trong đoạn văn.
+- Không được thay đổi hoặc viết sai tên sản phẩm.
+- Văn phong tự nhiên, chuyên nghiệp như người viết thật.
+
+YÊU CẦU NỘI DUNG:
+${yeuCau}
+
+QUY TẮC VIẾT CÂU:
+- Không lặp lại mẫu mở đầu quen thuộc như "${h1Text} là..."
+- Có thể bắt đầu đoạn văn theo nhiều cách khác nhau:
+  + vai trò của phụ tùng trong hệ thống xe
+  + tình huống sửa chữa hoặc bảo dưỡng
+  + cấu tạo của hệ thống xe
+  + chức năng của phụ tùng
+- Cấu trúc câu cần đa dạng và tự nhiên.
+
+ĐỘ DÀI:
+- Đoạn văn từ 3 đến 4 câu hoàn chỉnh.
+- Tổng số từ tối đa 80 từ.
+- Mỗi câu phải kết thúc bằng dấu chấm.
+
+ĐỊNH DẠNG TRẢ VỀ:
+- Chỉ trả về duy nhất 1 đoạn văn.
+- Không xuống dòng giữa các câu.
+- Không dùng ký tự đặc biệt như *, #, <, >.
+- Không thêm tiêu đề hoặc lời giải thích.`;
+  
+  try {
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'gemini', prompt: prompt })
+    });
+    const data = await res.json();
+    if (data.status === "success" && data.moTa) {
+      return data.moTa.replace(/</g, "").replace(/>/g, "").trim();
     }
+  } catch (err) {
+    console.error('Lỗi gọi Gemini:', err);
+  }
+  return `${h1Text} là phụ tùng chất lượng cao, đảm bảo hiệu suất vận hành ổn định cho xe.`;
+}
 
     // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
    // 2. SỬA HÀM TẠO MÔ TẢ: Xóa moTaMau, dùng full sức mạnh Gemini + Giữ nguyên chèn link SEO
@@ -482,12 +546,10 @@
         return;
       }
 
-      // Khóa nút tạo nội dung và hiện thông báo
+      // Khóa nút tạo nội dung 
       const btnTao = document.querySelector('button[onclick="taoNoiDung()"]');
-      const oldBtnText = btnTao.innerText;
-      btnTao.innerText = "⏳ AI đang viết bài...";
+      btnTao.innerText = "⏳ Đang kiểm tra dữ liệu...";
       btnTao.disabled = true;
-      hienThongBao("⏳ Đang kết nối AI Gemini để viết bài, vui lòng đợi...", "success");
 
       const yearRegex = /(\d{4})(?:\D+(\d{4}))?$/i;
       const yearMatch = ten.match(yearRegex);
@@ -530,14 +592,56 @@
         h1Text = ten; 
       }
 
-     // --- CHỜ GEMINI TRẢ KẾT QUẢ ---
-     const moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
+      // ========================================================
+      // TỐI ƯU HÓA: LOGIC KIỂM TRA 3 LỚP TRƯỚC KHI GỌI AI
+      // ========================================================
+      const pkey = kgMakeProductKey(ten, ma);
+      const cacheKey = website + "___" + ma;
+      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+      let moTaTuDong = "";
+
+      if (isUpdate) {
+        hienThongBao("🛠 Chế độ sửa bài: Bỏ qua kiểm tra, gọi AI viết lại...", "success");
+      } else {
+        // LỚP 1: Kiểm tra trong Log tạm
+        if (window.kgGlobalStore && window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
+          hienThongBao("♻️ Mã này đã có trong Log! Đang tải lại bài viết cũ...", "success");
+          let baiCu = window.kgGlobalStore[pkey][website].desc;
+          moTaTuDong = baiCu.includes("<p>") ? baiCu : `<p>${baiCu}</p>`;
+        } 
+        // LỚP 2: Kiểm tra dữ liệu SKU trên Web (Chỉ check nếu Log chưa có)
+        else if (KG_CHECK_SKU_SITES.has(website)) {
+          // Check nhanh trong Cache
+          if (window.kgSkuCache.has(cacheKey)) {
+             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web. KHÔNG gọi AI!`, "error");
+             btnTao.innerText = "Tạo nội dung";
+             btnTao.disabled = false;
+             return; // Dừng lập tức
+          }
+          // Check sâu vào cơ sở dữ liệu (Apps Script)
+          const tonTaiThat = await kgCheckProductOnWebsite(website, ma, ten);
+          if (tonTaiThat) {
+             window.kgSkuCache.add(cacheKey);
+             hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web. KHÔNG gọi AI!`, "error");
+             btnTao.innerText = "Tạo nội dung";
+             btnTao.disabled = false;
+             return; // Dừng lập tức
+          }
+        }
+      }
+
+      // LỚP 3: GỌI AI GEMINI (Chỉ chạy khi 2 lớp trên đã thông qua)
+      if (!moTaTuDong) {
+        hienThongBao("⏳ Đang kết nối AI Gemini để viết bài, vui lòng đợi...", "success");
+        moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
+      }
       
       window.__kg_last_auto_desc = {
-        productKey: kgMakeProductKey(ten, ma),
+        productKey: pkey,
         website,
         descHtml: moTaTuDong
       };
+      
       const danhSachXe = sinhDanhSachXe(ten, thuonghieu, website === 'shopee' || website === 'shopee2' || website === 'phutungotokieugia');
 
       let content = '';
@@ -768,58 +872,29 @@ ${danhSachXe}
 
       const copyButton = document.getElementById('copyButton');
       copyButton.dataset.content = copyContent;
-      copyButton.dataset.productKey = kgMakeProductKey(ten, ma);
+      copyButton.dataset.productKey = pkey;
       copyButton.dataset.website    = website;
       copyButton.dataset.descHtml   = moTaTuDong || '';
 
-      // Mặc định ẩn nút Copy
       copyButton.style.display = 'none';
 
-      // Kiểm tra trùng nội bộ
-      const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
+      // ========================================================
+      // KIỂM TRA ĐỂ HIỆN NÚT COPY (Đã loại bỏ code dư thừa)
+      // ========================================================
       const g = kgGuardCopy(copyButton, { silent: true });
 
-      // Logic hiển thị gọn gàng và tự động quét "Log rác"
       if (g.guarded) {
         if (g.dup.conflictSite.includes("CHÍNH WEB NÀY")) {
-          hienThongBao(`⏳ Đang đối chiếu kho SKU để xác minh Log...`, 'success');
-          kgCheckProductOnWebsite(website, ma, ten).then(existsInSkuTab => {
-            if (existsInSkuTab) {
-              hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website} (Đã đối chiếu với kho SKU)`, 'error');
-            } else {
-              const pkey = copyButton.dataset.productKey;
-              if (window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
-                delete window.kgGlobalStore[pkey][website]; 
-              }
-              window.kgSkuCache.add(website + "___" + ma);
-              copyButton.style.display = 'block';
-              hienThongBao(`⚠️ Phát hiện Log ảo mã "<b>${ma}</b>" (do ai đó copy nhưng quên đăng). Đã mở khóa, bạn có thể Copy đè!`, 'success');
-            }
-          });
+          // Log ảo thì cho phép hiện Copy
+          copyButton.style.display = 'block';
         } else {
-          hienThongBao(`❌ Nội dung mô tả bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
+          hienThongBao(`❌ Nội dung bị trùng lặp với web <b>${g.dup.conflictSite}</b>!<br>Bấm "Tạo nội dung" lại để ra câu chữ khác.`, 'error');
         }
       } else {
-        if (KG_CHECK_SKU_SITES.has(website) && !isUpdate) {
-          const cacheKey = website + "___" + ma;
-          if (window.kgSkuCache.has(cacheKey)) {
-            copyButton.style.display = 'block';
-          } else {
-            kgCheckProductOnWebsite(website, ma, ten).then(exists => {
-              if (!exists) {
-                window.kgSkuCache.add(cacheKey);
-                copyButton.style.display = 'block'; 
-              } else {
-                hienThongBao(`❌ Mã "<b>${ma}</b>" ĐÃ TỒN TẠI trên web ${website}`, 'error');
-              }
-            });
-          }
-        } else {
-          copyButton.style.display = 'block'; 
-        }
+        copyButton.style.display = 'block'; 
       }
 
-      // Mở khóa lại nút bấm sau khi AI viết xong và mọi check logic đã hoàn tất
+      // Mở khóa lại nút bấm
       btnTao.innerText = "Tạo nội dung";
       btnTao.disabled = false;
       hienThongBao("✅ Đã tạo nội dung thành công!", "success");
