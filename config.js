@@ -10,6 +10,8 @@
             const KG_TRACK_SITES = new Set(['kieugiaauto', 'phutunggiare', 'banphutung', 'phutungotokieugia']);
             // Bộ nhớ tạm lưu các mã SKU đã được Google Sheets xác nhận là an toàn trong phiên làm việc
             if (!window.kgSkuCache) window.kgSkuCache = new Set();
+            // THÊM DÒNG NÀY: Bộ nhớ tạm để lưu Tên sản phẩm đã check
+            if (!window.kgNameCache) window.kgNameCache = new Set();
             // Các website cần quét kiểm tra trùng mã SKU (Tìm siêu tốc trong Google Sheets)
             const KG_CHECK_SKU_SITES = new Set(['kieugiaauto', 'phutunggiare', 'banphutung', 'phutungotokieugia']);
             const KG_TTL_MS = 365 * 24 * 60 * 60 * 1000;
