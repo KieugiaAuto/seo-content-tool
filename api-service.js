@@ -56,19 +56,20 @@
             }
 
             // Kiểm tra sản phẩm đã tồn tại trên website WordPress chưa (qua Google Apps Script)
-            async function kgCheckProductOnWebsite(website, ma, ten) {
-            if (!KG_CHECK_SKU_SITES.has(website)) return false;
-            try {
-                const url = API_BASE + '?action=checkProduct&website=' + encodeURIComponent(website) +
-                '&ma=' + encodeURIComponent(ma || '') + '&ten=' + encodeURIComponent(ten || '');
-                const res = await fetch(url);
-                const data = await res.json();
-                return !!data.exists;
-            } catch (err) {
-                console.error('Lỗi kiểm tra sản phẩm trên website:', err);
-                return false; // Lỗi mạng -> cho phép copy (tránh chặn oan)
-            }
-            }
+async function kgCheckProductOnWebsite(website, ma, ten) {
+    if (!KG_CHECK_SKU_SITES.has(website)) return { existsSku: false, existsName: false };
+    try {
+      const url = API_BASE + '?action=checkProduct&website=' + encodeURIComponent(website) +
+      '&ma=' + encodeURIComponent(ma || '') + '&ten=' + encodeURIComponent(ten || '');
+      const res = await fetch(url);
+      const data = await res.json();
+      // TRẢ VỀ TOÀN BỘ DATA (chứa existsSku và existsName) THAY VÌ CHỈ BOOLEAN
+      return data; 
+    } catch (err) {
+      console.error('Lỗi kiểm tra sản phẩm trên website:', err);
+      return { existsSku: false, existsName: false }; // Lỗi mạng thì cho qua
+    }
+  }
 
             // 1. HÀM GỌI GEMINI: ÉP LOGIC CHUẨN 4 WEB VÀ THIẾT QUÂN LUẬT VỀ ĐỘ DÀI
             async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, dong, dateText, h1Text) {
