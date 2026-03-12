@@ -1,16 +1,22 @@
     // Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài
+    // Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài
     function kiemTraWebSuaBai() {
         const website = document.getElementById('website').value;
         const khungSuaBai = document.getElementById('khung-sua-bai');
         const nutSuaBai = document.getElementById('modeUpdate');
     
+        // NÂNG CẤP MỚI: Xóa trắng nội dung đã tạo và ẩn nút Copy khi đổi web
+        document.getElementById('preview').innerHTML = '';
+        const copyBtn = document.getElementById('copyButton');
+        if (copyBtn) copyBtn.style.display = 'none';
+
         // Nếu chọn 1 trong 2 web Shopee
         if (website === 'shopee' || website === 'shopee2') {
-        khungSuaBai.style.display = 'none'; // Giấu ô sửa bài đi
-        nutSuaBai.checked = false;          // Tự động bỏ tích (phòng hờ nhân viên đang tích mà chuyển web)
+            khungSuaBai.style.display = 'none'; // Giấu ô sửa bài đi
+            nutSuaBai.checked = false;          // Tự động bỏ tích (phòng hờ nhân viên đang tích mà chuyển web)
         } else {
-        // Nếu là 4 web chính
-        khungSuaBai.style.display = 'block'; // Hiện lại bình thường
+            // Nếu là 4 web chính
+            khungSuaBai.style.display = 'block'; // Hiện lại bình thường
         }
     }
     
