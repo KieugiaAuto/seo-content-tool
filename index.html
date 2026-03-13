@@ -56,10 +56,14 @@
           </label>
         </div>
       </div>
-      <div class="button-container">
+      <div class="button-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button onclick="taoNoiDung()">Tạo nội dung</button>
-        <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung</button>
+        <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung chính</button>
+        <button id="copyShortButton" onclick="saoChepMoTaNgan()" style="display: none; background-color: #f59e0b; color: #fff;">📝 Sao chép Mô tả ngắn</button>
       </div>
+      
+      <div id="short-preview" style="display: none; margin-top: 15px; padding: 15px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 14.5px; line-height: 1.6; color: #b45309;"></div>
+      
       <div id="preview"></div>
     </div>
     <script src="config.js"></script>
