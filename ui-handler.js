@@ -1,24 +1,28 @@
-    // Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài
-    // Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài
-    function kiemTraWebSuaBai() {
-        const website = document.getElementById('website').value;
-        const khungSuaBai = document.getElementById('khung-sua-bai');
-        const nutSuaBai = document.getElementById('modeUpdate');
-    
-        // NÂNG CẤP MỚI: Xóa trắng nội dung đã tạo và ẩn nút Copy khi đổi web
-        document.getElementById('preview').innerHTML = '';
-        const copyBtn = document.getElementById('copyButton');
-        if (copyBtn) copyBtn.style.display = 'none';
+// Hàm tự động kiểm tra xem web nào đang được chọn để ẩn/hiện ô Sửa Bài và dọn dẹp Giao diện
+function kiemTraWebSuaBai() {
+    const website = document.getElementById('website').value;
+    const khungSuaBai = document.getElementById('khung-sua-bai');
+    const nutSuaBai = document.getElementById('modeUpdate');
 
-        // Nếu chọn 1 trong 2 web Shopee
-        if (website === 'shopee' || website === 'shopee2') {
-            khungSuaBai.style.display = 'none'; // Giấu ô sửa bài đi
-            nutSuaBai.checked = false;          // Tự động bỏ tích (phòng hờ nhân viên đang tích mà chuyển web)
-        } else {
-            // Nếu là 4 web chính
-            khungSuaBai.style.display = 'block'; // Hiện lại bình thường
-        }
+    // 1. Dọn dẹp nội dung chính
+    document.getElementById('preview').innerHTML = '';
+    const copyBtn = document.getElementById('copyButton');
+    if (copyBtn) copyBtn.style.display = 'none';
+
+    // 2. Dọn dẹp luôn khu vực Mô tả ngắn
+    const shortPreview = document.getElementById('short-preview');
+    if (shortPreview) shortPreview.style.display = 'none';
+    const copyShortBtn = document.getElementById('copyShortButton');
+    if (copyShortBtn) copyShortBtn.style.display = 'none';
+
+    // 3. Xử lý ẩn/hiện nút Sửa bài (Nếu chọn Shopee thì giấu đi)
+    if (website === 'shopee' || website === 'shopee2') {
+        khungSuaBai.style.display = 'none'; 
+        nutSuaBai.checked = false;          
+    } else {
+        khungSuaBai.style.display = 'block'; 
     }
+}
     
     // Chạy hàm này 1 lần ngay khi mở file để hệ thống set trạng thái chuẩn từ đầu
     document.addEventListener('DOMContentLoaded', kiemTraWebSuaBai);
@@ -186,3 +190,22 @@
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
     }
+    // =========================
+// HÀM SAO CHÉP MÔ TẢ NGẮN
+// =========================
+function saoChepMoTaNgan() {
+    const btn = document.getElementById('copyShortButton');
+    const text = btn.dataset.content;
+    if (!text) return;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            hienThongBao('✅ Đã sao chép MÔ TẢ NGẮN!');
+        }).catch(err => {
+            console.error('Lỗi sao chép clipboard:', err);
+            if (fallbackCopy(text)) hienThongBao('✅ Đã sao chép MÔ TẢ NGẮN!');
+        });
+    } else {
+        if (fallbackCopy(text)) hienThongBao('✅ Đã sao chép MÔ TẢ NGẮN!');
+    }
+}
