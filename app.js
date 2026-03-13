@@ -165,6 +165,15 @@
               return;
             }
 
+            // ========================================================
+            // THÊM ĐOẠN NÀY: DỌN DẸP SẠCH BÀI CŨ NGAY KHI BẤM NÚT TẠO
+            // ========================================================
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('copyButton').style.display = 'none';
+            if (document.getElementById('short-preview')) document.getElementById('short-preview').style.display = 'none';
+            if (document.getElementById('copyShortButton')) document.getElementById('copyShortButton').style.display = 'none';
+            // ========================================================
+
             // Khóa nút tạo nội dung 
             const btnTao = document.querySelector('button[onclick="taoNoiDung()"]');
             btnTao.innerText = "⏳ Đang kiểm tra dữ liệu...";
@@ -229,45 +238,30 @@
                 let baiCu = window.kgGlobalStore[pkey][website].desc;
                 moTaTuDong = baiCu.includes("<p>") ? baiCu : `<p>${baiCu}</p>`;
               } 
-              // LỚP 2: KIỂM TRA TÊN VÀ MÃ TRÊN WEB BẰNG 1 LỆNH DUY NHẤT LÊN GOOGLE SHEETS
-    else if (KG_CHECK_SKU_SITES.has(website)) {
-      
-      // 2.1. Kiểm tra nhanh trong bộ nhớ đệm Cache nội bộ
-      if (window.kgNameCache && window.kgNameCache.has(cacheKeyName)) {
-        hienThongBao(`🚫 LỖI: Tên bài "<b>${h1Text}</b>" đã tồn tại trên web.`, "error");
-        btnTao.innerText = "Tạo nội dung";
-        btnTao.disabled = false;
-        return;
-      }
-      if (window.kgSkuCache.has(cacheKeySku)) {
-        hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web.`, "error");
-        btnTao.innerText = "Tạo nội dung";
-        btnTao.disabled = false;
-        return;
-      }
+              // LỚP 2: CHỈ KIỂM TRA TRÙNG TÊN TRÊN WEB (BỎ CHECK MÃ SKU ĐỂ TĂNG TỐC)
+            else if (KG_CHECK_SKU_SITES.has(website)) {
+              
+              // 2.1. Kiểm tra siêu tốc trong bộ nhớ đệm (Cache nội bộ)
+              if (window.kgNameCache && window.kgNameCache.has(cacheKeyName)) {
+                hienThongBao(`🚫 LỖI: Tên bài "<b>${h1Text}</b>" đã tồn tại trên web.`, "error");
+                btnTao.innerText = "Tạo nội dung";
+                btnTao.disabled = false;
+                return;
+              }
 
-      // 2.2. Gửi 1 Lệnh duy nhất lên Google Sheets kèm cả Tên và Mã
-      const checkResult = await kgCheckProductOnWebsite(website, ma, h1Text); 
-      
-      // Ưu tiên báo lỗi trùng Tên trước
-      if (checkResult.existsName) {
-        if (!window.kgNameCache) window.kgNameCache = new Set();
-        window.kgNameCache.add(cacheKeyName);
-        hienThongBao(`🚫 LỖI: Tên bài "<b>${h1Text}</b>" đã tồn tại trên web.`, "error");
-        btnTao.innerText = "Tạo nội dung";
-        btnTao.disabled = false;
-        return;
-      }
-
-      // Sau đó mới báo lỗi trùng Mã
-      if (checkResult.existsSku) {
-        window.kgSkuCache.add(cacheKeySku);
-        hienThongBao(`🚫 LỖI: Mã "<b>${ma}</b>" đã tồn tại trên web.`, "error");
-        btnTao.innerText = "Tạo nội dung";
-        btnTao.disabled = false;
-        return;
-      }
-    }
+              // 2.2. Gửi lệnh check TÊN lên Google Sheets (Truyền mã = rỗng để API bỏ qua bước quét SKU)
+              const checkResult = await kgCheckProductOnWebsite(website, "", h1Text); 
+              
+              // Xử lý báo lỗi nếu trùng Tên
+              if (checkResult.existsName) {
+                if (!window.kgNameCache) window.kgNameCache = new Set();
+                window.kgNameCache.add(cacheKeyName);
+                hienThongBao(`🚫 LỖI: Tên bài "<b>${h1Text}</b>" đã tồn tại trên web.`, "error");
+                btnTao.innerText = "Tạo nội dung";
+                btnTao.disabled = false;
+                return;
+              }
+            }
             }
 
             // LỚP 3: GỌI AI GEMINI (Chỉ chạy khi 2 lớp trên đã thông qua)
@@ -289,21 +283,12 @@
 
             // --- BÊN DƯỚI GIỮ NGUYÊN 100% CẤU TRÚC HTML CỦA TỪNG TRANG ---
             if (website === 'kieugiaauto') {
-              content = `<h2><strong>${h1Text}</strong></h2>
-          <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-          <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-          <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+              content = `<h1><strong>${h1Text}</strong></h1>
+              <h2><strong>Thông Tin Chi Tiết ${h1Text}</strong></h2>
+              <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+              <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+              <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
           ${moTaTuDong}
-
-          <h3>Tầm quan trọng của ${h1Text} đối với xe</h3>
-          <p>
-          <strong>Phụ tùng này</strong> là một chi tiết quan trọng trong tổng thể chiếc xe. Bộ phận này chịu trách nhiệm duy trì tính ổn định, đảm bảo sự đồng bộ và bảo vệ các cụm cơ cấu liên quan. Khi chi tiết này ở trạng thái tốt nhất, chiếc xe của bạn sẽ vận hành an toàn, giữ được tính thẩm mỹ và đạt hiệu suất đúng như thiết kế ban đầu.
-          </p>
-
-          <h3>Khi nào cần kiểm tra và thay thế?</h3>
-            <p>
-      Sau một thời gian vận hành, nhiều bộ phận trên xe có thể bị suy giảm chất lượng do ma sát, nhiệt độ và tác động từ môi trường. Khi các chi tiết này không còn đảm bảo trạng thái hoạt động ban đầu, việc thay thế kịp thời sẽ giúp xe duy trì hiệu suất vận hành và đảm bảo an toàn khi sử dụng.
-      </p>
 
           <h3>Tại sao nên chọn mua tại Kiều Gia Auto?</h3>
           <ul>
@@ -528,6 +513,47 @@
               }
             } else {
               copyButton.style.display = 'block'; 
+            }
+
+           // ========================================================
+            // ĐẨY MÔ TẢ NGẮN SANG KHUNG RIÊNG CHO NHÂN VIÊN COPY
+            // ========================================================
+            const shortPreview = document.getElementById('short-preview');
+            const copyShortButton = document.getElementById('copyShortButton');
+            
+            let moTaNganText = "";
+
+            // Tùy biến Mô tả ngắn cực chuẩn SEO cho từng Web
+            switch (website) {
+              case 'kieugiaauto': 
+                moTaNganText = `Sản phẩm ${h1Text} chính hãng ${thuonghieu}. Phụ tùng ô tô cao cấp giúp xe vận hành ổn định, an toàn. Cam kết chất lượng và bảo hành uy tín tại Kiều Gia Auto.`;
+                break;
+              case 'banphutung':
+                moTaNganText = `Phân phối sỉ lẻ ${h1Text}  Phụ tùng chuẩn thông số O.E.M, hỗ trợ thợ gara lắp ráp nhanh chóng và chính xác. Nguồn hàng ổn định, giao nhanh cho các xưởng sửa chữa trên toàn quốc.`;
+                break;
+              case 'phutunggiare':
+                moTaNganText = `Cung cấp ${h1Text} thương hiệu ${thuonghieu} Phụ tùng thay thế giúp khôi phục chức năng của xe khi bộ phận cũ bị hư hỏng hoặc xuống cấp. Giải pháp sửa chữa hiệu quả giúp xe vận hành ổn định và an toàn hơn.`;
+                break;
+              case 'phutungotokieugia':
+                moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Đảm bảo lắp đặt tương thích chính xác 100% với form xe nguyên bản, không cần chế cháo, khôi phục lại trạng thái hoạt động trơn tru nhất.`;
+                break;
+              default:
+                moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Phụ tùng thay thế chất lượng cao, giúp xe vận hành ổn định và an toàn.`;
+            }
+
+            // LOGIC KIỂM TRA ĐỂ ẨN/HIỆN MÔ TẢ NGẮN
+            if (shortPreview && copyShortButton) {
+              if (website === 'shopee' || website === 'shopee2') {
+                // Ẩn đi nếu đang làm bài cho Shopee
+                shortPreview.style.display = 'none';
+                copyShortButton.style.display = 'none';
+              } else {
+                // Hiện lên và đổ dữ liệu nếu là 4 web chính
+                shortPreview.innerHTML = `<strong>💡 Mô tả ngắn gọn:</strong> ${moTaNganText}`;
+                shortPreview.style.display = 'block';
+                copyShortButton.dataset.content = moTaNganText;
+                copyShortButton.style.display = 'block';
+              }
             }
 
             // Mở khóa lại nút bấm
