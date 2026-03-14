@@ -310,10 +310,11 @@
               copyContent = content;
 
             } else if (website === 'phutungotokieugia') {
-              content = `<h2><strong>${h1Text}</strong></h2>
-          <p><strong>Mã sản phẩm:</strong> ${ma}</p>
-          <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
-          <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
+            content = `<h1><strong>${h1Text}</strong></h1>
+            <h2><strong>Thông Số Tương Thích ${h1Text}</strong></h2>
+            <p><strong>Mã sản phẩm:</strong> ${ma}</p>
+            <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
+            <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
           ${moTaTuDong}
           ${danhSachXe}
 
@@ -347,7 +348,8 @@
               copyContent = content;
 
             } else if (website === 'banphutung') {
-              content = `<h2><strong>${h1Text}</strong></h2>
+               content = `<h1><strong>${h1Text}</strong></h1>
+              <h2><strong>Chi Tiết Sản Phẩm ${h1Text}</strong></h2>
           <p><strong>Mã sản phẩm:</strong> ${ma}</p>
           <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
           <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
@@ -378,7 +380,8 @@
               copyContent = content;
 
             } else if (website === 'phutunggiare') {
-              content = `<h2><strong>${h1Text}</strong></h2>
+               content = `<h1><strong>${h1Text}</strong></h1>
+               <h2><strong>Đặc Điểm Của ${h1Text}</strong></h2>
               <p><strong>Mã sản phẩm:</strong> ${ma}</p>
               <p><strong>Thương hiệu:</strong> ${thuonghieu}</p>
               <p><strong>Xuất xứ:</strong> ${xuatxu}</p>
