@@ -1,26 +1,35 @@
-  <!DOCTYPE html>
-  <html lang="vi">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiều Gia Content Pro</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div id="login-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f4f4; z-index: 9999; display: flex; align-items: center; justify-content: center;">
-      <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 300px; text-align: center;">
-        <h2 style="margin-top: 0;">Kiều Gia Auto</h2>
-        <input type="text" id="username" placeholder="Tên đăng nhập" onkeypress="if(event.key === 'Enter') xuLyDangNhap()" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-        <input type="password" id="password" placeholder="Mật khẩu" onkeypress="if(event.key === 'Enter') xuLyDangNhap()" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-        <button onclick="xuLyDangNhap()" id="btnLogin" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Đăng nhập</button>
-        <p id="login-error" style="color: red; font-size: 13px; display: none; margin-top: 10px;">Sai tài khoản hoặc mật khẩu!</p>
-      </div>
-    </div>
+<!DOCTYPE html>
+<html lang="vi">
 
-    <div id="main-app" style="display: none;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiều Gia Content Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="login-screen"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f4f4; z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <div
+      style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 300px; text-align: center;">
+      <h2 style="margin-top: 0;">Kiều Gia Auto</h2>
+      <input type="text" id="username" placeholder="Tên đăng nhập" onkeypress="if(event.key === 'Enter') xuLyDangNhap()"
+        style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <input type="password" id="password" placeholder="Mật khẩu" onkeypress="if(event.key === 'Enter') xuLyDangNhap()"
+        style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <button onclick="xuLyDangNhap()" id="btnLogin"
+        style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Đăng
+        nhập</button>
+      <p id="login-error" style="color: red; font-size: 13px; display: none; margin-top: 10px;">Sai tài khoản hoặc mật
+        khẩu!</p>
+    </div>
+  </div>
+
+  <div id="main-app" style="display: none;">
     <div class="container">
       <h1>Kiều Gia Content Pro</h1>
-      
+
       <div class="form-grid">
         <div class="form-group full-width">
           <label for="ten">Tên phụ tùng:</label>
@@ -50,7 +59,8 @@
           </select>
         </div>
         <div id="khung-sua-bai" class="form-group khung-canh-bao">
-          <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #b45309; font-weight: bold; margin: 0; padding-top: 5px;">
+          <label
+            style="cursor: pointer; display: flex; align-items: center; gap: 8px; color: #b45309; font-weight: bold; margin: 0; padding-top: 5px;">
             <input type="checkbox" id="modeUpdate" style="width: 18px; height: 18px; cursor: pointer;">
             ⚠️ Tích để cho phép Copy sửa bài cũ
           </label>
@@ -59,11 +69,14 @@
       <div class="button-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button onclick="taoNoiDung()">Tạo nội dung</button>
         <button id="copyButton" onclick="saoChepNoiDung()" style="display: none;">📋 Sao chép nội dung chính</button>
-        <button id="copyShortButton" onclick="saoChepMoTaNgan()" style="display: none; background-color: #f59e0b; color: #fff;">📝 Sao chép Mô tả ngắn</button>
+        <button id="copyShortButton" onclick="saoChepMoTaNgan()"
+          style="display: none; background-color: #f59e0b; color: #fff;">📝 Sao chép Mô tả ngắn</button>
       </div>
-      
-      <div id="short-preview" style="display: none; margin-top: 15px; padding: 15px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 14.5px; line-height: 1.6; color: #b45309;"></div>
-      
+
+      <div id="short-preview"
+        style="display: none; margin-top: 15px; padding: 15px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 4px; font-size: 14.5px; line-height: 1.6; color: #b45309;">
+      </div>
+
       <div id="preview"></div>
     </div>
     <script src="config.js"></script>
@@ -71,6 +84,7 @@
     <script src="api-service.js"></script>
     <script src="app.js"></script>
     <script src="ui-handler.js"></script>
-    </div>
-  </body>
-  </html>
+  </div>
+</body>
+
+</html>
