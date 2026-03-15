@@ -1,188 +1,265 @@
-    /* =========================================
-       GIAO DIỆN MỚI CHUYÊN NGHIỆP CHO KIỀU GIA AUTO
-       ========================================= */
-       body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 40px 20px;
-      background-color: #f0f2f5; /* Màu nền xám nhạt hiện đại */
-    }
-    .container {
-      max-width: 850px; /* Thu gọn lại cho form cân đối, dễ nhìn */
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 16px; /* Bo góc to mềm mại */
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Bóng đổ 3D mượt mà */
-      border: 1px solid #eaeaea;
-    }
-    h1 {
-      text-align: center;
-      color: #1a202c;
-      font-size: 28px;
-      font-weight: 700;
-      margin-top: 0;
-      margin-bottom: 30px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid #edf2f7; /* Đường gạch dưới tiêu đề */
-    }
-    .form-group {
-      margin-bottom: 22px;
-    }
-    label {
-      display: block;
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 8px;
-      font-size: 15px;
-    }
-    input, select {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      box-sizing: border-box;
-      font-size: 15px;
-      color: #2d3748;
-      background-color: #f8fafc;
-      transition: all 0.3s ease; /* Hiệu ứng chuyển động mượt */
-    }
-    /* Hiệu ứng khi click vào ô nhập liệu */
-    input:focus, select:focus {
-      outline: none;
-      border-color: #3182ce;
-      background-color: #ffffff;
-      box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.15); /* Phát sáng viền xanh */
-    }
-    /* Chỉnh giao diện chung cho Nút bấm */
-    button {
-      background-color: #10b981; /* Xanh lá hiện đại */
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
-    }
-    button:hover {
-      background-color: #059669;
-      transform: translateY(-2px); /* Hiệu ứng nổi lên khi di chuột */
-      box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
-    }
-    button:active {
-      transform: translateY(0); /* Hiệu ứng lún xuống khi click */
-    }
-    /* Chỉnh riêng nút copy cho khác biệt */
-    #copyButton {
-      background-color: #3b82f6; /* Xanh dương */
-      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
-    }
-    #copyButton:hover {
-      background-color: #2563eb;
-      box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
-    }
-    #copyButton:disabled {
-      background-color: #94a3b8;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .button-container {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
-    /* Khung hiển thị trước nội dung */
-    #preview {
-      padding: 25px;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      background-color: #f8fafc;
-      font-size: 15px;
-      line-height: 1.6;
-      color: #2d3748;
-    }
-    /* Đè CSS cho khung cảnh báo sửa bài (bỏ giao diện cũ) */
-    #khung-sua-bai {
-      background-color: #fffbeb !important;
-      border: 1px solid #fde68a !important;
-      border-radius: 10px !important;
-      padding: 15px 20px !important;
-    }
-    #khung-sua-bai label {
-      color: #b45309 !important;
-      font-size: 15px;
-    }
-    /* Toast Notification (Thông báo góc màn hình) */
-    #kg-toast {
-      visibility: hidden;
-      min-width: 280px;
-      background-color: #28a745; 
-      color: #fff;
-      text-align: left;
-      border-radius: 10px;
-      padding: 16px 24px;
-      position: fixed;
-      z-index: 99999;
-      right: 20px;
-      bottom: 20px; 
-      font-size: 15px;
-      font-weight: 500;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      transition: opacity 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), visibility 0.4s;
-    }
-    #kg-toast.show {
-      visibility: visible;
-      opacity: 1;
-      bottom: 40px; 
-    }
-    /* Giao diện trên điện thoại */
-    @media (max-width: 600px) {
-      .button-container { flex-direction: column; }
-      button { width: 100%; }
-      .container { padding: 20px; border-radius: 12px; }
-      body { padding: 15px; }
-    }
-    /* --- CSS CHIA 2 CỘT CHO FORM ĐỂ TIẾT KIỆM DIỆN TÍCH --- */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* Chia form thành 2 cột bằng nhau */
-      gap: 0 20px; /* Cột cách nhau 20px */
-    }
-    .full-width {
-      grid-column: span 2; /* Riêng tên phụ tùng dài nên cho chiếm cả 2 cột */
-    }
-    
-    /* Ép lại các khoảng trắng thừa để đẩy form lên cao */
-    body { padding: 15px 20px; }
-    .container { padding: 25px 35px; }
-    h1 { 
-      margin-bottom: 20px; 
-      font-size: 24px; 
-      padding-bottom: 10px; 
-    }
-    .form-group { margin-bottom: 15px; }
-    
-    /* Chỉnh lại khung cảnh báo cho vừa vặn ô lưới */
-    .khung-canh-bao {
-      background-color: #fffbeb !important;
-      border: 1px solid #fde68a !important;
-      border-radius: 10px !important;
-      padding: 8px 15px !important;
-      display: flex;
-      align-items: center;
-      margin-top: 28px; /* Đẩy xuống cho bằng hàng với chữ 'Chọn website' */
-      height: fit-content;
-    }
-    
-    /* Responsive trên điện thoại thì tự động dồn lại 1 cột */
-    @media (max-width: 600px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .full-width { grid-column: span 1; }
-      .khung-canh-bao { margin-top: 0; }
-    }
+      /* =========================================
+        GIAO DIỆN MỚI CHUYÊN NGHIỆP CHO KIỀU GIA AUTO
+        ========================================= */
+      body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        background-color: #f0f2f5;
+        /* Màu nền xám nhạt hiện đại */
+      }
+
+      .container {
+        max-width: 850px;
+        /* Thu gọn lại cho form cân đối, dễ nhìn */
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 16px;
+        /* Bo góc to mềm mại */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        /* Bóng đổ 3D mượt mà */
+        border: 1px solid #eaeaea;
+      }
+
+      h1 {
+        text-align: center;
+        color: #1a202c;
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #edf2f7;
+        /* Đường gạch dưới tiêu đề */
+      }
+
+      .form-group {
+        margin-bottom: 22px;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 15px;
+        color: #2d3748;
+        background-color: #f8fafc;
+        transition: all 0.3s ease;
+        /* Hiệu ứng chuyển động mượt */
+      }
+
+      /* Hiệu ứng khi click vào ô nhập liệu */
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #3182ce;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.15);
+        /* Phát sáng viền xanh */
+      }
+
+      /* Chỉnh giao diện chung cho Nút bấm */
+      button {
+        background-color: #10b981;
+        /* Xanh lá hiện đại */
+        color: #fff;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+      }
+
+      button:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        /* Hiệu ứng nổi lên khi di chuột */
+        box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+        /* Hiệu ứng lún xuống khi click */
+      }
+
+      /* Chỉnh riêng nút copy cho khác biệt */
+      #copyButton {
+        background-color: #3b82f6;
+        /* Xanh dương */
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+      }
+
+      #copyButton:hover {
+        background-color: #2563eb;
+        box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+      }
+
+      #copyButton:disabled {
+        background-color: #94a3b8;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .button-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+
+      /* Khung hiển thị trước nội dung */
+      #preview {
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background-color: #f8fafc;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #2d3748;
+      }
+
+      /* Đè CSS cho khung cảnh báo sửa bài (bỏ giao diện cũ) */
+      #khung-sua-bai {
+        background-color: #fffbeb !important;
+        border: 1px solid #fde68a !important;
+        border-radius: 10px !important;
+        padding: 15px 20px !important;
+      }
+
+      #khung-sua-bai label {
+        color: #b45309 !important;
+        font-size: 15px;
+      }
+
+      /* Toast Notification (Thông báo góc màn hình) */
+      #kg-toast {
+        visibility: hidden;
+        min-width: 280px;
+        background-color: #28a745;
+        color: #fff;
+        text-align: left;
+        border-radius: 10px;
+        padding: 16px 24px;
+        position: fixed;
+        z-index: 99999;
+        right: 20px;
+        bottom: 20px;
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transition: opacity 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), visibility 0.4s;
+      }
+
+      #kg-toast.show {
+        visibility: visible;
+        opacity: 1;
+        bottom: 40px;
+      }
+
+      /* Giao diện trên điện thoại */
+      @media (max-width: 600px) {
+        .button-container {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        .container {
+          padding: 20px;
+          border-radius: 12px;
+        }
+
+        body {
+          padding: 15px;
+        }
+      }
+
+      /* --- CSS CHIA 2 CỘT CHO FORM ĐỂ TIẾT KIỆM DIỆN TÍCH --- */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        /* Chia form thành 2 cột bằng nhau */
+        gap: 0 20px;
+        /* Cột cách nhau 20px */
+      }
+
+      .full-width {
+        grid-column: span 2;
+        /* Riêng tên phụ tùng dài nên cho chiếm cả 2 cột */
+      }
+
+      /* Ép lại các khoảng trắng thừa để đẩy form lên cao */
+      body {
+        padding: 15px 20px;
+      }
+
+      .container {
+        padding: 25px 35px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      /* Chỉnh lại khung cảnh báo cho vừa vặn ô lưới */
+      .khung-canh-bao {
+        background-color: #fffbeb !important;
+        border: 1px solid #fde68a !important;
+        border-radius: 10px !important;
+        padding: 8px 15px !important;
+        display: flex;
+        align-items: center;
+        margin-top: 28px;
+        /* Đẩy xuống cho bằng hàng với chữ 'Chọn website' */
+        height: fit-content;
+      }
+
+      /* Responsive trên điện thoại thì tự động dồn lại 1 cột */
+      @media (max-width: 600px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .full-width {
+          grid-column: span 1;
+        }
+
+        .khung-canh-bao {
+          margin-top: 0;
+        }
+      }
+
+      /* Khóa bôi đen và copy tay ở khu vực xem trước nội dung */
+      #preview {
+        -webkit-user-select: none;
+        /* Dành cho Safari */
+        -ms-user-select: none;
+        /* Dành cho IE/Edge cũ */
+        user-select: none;
+        /* Chuẩn chung cho Chrome, Firefox, Edge mới */
+      }
