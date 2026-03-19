@@ -59,6 +59,12 @@ function kgGuardCopy(copyButton, opts = {}) {
   const dup = kgIsDuplicateDesc(pkey, website, descRaw, threshold);
   const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
 
+  // ĐIỂM SỬA CHỐT HẠ: Nếu nó báo trùng với CHÍNH WEB ĐANG CHỌN -> Mở khóa cho copy luôn, không cần hỏi nhiều!
+  if (dup.duplicate && dup.conflictSite && dup.conflictSite.includes("CHÍNH WEB NÀY")) {
+    return { guarded: false };
+  }
+
+  // CHỈ KHÓA VÀ BÁO LỖI NẾU: Trùng với một web KHÁC (vd: phutunggiare, banphutung...) VÀ không tích ô Sửa bài
   if (dup.duplicate && !isUpdate) {
     if (!silent) {
       alert(`❌ Mô tả trùng/gần trùng (${Math.round(dup.similarity * 100)}%) với web "${dup.conflictSite}".\nKhông cho copy. Bấm "Tạo nội dung" lại để ra mô tả khác.`);
@@ -287,10 +293,9 @@ async function taoNoiDung() {
   }
 
   // ========================================================
-  // TỐI ƯU HÓA: LOGIC KIỂM TRA 3 LỚP TRƯỚC KHI GỌI AI
+  // TỐI ƯU HÓA: CHỈ KIỂM TRA TRÙNG TÊN TRÊN WEB (BỎ LOG TẠM VÀ BỎ MÃ SKU)
   // ========================================================
   const pkey = kgMakeProductKey(ten, ma);
-  const cacheKeySku = website + "___sku___" + ma;
   const cacheKeyName = website + "___name___" + h1Text; // Lưu cache theo đúng tên h1Text của từng web
   const isUpdate = document.getElementById('modeUpdate') && document.getElementById('modeUpdate').checked;
   let moTaTuDong = "";
@@ -298,16 +303,10 @@ async function taoNoiDung() {
   if (isUpdate) {
     hienThongBao("🛠 Chế độ sửa bài: Bỏ qua kiểm tra, gọi AI viết lại...", "success");
   } else {
-    // LỚP 1: Kiểm tra trong Log tạm
-    if (window.kgGlobalStore && window.kgGlobalStore[pkey] && window.kgGlobalStore[pkey][website]) {
-      hienThongBao("♻️ Mã này đã có trong Log! Đang tải lại bài viết cũ...", "success");
-      let baiCu = window.kgGlobalStore[pkey][website].desc;
-      moTaTuDong = baiCu.includes("<p>") ? baiCu : `<p>${baiCu}</p>`;
-    }
-    // LỚP 2: CHỈ KIỂM TRA TRÙNG TÊN TRÊN WEB (BỎ CHECK MÃ SKU ĐỂ TĂNG TỐC)
-    else if (KG_CHECK_SKU_SITES.has(website)) {
+    // CHỈ KIỂM TRA TÊN TRÊN WEB QUA API SHEETS
+    if (KG_CHECK_SKU_SITES.has(website)) {
 
-      // 2.1. Kiểm tra siêu tốc trong bộ nhớ đệm (Cache nội bộ)
+      // 1. Kiểm tra siêu tốc trong bộ nhớ đệm (Cache nội bộ)
       if (window.kgNameCache && window.kgNameCache.has(cacheKeyName)) {
         hienThongBao(`🚫 LỖI: Tên bài "<b>${h1Text}</b>" đã tồn tại trên web.`, "error");
         btnTao.innerText = "Tạo nội dung";
@@ -315,7 +314,7 @@ async function taoNoiDung() {
         return;
       }
 
-      // 2.2. Gửi lệnh check TÊN lên Google Sheets (Truyền mã = rỗng để API bỏ qua bước quét SKU)
+      // 2. Gửi lệnh check TÊN lên Google Sheets (Truyền mã = rỗng để API bỏ qua bước quét SKU)
       const checkResult = await kgCheckProductOnWebsite(website, "", h1Text);
 
       // Xử lý báo lỗi nếu trùng Tên
@@ -330,7 +329,7 @@ async function taoNoiDung() {
     }
   }
 
-  // LỚP 3: GỌI AI GEMINI (Chỉ chạy khi 2 lớp trên đã thông qua)
+  // GỌI AI GEMINI VIẾT BÀI MỚI (Chỉ chạy khi tên chưa tồn tại)
   if (!moTaTuDong) {
     hienThongBao("⏳ Đang viết bài, vui lòng đợi...", "success");
     moTaTuDong = await sinhMoTaTuDong(ten, thuonghieu, xuatxu, ma, h1Text);
