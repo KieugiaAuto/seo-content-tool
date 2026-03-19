@@ -87,26 +87,26 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
         case 'kieugiaauto':
             // Tạo mảng 3 kịch bản để AI xáo trộn cấu trúc bài viết, chống dập khuôn
             const kichBanKieuGia = [
-                // KỊCH BẢN 1: Truyền thống (Vai trò -> Dấu hiệu -> Tương thích)
+                // KỊCH BẢN 1: Phong cách "Chuyên gia Kỹ thuật" (Hệ thống -> Vai trò -> Dấu hiệu -> Giải pháp)
                 `
-                        - Đoạn 1: Giải thích cặn kẽ nguyên lý hoạt động, chức năng kỹ thuật và vị trí lắp đặt chính xác của ${h1Text}.
-                        - Đoạn 2: Liệt kê các dấu hiệu cảnh báo phụ tùng đã xuống cấp (trình bày phần này bằng danh sách <ul> <li> để dễ đọc).
-                        - Đoạn 3: Khẳng định sự tương thích hoàn hảo cho xe ${tenXe} và phân tích lợi ích khi thay mới (êm ái, an toàn).
-                        - Đoạn 4: Lời khuyên từ chuyên gia về chu kỳ kiểm tra và bảo dưỡng.`,
+                        - Đoạn 1: Mở đầu bằng việc dẫn dắt về một hệ thống liên quan trên xe ${tenXe}, sau đó giới thiệu ${h1Text} và giải thích cặn kẽ chức năng, vị trí lắp đặt của nó. (Lưu ý: Chỉ dùng tên phụ tùng đầy đủ 1 lần duy nhất ở đoạn này).
+                        - Đoạn 2: Liệt kê các dấu hiệu cảnh báo khi chi tiết này bị xuống cấp hoặc hư hỏng (bắt buộc trình bày bằng danh sách <ul> <li> để người đọc dễ theo dõi).
+                        - Đoạn 3: Khẳng định sự tương thích hoàn hảo của sản phẩm thay thế này đối với form xe ${tenXe}, giúp khôi phục sự êm ái và vận hành ổn định. (Tuyệt đối không lặp lại tên đầy đủ của phụ tùng, hãy dùng các từ như "sản phẩm", "linh kiện này", "bộ phận này").
+                        - Đoạn 4: Đưa ra lời khuyên ngắn gọn từ chuyên gia về chu kỳ kiểm tra và bảo dưỡng.`,
 
-                // KỊCH BẢN 2: Đánh mạnh vào Nỗi đau trước (Dấu hiệu -> Vai trò -> Giải pháp)
+                // KỊCH BẢN 2: Phong cách "Bắt bệnh & Chữa trị" (Dấu hiệu hư hỏng -> Nguyên nhân/Vai trò -> Giải pháp)
                 `
-                        - Đoạn 1: Mở đầu bằng việc nêu bật các vấn đề, tiếng kêu lạ hoặc dấu hiệu hư hỏng thường gặp khiến chủ xe phải kiểm tra và thay thế ${h1Text} (Dùng danh sách <ul> <li> để liệt kê các dấu hiệu này).
-                        - Đoạn 2: Giải thích ngược lại về mặt kỹ thuật: tại sao phụ tùng này lại quan trọng đến vậy và nó nằm ở vị trí nào trên xe.
-                        - Đoạn 3: Đưa ra giải pháp bằng việc thay mới sản phẩm chuẩn form, tương thích 100% với dòng xe ${tenXe} giúp dứt điểm tình trạng hư hỏng.
-                        - Đoạn 4: Nhấn mạnh lợi ích kinh tế lâu dài và khuyến cáo bảo dưỡng định kỳ.`,
+                        - Đoạn 1: Mở đầu bằng cách nêu bật ngay những phiền toái, tiếng kêu lạ hoặc sự cố mà tài xế thường gặp phải khi vận hành (Dùng danh sách <ul> <li>). Sau đó chốt lại nguyên nhân chính là do hỏng ${h1Text}. (Chỉ dùng tên đầy đủ ở đoạn này).
+                        - Đoạn 2: Giải thích ngược lại về mặt kỹ thuật: tại sao bộ phận này lại quan trọng đến vậy và nó đảm nhận nhiệm vụ gì để hệ thống hoạt động trơn tru. (Sử dụng các đại từ thay thế).
+                        - Đoạn 3: Đưa ra giải pháp dứt điểm bằng việc thay mới cụm linh kiện chuẩn xác, thiết kế tối ưu riêng cho hệ thống của xe ${tenXe}.
+                        - Đoạn 4: Nhấn mạnh lợi ích kinh tế (tiết kiệm chi phí sửa chữa cụm lớn về sau) nếu thay thế kịp thời ngay khi có dấu hiệu hỏng hóc.`,
 
-                // KỊCH BẢN 3: Đề cao Giải pháp trước (Tương thích -> Vai trò -> Cảnh báo)
+                // KỊCH BẢN 3: Phong cách "Đề cao chất lượng & Sự an toàn" (Tương thích -> Rủi ro -> Nguyên lý)
                 `
-                        - Đoạn 1: Khẳng định ngay đây là phụ tùng thay thế chuẩn xác, được thiết kế tối ưu và tương thích tuyệt đối cho hệ thống của dòng xe ${tenXe}.
-                        - Đoạn 2: Đi sâu vào phân tích kỹ thuật: ${h1Text} đảm nhận chức năng gì và nguyên lý hoạt động ra sao.
-                        - Đoạn 3: Cảnh báo những rủi ro nguy hiểm hoặc hao tổn chi phí nếu không thay thế kịp thời (Trình bày các rủi ro bằng danh sách <ul> <li>).
-                        - Đoạn 4: Tổng kết lại giá trị cốt lõi mang lại cho người lái và nhắc nhở việc chăm sóc xe đúng cách.`
+                        - Đoạn 1: Khẳng định ngay từ đầu ${h1Text} là phụ tùng thay thế đạt chuẩn kỹ thuật, lắp ráp vừa vặn và đồng bộ 100% cho cấu hình của dòng xe ${tenXe}. (Chỉ dùng tên đầy đủ ở đoạn này).
+                        - Đoạn 2: Đi sâu phân tích kỹ thuật: chi tiết này hoạt động ra sao để bảo vệ xe, tối ưu hiệu suất hoặc đảm bảo an toàn cho người lái. (Chỉ dùng các từ như "chi tiết này", "cụm phụ tùng này").
+                        - Đoạn 3: Cảnh báo những rủi ro nguy hiểm tiềm ẩn hoặc nguy cơ hư hỏng lây lan sang các bộ phận khác nếu tiếp tục cố chấp sử dụng linh kiện đã kém chất lượng (Trình bày rủi ro bằng danh sách <ul> <li>).
+                        - Đoạn 4: Tổng kết lại giá trị cốt lõi mang lại (sự an tâm, bền bỉ) và nhắc nhở việc chăm sóc, bảo dưỡng xe đúng định kỳ.`
             ];
 
             // Lệnh bốc thăm ngẫu nhiên 1 kịch bản
@@ -162,8 +162,10 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
             Viết 1 đoạn mô tả ngắn giới thiệu sản phẩm phụ tùng ô tô.
 
             QUY TẮC BẮT BUỘC:
-            - Tên sản phẩm "${h1Text}" phải xuất hiện trong đoạn văn.
+            - Từ khóa chính "${h1Text}" được phép xuất hiện TỐI ĐA 2 LẦN (1 lần ở câu đầu để nhận diện, và 1 lần ở câu cuối để khẳng định chất lượng).
+            - Ở phần thân bài, TUYỆT ĐỐI KHÔNG lặp lại từ khóa "${h1Text}". Bắt buộc phải linh hoạt dùng các từ thay thế PHÙ HỢP VỚI ĐẶC THÙ SẢN PHẨM như: "bộ phận này", "sản phẩm này", "phụ tùng", "linh kiện này", hoặc gọi tên ngắn gọn theo chức năng (ví dụ: thay vì gọi cả cụm dài, chỉ cần gọi là "đèn báo rẽ", "cụm đèn", "bơm nước", "càng A"...). Hạn chế tối đa dùng từ "chi tiết máy" trừ khi đó thực sự là bộ phận cơ khí bên trong động cơ.            
             - Không được thay đổi hoặc viết sai tên sản phẩm.
+            - Văn phong kết hợp giữa "chuyên gia kỹ thuật" và "nhà phân phối uy tín": Vừa chỉ ra đúng bệnh của xe, vừa làm nổi bật ưu điểm (độ bền, chuẩn form, dễ lắp ráp) để thuyết phục người mua (dù là khách lẻ hay thợ Gara) tin tưởng lựa chọn.
             - Văn phong tự nhiên, chuyên nghiệp như người viết thật.
 
             YÊU CẦU NỘI DUNG:
