@@ -231,9 +231,30 @@ async function taoNoiDung() {
 
   switch (website) {
     case 'kieugiaauto':
-      let tenGocKieuGia = tenPhuTung.replace(/chính hãng/gi, '').trim();
-      h1Text = `${tenGocKieuGia} chính hãng`.replace(/\s+/g, ' ');
-      // Chỉ hiện Slug nếu có ngoặc cần gọt
+      let tenGocKieuGia = tenPhuTung.replace(/chính hãng|oem|cao cấp/gi, '').trim();
+      let brandLower = thuonghieu.toLowerCase();
+      let hangLower = hang.toLowerCase();
+
+      // BỘ LỌC TỪ KHÓA OEM: Nhận diện ngay nếu có các từ này
+      let laHangOEM = brandLower.includes('oem') || brandLower.includes('taiwan') || brandLower.includes('đài loan') || brandLower.includes('thay thế');
+
+      // Kịch bản 1: Nếu Thương hiệu có chữ oem/taiwan -> Hàng thường (Cấm gắn chính hãng)
+      if (laHangOEM) {
+        h1Text = `${tenGocKieuGia}`;
+      }
+      // Kịch bản 2: Hàng hộp của Hãng (VD: Toyota, Mercedes Benz)
+      else if ((hangLower && brandLower.includes(hangLower)) || brandLower === 'chính hãng') {
+        h1Text = `${tenGocKieuGia} chính hãng`.replace(/\s+/g, ' ');
+      }
+      // Kịch bản 3: Hàng thương hiệu thứ 3 xịn (VD: TOK chính hãng)
+      else if (brandLower.includes('chính hãng')) {
+        h1Text = `${tenGocKieuGia} hiệu ${thuonghieu}`.replace(/\s+/g, ' ');
+      }
+      // Kịch bản 4: Hàng thương hiệu bình thường khác (không ghi chữ chính hãng)
+      else {
+        h1Text = `${tenGocKieuGia}`;
+      }
+
       if (coNgoac) slugGoiY = taoSlug(tenGocKieuGia);
       break;
 
@@ -574,7 +595,7 @@ async function taoNoiDung() {
   // Tùy biến Mô tả ngắn cực chuẩn SEO cho từng Web
   switch (website) {
     case 'kieugiaauto':
-      moTaNganText = `Sản phẩm ${h1Text} chính hãng ${thuonghieu}. Phụ tùng ô tô cao cấp giúp xe vận hành ổn định, an toàn. Cam kết chất lượng và bảo hành uy tín tại Kiều Gia Auto.`;
+      moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Phụ tùng ô tô cao cấp giúp xe vận hành ổn định, an toàn. Cam kết chất lượng và bảo hành uy tín tại Kiều Gia Auto.`;
       break;
     case 'banphutung':
       moTaNganText = `Phân phối sỉ lẻ ${h1Text}  Phụ tùng chuẩn thông số O.E.M, hỗ trợ thợ gara lắp ráp nhanh chóng và chính xác. Nguồn hàng ổn định, giao nhanh cho các xưởng sửa chữa trên toàn quốc.`;
