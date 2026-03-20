@@ -515,7 +515,46 @@ async function taoNoiDung() {
             <li>Giao hàng nhanh chóng trên toàn quốc.</li>
           </ul>
           <p>Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!</p>`;
-    copyContent = content;
+
+    // Dọn dẹp thẻ HTML để tạo bản Copy thuần Text
+    let plainMoTaTuDongShopee = moTaTuDong.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '').trim();
+    let plainDanhSachXeShopee = danhSachXe.replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<[^>]+>/g, '').trim();
+
+    copyContent = `**${ten}**
+Mã sản phẩm: ${ma}
+Thương hiệu: ${thuonghieu}
+Xuất xứ: ${xuatxu}
+
+${plainMoTaTuDongShopee}
+
+${plainDanhSachXeShopee}
+
+✔️ Kiều Gia Auto - Phụ tùng ô tô chính hãng, giá tốt nhất
+- Cung cấp “${ten}” chất lượng vượt trội, giá cả cạnh tranh.
+- Khuyên dùng phụ tùng có nguồn gốc rõ ràng để đảm bảo hiệu suất và độ bền.
+- Nhập khẩu và phân phối phụ tùng chính hãng tới nhiều gara trên toàn quốc.
+- Đội ngũ nhân viên am hiểu kỹ thuật, tư vấn tận tâm, chuyên nghiệp.
+
+✔️ Chính sách bảo hành:
+- Bảo hành 1 đổi 1 trong 7 ngày nếu phát hiện lỗi từ nhà sản xuất.
+- Sản phẩm được đổi trả trong vòng 7 ngày, với điều kiện còn nguyên vẹn, chưa lắp ráp, không trầy xước, còn nguyên bao bì.
+
+✔️ Lưu ý:
+- Khi mở sản phẩm, vui lòng quay video để đảm bảo quyền lợi đổi trả nếu có lỗi từ nhà cung cấp.
+- Quý khách vui lòng đánh giá sản phẩm để nhận thêm ưu đãi từ shop!
+
+✔️ Cam kết của Kiều Gia Auto:
+- Đội ngũ tư vấn chuyên nghiệp, mang đến trải nghiệm tuyệt vời cho khách hàng.
+- Hoàn tiền hoặc đổi sản phẩm mới nếu quý khách không hài lòng vì lỗi sản phẩm.
+- Thương hiệu uy tín, đáng tin cậy.
+
+✔️ Đảm bảo từ Kiều Gia Auto:
+- Hình ảnh “${ten}” đúng 100% với thực tế.
+- Chất lượng sản phẩm đảm bảo tuyệt đối.
+- Hỗ trợ đổi trả theo chính sách quy định.
+- Giao hàng nhanh chóng trên toàn quốc.
+
+Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Kiều Gia Auto!`;
 
   } else if (website === 'shopee2') {
     content = `<h2>${ten}</h2>
