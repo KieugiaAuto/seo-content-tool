@@ -237,53 +237,56 @@ async function taoNoiDung() {
 
   switch (website) {
     case 'kieugiaauto':
-      let tenGocKieuGia = tenPhuTung.replace(/chính hãng|oem|cao cấp/gi, '').trim();
+      let tenGocKieuGia = tenPhuTung.replace(/chính hãng|oem|cao cấp|nhập khẩu/gi, '').trim();
       let brandLower = thuonghieu.toLowerCase();
       let hangLower = hang.toLowerCase();
 
-      // BỘ LỌC TỪ KHÓA OEM: Nhận diện ngay nếu có các từ này
+      // Phân loại 1: Hàng OEM / Đài Loan / Trung Quốc
       let laHangOEM = brandLower.includes('oem') || brandLower.includes('taiwan') || brandLower.includes('đài loan') || brandLower.includes('thay thế');
 
-      // Kịch bản 1: Nếu Thương hiệu có chữ oem/taiwan -> Hàng thường (Cấm gắn chính hãng)
-      if (laHangOEM) {
-        h1Text = `${tenGocKieuGia}`;
-      }
-      // Kịch bản 2: Hàng hộp của Hãng (VD: Toyota, Mercedes Benz)
-      else if ((hangLower && brandLower.includes(hangLower)) || brandLower === 'chính hãng') {
-        h1Text = `${tenGocKieuGia} chính hãng`.replace(/\s+/g, ' ');
-      }
-      // Kịch bản 3: Hàng thương hiệu thứ 3 xịn (VD: TOK chính hãng)
-      else if (brandLower.includes('chính hãng')) {
-        h1Text = `${tenGocKieuGia} hiệu ${thuonghieu}`.replace(/\s+/g, ' ');
-      }
-      // Kịch bản 4: Hàng thương hiệu bình thường khác (không ghi chữ chính hãng)
-      else {
-        h1Text = `${tenGocKieuGia}`;
+      // Phân loại 2: Hàng Chính hãng (Thương hiệu trùng tên hãng xe, hoặc nhân viên gõ chữ "chính hãng")
+      let laChinhHang = (hangLower && brandLower.includes(hangLower)) || brandLower.includes('chính hãng');
+
+      if (laChinhHang) {
+        // KỊCH BẢN 1: Chuẩn hàng xịn
+        h1Text = `${tenGocKieuGia} ${dateText} chính hãng`.replace(/\s+/g, ' ').trim();
+      } else if (laHangOEM) {
+        // KỊCH BẢN 2: Hàng OEM -> Dùng từ "cao cấp" an toàn, lịch sự, chuẩn SEO
+        h1Text = `${tenGocKieuGia} ${dateText} cao cấp`.replace(/\s+/g, ' ').trim();
+      } else if (thuonghieu) {
+        // KỊCH BẢN 3: Hàng thương hiệu thứ 3 (VD: Denso, Bosch, Tok...)
+        h1Text = `${tenGocKieuGia} ${dateText} hiệu ${thuonghieu}`.replace(/\s+/g, ' ').trim();
+      } else {
+        // KỊCH BẢN 4: Nếu để trống thương hiệu -> Mặc định chỉ để tên + năm cho an toàn
+        h1Text = `${tenGocKieuGia} ${dateText}`.replace(/\s+/g, ' ').trim();
       }
 
-      if (coNgoac) slugGoiY = taoSlug(tenGocKieuGia);
+      if (coNgoac) slugGoiY = taoSlug(tenGocKieuGia + dateText);
+      break;
+
+    case 'phutungotokieugia':
+      // Ý tưởng mới: Gắn đuôi "chuẩn form đời xe"
+      h1Text = `${tenPhuTung} ${dateText} chuẩn form đời xe`.replace(/\s+/g, ' ').trim();
+
+      if (coNgoac) {
+        let dateSlug = dateText ? dateText.trim().replace(/[\s./]+/g, '-') : "";
+        slugGoiY = dateSlug ? `${taoSlug(tenPhuTung)}-${dateSlug}-chuan-form` : taoSlug(tenPhuTung);
+      }
       break;
 
     case 'phutunggiare':
       let tenGocGiaRe = tenPhuTung.replace(/(phụ tùng )?thay thế/gi, '').trim();
-      h1Text = `${tenGocGiaRe} phụ tùng thay thế`.replace(/\s+/g, ' ');
-      // Web giá rẻ LUÔN LUÔN tạo Slug để lấy đuôi "-thay-the"
-      slugGoiY = `${taoSlug(tenGocGiaRe)}-thay-the`;
+      // Ý tưởng mới: Gắn đuôi "phụ tùng thay thế"
+      h1Text = `${tenGocGiaRe} ${dateText} phụ tùng thay thế`.replace(/\s+/g, ' ').trim();
+      slugGoiY = `${taoSlug(tenGocGiaRe + dateText)}-thay-the`;
       break;
 
     case 'banphutung':
-      h1Text = `${tenPhuTung} giá tốt`.trim();
-      // Chỉ hiện Slug nếu có ngoặc cần gọt
-      if (coNgoac) slugGoiY = taoSlug(tenPhuTung);
-      break;
+      // Ý tưởng mới: Đổi gạch ngang thành " đến " và gắn đuôi "giá tốt"
+      let dateTuDen = dateText ? dateText.replace('-', ' đến ') : '';
+      h1Text = `${tenPhuTung} ${dateTuDen} giá tốt`.replace(/\s+/g, ' ').trim();
 
-    case 'phutungotokieugia':
-      h1Text = `${tenPhuTung}${dateText}`.trim();
-      // Chỉ hiện Slug nếu có ngoặc cần gọt (có nối thêm năm sản xuất nếu có)
-      if (coNgoac) {
-        let dateSlug = dateText ? dateText.trim().replace(/[\s./]+/g, '-') : "";
-        slugGoiY = dateSlug ? `${taoSlug(tenPhuTung)}-${dateSlug}` : taoSlug(tenPhuTung);
-      }
+      if (coNgoac) slugGoiY = taoSlug(tenPhuTung + dateText);
       break;
 
     case 'shopee':
