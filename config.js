@@ -61,9 +61,9 @@ const STYLE_MAP = {
         "Viết theo phong cách kỹ thuật chuyên sâu như tài liệu kỹ thuật ô tô."
     ],
     phutunggiare: [
-        "Viết theo phong cách tư vấn lựa chọn phụ tùng thay thế.",
-        "Viết theo phong cách giải thích vai trò của phụ tùng khi xe cần sửa chữa.",
-        "Viết theo phong cách mô tả lợi ích của việc thay thế phụ tùng đúng loại."
+        "Viết theo phong cách chuyên gia kỹ thuật, nhấn mạnh tầm quan trọng của việc tra cứu và thay thế đúng mã sản phẩm.",
+        "Viết tập trung vào tính chính xác tuyệt đối khi khớp đúng mã phụ tùng cho hệ thống xe.",
+        "Viết theo phong cách dành cho thợ gara, làm nổi bật thông số mã kỹ thuật để đảm bảo lắp ráp ăn khớp 100%."
     ],
     banphutung: [
         "Viết theo góc nhìn của thợ sửa xe tại gara.",
