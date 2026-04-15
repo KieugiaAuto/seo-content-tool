@@ -112,11 +112,11 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
             // Lệnh bốc thăm ngẫu nhiên 1 kịch bản
             yeuCau = kichBanKieuGia[Math.floor(Math.random() * kichBanKieuGia.length)];
             break;
-        case 'phutunggiare': // SEO Phụ tùng thay thế
+        case 'phutunggiare': // SEO Mã sản phẩm
             yeuCau = `
-                    - Câu 1: Giới thiệu đây là giải pháp thay thế hoàn hảo cho chi tiết cũ đã hỏng hóc hoặc xuống cấp.
-                    - Câu 2: Nhấn mạnh vào độ bền ổn định và khả năng vận hành tin cậy với mức chi phí đầu tư hợp lý.
-                    - Câu 3: Khẳng định sản phẩm giúp phục hồi chức năng xe nhanh chóng, là lựa chọn thay thế kinh tế và hiệu quả.`;
+                    - Câu 1: Giới thiệu trực diện sản phẩm với mã phụ tùng ${ma} chuyên dụng.
+                    - Câu 2: Phân tích việc sử dụng đúng mã ${ma} giúp đảm bảo thông số hình học và tính đồng bộ cao nhất khi ráp lên xe.
+                    - Câu 3: Khẳng định đây là mã phụ tùng chuẩn xác, loại bỏ hoàn toàn rủi ro sai lệch so với hệ thống nguyên bản.`;
             break;
         case 'banphutung': // SEO Gara / Thợ (3 Câu)
             yeuCau = `
