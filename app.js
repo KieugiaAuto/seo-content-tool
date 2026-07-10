@@ -241,24 +241,14 @@ async function taoNoiDung() {
       let brandLower = thuonghieu.toLowerCase();
       let hangLower = hang.toLowerCase();
 
-      // Phân loại 1: Hàng OEM / Đài Loan / Trung Quốc
-      let laHangOEM = brandLower.includes('oem') || brandLower.includes('taiwan') || brandLower.includes('đài loan') || brandLower.includes('thay thế');
-
-      // Phân loại 2: Hàng Chính hãng (Thương hiệu trùng tên hãng xe, hoặc nhân viên gõ chữ "chính hãng")
+      // Kiểm tra xem có phải hàng chính hãng không (Thương hiệu trùng tên hãng xe, hoặc gõ chữ "chính hãng")
       let laChinhHang = (hangLower && brandLower.includes(hangLower)) || brandLower.includes('chính hãng');
 
+      // Nếu là chính hãng thì hiện "chính hãng", còn lại tất cả đều dán nhãn "OEM"
       if (laChinhHang) {
-        // KỊCH BẢN 1: Chuẩn hàng xịn
         h1Text = `${tenGocKieuGia} ${dateText} chính hãng`.replace(/\s+/g, ' ').trim();
-      } else if (laHangOEM) {
-        // KỊCH BẢN 2: Hàng OEM -> Dùng từ "cao cấp" an toàn, lịch sự, chuẩn SEO
-        h1Text = `${tenGocKieuGia} ${dateText} cao cấp`.replace(/\s+/g, ' ').trim();
-      } else if (thuonghieu) {
-        // KỊCH BẢN 3: Hàng thương hiệu thứ 3 (VD: Denso, Bosch, Tok...)
-        h1Text = `${tenGocKieuGia} ${dateText} hiệu ${thuonghieu}`.replace(/\s+/g, ' ').trim();
       } else {
-        // KỊCH BẢN 4: Nếu để trống thương hiệu -> Mặc định chỉ để tên + năm cho an toàn
-        h1Text = `${tenGocKieuGia} ${dateText}`.replace(/\s+/g, ' ').trim();
+        h1Text = `${tenGocKieuGia} ${dateText} OEM`.replace(/\s+/g, ' ').trim();
       }
 
       if (coNgoac) slugGoiY = taoSlug(tenGocKieuGia + dateText);
