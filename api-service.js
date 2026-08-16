@@ -91,20 +91,20 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
                 `
                         - Đoạn 1: Mở đầu bằng việc dẫn dắt về một hệ thống liên quan trên xe ${tenXe}, sau đó giới thiệu ${h1Text} và giải thích cặn kẽ chức năng, vị trí lắp đặt của nó. (Lưu ý: Chỉ dùng tên phụ tùng đầy đủ 1 lần duy nhất ở đoạn này).
                         - Đoạn 2: Liệt kê các dấu hiệu cảnh báo khi chi tiết này bị xuống cấp hoặc hư hỏng (bắt buộc trình bày bằng danh sách <ul> <li> để người đọc dễ theo dõi).
-                        - Đoạn 3: Khẳng định sự tương thích hoàn hảo của sản phẩm thay thế này đối với form xe ${tenXe}, giúp khôi phục sự êm ái và vận hành ổn định. (Tuyệt đối không lặp lại tên đầy đủ của phụ tùng, hãy dùng các từ như "sản phẩm", "linh kiện này", "bộ phận này").
+                        - Đoạn 3: Mô tả sự phù hợp của sản phẩm thay thế này với form xe ${tenXe}, tập trung vào kích thước, vị trí lắp và khả năng hỗ trợ vận hành ổn định. (Tuyệt đối không lặp lại tên đầy đủ của phụ tùng, hãy dùng các từ như "sản phẩm", "linh kiện này", "bộ phận này").
                         - Đoạn 4: Đưa ra lời khuyên ngắn gọn từ chuyên gia về chu kỳ kiểm tra và bảo dưỡng.`,
 
                 // KỊCH BẢN 2: Phong cách "Bắt bệnh & Chữa trị" (Dấu hiệu hư hỏng -> Nguyên nhân/Vai trò -> Giải pháp)
                 `
                         - Đoạn 1: Mở đầu bằng cách nêu bật ngay những phiền toái, tiếng kêu lạ hoặc sự cố mà tài xế thường gặp phải khi vận hành (Dùng danh sách <ul> <li>). Sau đó chốt lại nguyên nhân chính là do hỏng ${h1Text}. (Chỉ dùng tên đầy đủ ở đoạn này).
                         - Đoạn 2: Giải thích ngược lại về mặt kỹ thuật: tại sao bộ phận này lại quan trọng đến vậy và nó đảm nhận nhiệm vụ gì để hệ thống hoạt động trơn tru. (Sử dụng các đại từ thay thế).
-                        - Đoạn 3: Đưa ra giải pháp dứt điểm bằng việc thay mới cụm linh kiện chuẩn xác, thiết kế tối ưu riêng cho hệ thống của xe ${tenXe}.
+                        - Đoạn 3: Đưa ra phương án thay thế bằng linh kiện phù hợp với thông số và vị trí lắp của hệ thống trên xe ${tenXe}.
                         - Đoạn 4: Nhấn mạnh lợi ích kinh tế (tiết kiệm chi phí sửa chữa cụm lớn về sau) nếu thay thế kịp thời ngay khi có dấu hiệu hỏng hóc.`,
 
                 // KỊCH BẢN 3: Phong cách "Đề cao chất lượng & Sự an toàn" (Tương thích -> Rủi ro -> Nguyên lý)
                 `
-                        - Đoạn 1: Khẳng định ngay từ đầu ${h1Text} là phụ tùng thay thế đạt chuẩn kỹ thuật, lắp ráp vừa vặn và đồng bộ 100% cho cấu hình của dòng xe ${tenXe}. (Chỉ dùng tên đầy đủ ở đoạn này).
-                        - Đoạn 2: Đi sâu phân tích kỹ thuật: chi tiết này hoạt động ra sao để bảo vệ xe, tối ưu hiệu suất hoặc đảm bảo an toàn cho người lái. (Chỉ dùng các từ như "chi tiết này", "cụm phụ tùng này").
+                        - Đoạn 1: Giới thiệu ${h1Text} là phụ tùng thay thế có thông tin kỹ thuật phù hợp với cấu hình của dòng xe ${tenXe}, tập trung vào kích thước và vị trí lắp. (Chỉ dùng tên đầy đủ ở đoạn này).
+                        - Đoạn 2: Đi sâu phân tích kỹ thuật: chi tiết này hoạt động ra sao và hỗ trợ duy trì trạng thái vận hành ổn định của hệ thống. (Chỉ dùng các từ như "chi tiết này", "cụm phụ tùng này").
                         - Đoạn 3: Cảnh báo những rủi ro nguy hiểm tiềm ẩn hoặc nguy cơ hư hỏng lây lan sang các bộ phận khác nếu tiếp tục cố chấp sử dụng linh kiện đã kém chất lượng (Trình bày rủi ro bằng danh sách <ul> <li>).
                         - Đoạn 4: Tổng kết lại giá trị cốt lõi mang lại (sự an tâm, bền bỉ) và nhắc nhở việc chăm sóc, bảo dưỡng xe đúng định kỳ.`
             ];
@@ -115,20 +115,20 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
         case 'phutunggiare': // SEO Mã sản phẩm
             yeuCau = `
                     - Câu 1: Giới thiệu trực diện sản phẩm với mã phụ tùng ${ma} chuyên dụng.
-                    - Câu 2: Phân tích việc sử dụng đúng mã ${ma} giúp đảm bảo thông số hình học và tính đồng bộ cao nhất khi ráp lên xe.
-                    - Câu 3: Khẳng định đây là mã phụ tùng chuẩn xác, loại bỏ hoàn toàn rủi ro sai lệch so với hệ thống nguyên bản.`;
+                    - Câu 2: Phân tích việc sử dụng đúng mã ${ma} giúp đối chiếu thông số hình học và mức độ phù hợp khi lắp lên xe.
+                    - Câu 3: Nêu rằng việc đối chiếu đúng mã phụ tùng giúp hạn chế nguy cơ sai lệch so với hệ thống đang sử dụng.`;
             break;
         case 'banphutung': // SEO Gara / Thợ (3 Câu)
             yeuCau = `
                     - Câu 1: Nêu vai trò của phụ tùng đối với quá trình vận hành hoặc bảo vệ xe.
-                    - Câu 2: Nhấn mạnh sản phẩm có thông số kích thước chuẩn xác, giúp việc lắp đặt dễ dàng, không cần chế cháo.
-                    - Câu 3: Khẳng định đây là vật tư chất lượng, cực kỳ phù hợp và được các gara sửa xe ưu tiên lựa chọn.`;
+                    - Câu 2: Nhấn mạnh sản phẩm có thông số kích thước phù hợp, hỗ trợ việc lắp đặt thuận tiện và hạn chế phải chỉnh sửa kết cấu.
+                    - Câu 3: Mô tả đây là vật tư phục vụ sửa chữa, tập trung vào sự phù hợp về thông số và nhu cầu sử dụng tại gara.`;
             break;
         case 'phutungotokieugia': // SEO Đời xe (3 Câu)
             yeuCau = `
-                    - Câu 1: Xác nhận phụ tùng này được thiết kế riêng biệt cho dòng xe ${tenXe}.
-                    - Câu 2: Nhấn mạnh sự chuẩn xác về thông số kỹ thuật cho các phiên bản đời xe ${doiXe}.
-                    - Câu 3: Khẳng định lắp đặt chuẩn phom 100%, giúp xe giữ được nguyên bản và ổn định theo đúng đời xe.`;
+                    - Câu 1: Mô tả phụ tùng này theo thông tin dòng xe ${tenXe} và vị trí lắp dự kiến.
+                    - Câu 2: Nhấn mạnh việc đối chiếu thông số kỹ thuật với các phiên bản đời xe ${doiXe}.
+                    - Câu 3: Mô tả khả năng lắp đặt phù hợp về kích thước và vị trí theo đời xe, hỗ trợ duy trì trạng thái vận hành ổn định.`;
             break;
         case 'shopee':
         case 'shopee2':
@@ -165,7 +165,9 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
             - Từ khóa chính "${h1Text}" được phép xuất hiện TỐI ĐA 2 LẦN (1 lần ở câu đầu để nhận diện, và 1 lần ở câu cuối để khẳng định chất lượng).
             - Ở phần thân bài, TUYỆT ĐỐI KHÔNG lặp lại từ khóa "${h1Text}". Bắt buộc phải linh hoạt dùng các từ thay thế PHÙ HỢP VỚI ĐẶC THÙ SẢN PHẨM như: "bộ phận này", "sản phẩm này", "phụ tùng", "linh kiện này", hoặc gọi tên ngắn gọn theo chức năng (ví dụ: thay vì gọi cả cụm dài, chỉ cần gọi là "đèn báo rẽ", "cụm đèn", "bơm nước", "càng A"...). Hạn chế tối đa dùng từ "chi tiết máy" trừ khi đó thực sự là bộ phận cơ khí bên trong động cơ.            
             - Không được thay đổi hoặc viết sai tên sản phẩm.
-            - Văn phong kết hợp giữa "chuyên gia kỹ thuật" và "nhà phân phối uy tín": Vừa chỉ ra đúng bệnh của xe, vừa làm nổi bật ưu điểm (độ bền, chuẩn form, dễ lắp ráp) để thuyết phục người mua (dù là khách lẻ hay thợ Gara) tin tưởng lựa chọn.
+            - KHÔNG ĐƯỢC dùng trong nội dung trả về các cụm quảng cáo tuyệt đối hoặc khó chứng minh: "chính hãng", "tốt nhất", "rẻ nhất", "giá rẻ nhất", "100%", "tuyệt đối", "hoàn hảo", "tối ưu", "cao nhất", "hàng đầu", "uy tín hàng đầu", "vượt trội", "siêu tốc", "hỏa tốc", "trùng khớp 100%", "đồng bộ 100%", "chuẩn phom 100%".
+            - Không tự khẳng định nguồn gốc, chất lượng, độ bền, mức độ tương thích hoặc an toàn nếu dữ liệu đầu vào không cung cấp căn cứ. Dùng cách diễn đạt trung tính như "phù hợp", "hỗ trợ", "theo thông tin sản phẩm", "cần đối chiếu mã/thông số".
+            - Văn phong kết hợp giữa tư vấn kỹ thuật và giới thiệu sản phẩm: trình bày chức năng, dấu hiệu hư hỏng, thông số và khả năng lắp đặt một cách trung tính, rõ ràng; không tự đưa ra các khẳng định quảng cáo hoặc chất lượng nếu không có dữ liệu chứng minh.
             - Văn phong tự nhiên, chuyên nghiệp như người viết thật.
 
             YÊU CẦU NỘI DUNG:
@@ -208,15 +210,16 @@ async function layGioiThieuTuGemini(ten, thuonghieu, xuatxu, website, ma, hang, 
             // LOGIC XỬ LÝ ĐỊNH DẠNG RIÊNG CHO TỪNG WEB
             if (website === 'kieugiaauto') {
                 // Web chính: Giữ nguyên thẻ <p>, <ul>, <li> để hiển thị chuyên nghiệp
-                return data.moTa.trim();
+                return KG_TRACK_SITES.has(website) ? kgSanitizeComplianceHtml(data.moTa.trim()) : data.moTa.trim();
             } else {
                 // Web vệ tinh: Xóa sạch các thẻ < > để lấy văn bản thuần 1 đoạn duy nhất
-                return data.moTa.replace(/</g, "").replace(/>/g, "").trim();
+                const txt = data.moTa.replace(/</g, "").replace(/>/g, "").trim();
+                return KG_TRACK_SITES.has(website) ? kgSanitizeComplianceText(txt) : txt;
             }
         }
     } catch (err) {
         console.error('Lỗi gọi Gemini:', err);
     }
     // Nội dung dự phòng nếu API lỗi
-    return `${h1Text} là phụ tùng chất lượng cao, đảm bảo hiệu suất vận hành ổn định cho xe.`;
+    return `${h1Text} là phụ tùng thay thế, hỗ trợ duy trì trạng thái vận hành ổn định cho xe.`;
 }
