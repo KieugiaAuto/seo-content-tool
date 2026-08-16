@@ -173,7 +173,10 @@ function sinhDanhSachXe(ten, thuonghieu, isShopee = false) {
 async function taoNoiDung() {
   const ten = document.getElementById('ten').value.trim();
   const ma = document.getElementById('ma').value.trim();
-  const thuonghieu = document.getElementById('thuonghieu').value.trim();
+  const thuonghieu = document.getElementById('thuonghieu').value
+    .replace(/\s*chính\s+hãng\s*/gi, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
   const xuatxu = document.getElementById('xuatxu').value.trim();
   const website = document.getElementById('website').value;
 
@@ -241,15 +244,8 @@ async function taoNoiDung() {
       let brandLower = thuonghieu.toLowerCase();
       let hangLower = hang.toLowerCase();
 
-      // Kiểm tra xem có phải hàng chính hãng không (Thương hiệu trùng tên hãng xe, hoặc gõ chữ "chính hãng")
-      let laChinhHang = (hangLower && brandLower.includes(hangLower)) || brandLower.includes('chính hãng');
-
-      // Nếu là chính hãng thì hiện "chính hãng", còn lại tất cả đều dán nhãn "OEM"
-      if (laChinhHang) {
-        h1Text = `${tenGocKieuGia} ${dateText} chính hãng`.replace(/\s+/g, ' ').trim();
-      } else {
-        h1Text = `${tenGocKieuGia} ${dateText} OEM`.replace(/\s+/g, ' ').trim();
-      }
+      // Không tự gắn nhãn nguồn gốc như "chính hãng"/"OEM" nếu đầu vào không có căn cứ chứng minh
+      h1Text = `${tenGocKieuGia} ${dateText}`.replace(/\s+/g, ' ').trim();
 
       if (coNgoac) slugGoiY = taoSlug(tenGocKieuGia + dateText);
       break;
@@ -284,6 +280,11 @@ async function taoNoiDung() {
     case 'shopee2':
       h1Text = ten;
       break;
+  }
+
+  // Chốt lọc từ/cụm quảng cáo rủi ro trong tiêu đề của 4 website
+  if (KG_TRACK_SITES.has(website)) {
+    h1Text = kgSanitizeComplianceText(h1Text);
   }
 
   // ========================================================
@@ -351,8 +352,8 @@ async function taoNoiDung() {
 
           <h3>Tại sao nên chọn mua tại Kiều Gia Auto?</h3>
           <ul>
-            <li>Sản phẩm được tuyển chọn kỹ lưỡng, độ bền cao, vật liệu chế tạo chuẩn xác.</li>
-            <li>Kích thước hình học đồng bộ, lắp ráp vừa vặn, khôi phục hoàn toàn chức năng.</li>
+            <li>Thông tin sản phẩm được đối chiếu theo mã, thương hiệu và thông số cung cấp.</li>
+            <li>Kích thước và vị trí lắp được đối chiếu để hỗ trợ lắp ráp phù hợp.</li>
             <li>Đội ngũ kỹ thuật hỗ trợ tư vấn bắt đúng "bệnh", mua đúng hàng.</li>
           </ul>
 
@@ -377,21 +378,21 @@ async function taoNoiDung() {
           ${moTaTuDong}
           ${danhSachXe}
 
-          <h3>Tương thích chuẩn xác theo form xe nguyên bản</h3>
+          <h3>Khả năng lắp ráp theo form xe</h3>
           <p>
-          Sản phẩm <strong>${h1Text}</strong> được sản xuất đúng theo kích thước và thông số của đời xe này. Việc sử dụng phụ tùng chuẩn form giúp quá trình lắp ráp diễn ra nhanh chóng, ăn khớp tuyệt đối với các chi tiết xung quanh mà không cần phải can thiệp hay thay đổi kết cấu nguyên bản của xe.
+          Sản phẩm <strong>${h1Text}</strong> được mô tả theo kích thước và thông số của đời xe này. Việc đối chiếu đúng thông tin phụ tùng giúp quá trình lắp ráp thuận tiện và phù hợp với các chi tiết xung quanh, hạn chế phải can thiệp vào kết cấu xe.
           </p>
 
           <h3>Khôi phục trạng thái hoạt động và thẩm mỹ</h3>
           <p>
-          Trong quá trình sử dụng, các bộ phận trên xe có thể bị hư hỏng do sự cố va chạm, tác động của môi trường hoặc hao mòn tự nhiên theo thời gian. Việc thay mới <strong>${h1Text}</strong> đúng đời xe là giải pháp tối ưu để khôi phục lại chức năng hoạt động, đảm bảo an toàn cũng như duy trì sự đồng bộ và thẩm mỹ cho tổng thể chiếc xe.
+          Trong quá trình sử dụng, các bộ phận trên xe có thể bị hư hỏng do sự cố va chạm, tác động của môi trường hoặc hao mòn tự nhiên theo thời gian. Việc thay mới <strong>${h1Text}</strong> đúng đời xe là một phương án phù hợp để hỗ trợ khôi phục chức năng hoạt động và duy trì sự đồng bộ, thẩm mỹ cho tổng thể chiếc xe.
           </p>
 
           <h3>Ưu điểm khi sử dụng sản phẩm</h3>
           <ul>
-            <li>Thiết kế đồng bộ hoàn toàn với cấu hình và năm sản xuất của xe.</li>
-            <li>Chất liệu đạt chuẩn, đáp ứng tốt các điều kiện vận hành và sử dụng tại Việt Nam.</li>
-            <li>Bảo vệ các chi tiết liên quan, giúp xe duy trì tình trạng tốt nhất.</li>
+            <li>Thiết kế được đối chiếu theo cấu hình và đời xe.</li>
+            <li>Thông tin chất liệu được mô tả theo sản phẩm và nhu cầu sử dụng.</li>
+            <li>Hỗ trợ các chi tiết liên quan duy trì trạng thái vận hành ổn định.</li>
           </ul>
 
           <h4>Chính sách bán hàng & Hỗ trợ kỹ thuật</h4>
@@ -417,19 +418,19 @@ async function taoNoiDung() {
 
           <h3>Cung ứng sỉ ${h1Text} cho Gara & Trung tâm dịch vụ</h3>
           <p>
-          Trong quá trình tiếp nhận sửa chữa, bảo dưỡng định kỳ hoặc phục hồi xe sau va chạm, <strong>${h1Text}</strong> là hạng mục vật tư đòi hỏi tính chính xác cao về mặt thông số. Chúng tôi cung cấp nguồn hàng ổn định, thiết kế chuẩn O.E.M giúp thợ kỹ thuật thao tác lắp ráp nhanh chóng, hoàn thiện xe cho khách một cách trơn tru mà không tốn thời gian căn chỉnh hay chế cháo lại.
+          Trong quá trình tiếp nhận sửa chữa, bảo dưỡng định kỳ hoặc phục hồi xe sau va chạm, <strong>${h1Text}</strong> là hạng mục vật tư đòi hỏi tính chính xác cao về mặt thông số. Chúng tôi cung cấp sản phẩm theo thông tin mã và thông số để thợ kỹ thuật thuận tiện đối chiếu trước khi lắp ráp, hạn chế việc phải căn chỉnh hoặc thay đổi kết cấu.
           </p>
 
           <h3>Chính sách ưu đãi dành riêng cho thợ và Gara</h3>
           <ul>
             <li><strong>Sẵn kho số lượng lớn:</strong> Không để anh em thợ phải chờ đợi, tránh tình trạng xe nằm cầu lâu chiếm diện tích xưởng.</li>
-            <li><strong>Giao hàng hỏa tốc:</strong> Ship cực nhanh nội thành Hà Nội, hỗ trợ gửi chành xe hoặc xe khách đi tỉnh ngay trong ngày.</li>
-            <li><strong>Chiết khấu linh hoạt:</strong> Báo giá sỉ cạnh tranh cao, tối ưu biên độ lợi nhuận cho các xưởng dịch vụ.</li>
-            <li><strong>Hậu mãi rõ ràng:</strong> Hỗ trợ bảo hành nhanh gọn, đối chiếu mã chuẩn xác ngay từ khâu xuất kho.</li>
+            <li><strong>Hỗ trợ giao hàng:</strong> Hỗ trợ giao hàng nhanh nội thành Hà Nội và gửi chành xe hoặc xe khách đi tỉnh tùy điều kiện thực tế.</li>
+            <li><strong>Chiết khấu linh hoạt:</strong> Báo giá sỉ theo số lượng và chính sách áp dụng tại từng thời điểm.</li>
+            <li><strong>Hậu mãi rõ ràng:</strong> Hỗ trợ bảo hành và đối chiếu mã sản phẩm trước khi xuất kho.</li>
           </ul>
 
           <p>
-          Quý đối tác cần lấy sỉ <strong>${h1Text}</strong> hoặc nhập hàng định kỳ, vui lòng liên hệ trực tiếp phòng kinh doanh để nhận báo giá tốt nhất hôm nay.
+          Quý đối tác cần lấy sỉ <strong>${h1Text}</strong> hoặc nhập hàng định kỳ, vui lòng liên hệ trực tiếp phòng kinh doanh để nhận báo giá tại thời điểm đặt hàng.
           </p>
 
           <p>
@@ -449,12 +450,12 @@ async function taoNoiDung() {
               
               <h3>Tại sao cần thay thế đúng mã phụ tùng ${ma}?</h3>
               <p>
-              Trong quá trình bảo dưỡng và sửa chữa ô tô, việc tra cứu và thay thế đúng mã sản phẩm là yếu tố tiên quyết. Sản phẩm mang mã <strong>${ma}</strong> đảm bảo sự trùng khớp 100% về kích thước, vị trí các ngàm chốt và thông số kỹ thuật nội bộ. Điều này giúp kỹ thuật viên thao tác lắp đặt nhanh chóng, loại bỏ hoàn toàn tình trạng phải chế cháo gây ảnh hưởng đến kết cấu xe.
+              Trong quá trình bảo dưỡng và sửa chữa ô tô, việc tra cứu và thay thế đúng mã sản phẩm là yếu tố tiên quyết. Sản phẩm mang mã <strong>${ma}</strong> cần được đối chiếu về kích thước, vị trí ngàm chốt và thông số kỹ thuật trước khi lắp. Việc sử dụng đúng mã giúp kỹ thuật viên thao tác thuận tiện và hạn chế phải chỉnh sửa kết cấu xe.
               </p>
               
               <h3>Ưu điểm khi sử dụng đúng mã kỹ thuật</h3>
               <ul>
-              <li><strong>Tính chính xác tuyệt đối:</strong> Loại bỏ rủi ro sai lệch form dáng hoặc xung đột hệ thống.</li>
+              <li><strong>Khả năng đối chiếu mã:</strong> Hỗ trợ hạn chế sai lệch form dáng hoặc khác biệt thông số.</li>
               <li><strong>Tiết kiệm thời gian:</strong> Thợ sửa chữa thao tác nhanh gọn, xe không phải nằm cầu lâu.</li>
               <li><strong>Đồng bộ nguyên bản:</strong> Giữ nguyên được giá trị và hiệu suất hoạt động ban đầu của hệ thống.</li>
               </ul>
@@ -462,7 +463,7 @@ async function taoNoiDung() {
               <h4>Hỗ trợ tra mã & Giao hàng</h4>
               <ul>
               <li>Nhận tra cứu mã phụ tùng chính xác theo số khung (VIN) của xe.</li>
-              <li>Hỗ trợ giao hàng hỏa tốc nội thành và ship COD toàn quốc.</li>
+              <li>Hỗ trợ giao hàng nhanh nội thành và ship COD đến nhiều tỉnh, thành.</li>
               </ul>
               
               <p>
@@ -590,6 +591,12 @@ Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Ki�
     copyContent = `**${ten}**\nMã sản phẩm: ${ma}\nThương hiệu: ${thuonghieu}\nXuất xứ: ${xuatxu}\n\n${plainMoTaTuDong}\n\n${plainDanhSachXe}\n\n**Đặc điểm sản phẩm**\n- Thiết kế đúng tiêu chuẩn kỹ thuật của nhà sản xuất.\n- Độ bền cao, hoạt động ổn định.\n- Phù hợp lắp đặt cho nhiều dòng xe.\n- Dễ dàng thay thế tại các gara ô tô.\n\n**Chính sách bán hàng**\n- Sản phẩm được kiểm tra trước khi gửi.\n- Đóng gói cẩn thận khi vận chuyển.\n- Hỗ trợ đổi trả theo chính sách của sàn.\n\n**Lưu ý khi đặt hàng**\n- Vui lòng kiểm tra đúng mã phụ tùng trước khi đặt.\n- Nếu chưa chắc chắn, hãy liên hệ shop để được tư vấn.\n- Nên lắp đặt tại gara hoặc thợ kỹ thuật.\n\nCảm ơn quý khách đã quan tâm sản phẩm!`;
   }
 
+  // Lớp chốt cuối: dù AI hay template có lọt từ rủi ro, không cho copy/hiển thị ra 4 website
+  if (KG_TRACK_SITES.has(website)) {
+    content = kgSanitizeComplianceHtml(content);
+    copyContent = kgSanitizeComplianceHtml(copyContent);
+  }
+
   content = content.replace(/<li>(.*?)\.\s*<\/li>/g, '<li>$1</li>');
   document.getElementById('preview').innerHTML = content;
 
@@ -628,19 +635,23 @@ Chân thành cảm ơn quý khách đã tin tưởng và đồng hành cùng Ki�
   // Tùy biến Mô tả ngắn cực chuẩn SEO cho từng Web
   switch (website) {
     case 'kieugiaauto':
-      moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Phụ tùng ô tô cao cấp giúp xe vận hành ổn định, an toàn. Cam kết chất lượng và bảo hành uy tín tại Kiều Gia Auto.`;
+      moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Thông tin sản phẩm được công bố để khách hàng tham khảo và đối chiếu trước khi lắp. Kiều Gia Auto hỗ trợ tư vấn và bảo hành theo chính sách.`;
       break;
     case 'banphutung':
-      moTaNganText = `Phân phối sỉ lẻ ${h1Text}  Phụ tùng chuẩn thông số O.E.M, hỗ trợ thợ gara lắp ráp nhanh chóng và chính xác. Nguồn hàng ổn định, giao nhanh cho các xưởng sửa chữa trên toàn quốc.`;
+      moTaNganText = `Cung cấp sỉ lẻ ${h1Text}. Sản phẩm được mô tả theo mã và thông số để thợ gara đối chiếu trước khi lắp. Hỗ trợ giao hàng theo địa chỉ khách hàng cung cấp.`;
       break;
     case 'phutunggiare':
-      moTaNganText = `Cung cấp ${h1Text} thương hiệu ${thuonghieu}. Cam kết khớp chuẩn mã phụ tùng, đảm bảo thông số kỹ thuật chính xác tuyệt đối giúp quá trình lắp ráp nhanh chóng và đồng bộ với hệ thống xe.`;
+      moTaNganText = `Cung cấp ${h1Text} thương hiệu ${thuonghieu}. Khách hàng nên đối chiếu đúng mã và thông số kỹ thuật để hỗ trợ quá trình lắp ráp phù hợp với hệ thống xe.`;
       break;
     case 'phutungotokieugia':
-      moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Đảm bảo lắp đặt tương thích chính xác 100% với form xe nguyên bản, không cần chế cháo, khôi phục lại trạng thái hoạt động trơn tru nhất.`;
+      moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Cần đối chiếu form xe, đời xe và thông số kỹ thuật trước khi lắp để hỗ trợ quá trình lắp ráp phù hợp và vận hành ổn định.`;
       break;
     default:
       moTaNganText = `Sản phẩm ${h1Text} thương hiệu ${thuonghieu}. Phụ tùng thay thế chất lượng cao, giúp xe vận hành ổn định và an toàn.`;
+  }
+
+  if (KG_TRACK_SITES.has(website)) {
+    moTaNganText = kgSanitizeComplianceText(moTaNganText);
   }
 
   // 2. HIỂN THỊ MÔ TẢ NGẮN & SLUG
