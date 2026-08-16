@@ -62,8 +62,8 @@ const STYLE_MAP = {
     ],
     phutunggiare: [
         "Viết theo phong cách chuyên gia kỹ thuật, nhấn mạnh tầm quan trọng của việc tra cứu và thay thế đúng mã sản phẩm.",
-        "Viết tập trung vào tính chính xác tuyệt đối khi khớp đúng mã phụ tùng cho hệ thống xe.",
-        "Viết theo phong cách dành cho thợ gara, làm nổi bật thông số mã kỹ thuật để đảm bảo lắp ráp ăn khớp 100%."
+        "Viết tập trung vào việc đối chiếu đúng mã phụ tùng và sự phù hợp về thông số với hệ thống xe.",
+        "Viết theo phong cách dành cho thợ gara, làm nổi bật việc đối chiếu thông số mã kỹ thuật để hỗ trợ lắp ráp phù hợp."
     ],
     banphutung: [
         "Viết theo góc nhìn của thợ sửa xe tại gara.",
